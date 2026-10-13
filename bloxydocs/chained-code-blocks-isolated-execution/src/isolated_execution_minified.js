@@ -1,0 +1,5 @@
+globalThis.tc=0;tick=(ms)=>{tc++}
+
+globalThis.executionChainState={};function isExeState(p,b,c=128,o,m=!1){let s=executionChainState[p];if(!s){s=executionChainState[p]=new Int32Array(10)}if(s[4]!==tc){s[4]=tc;s[5]=b[0];s[6]=b[1];s[7]=b[2];s[8]=c;s[9]=-1;if(o===null){s[0]=s[1]=s[2]=s[3]=0xFFFFFFFF}else if(m){s[0]=o?.[0];s[1]=o?.[1];s[2]=o?.[2];s[3]=o?.[3]}else{s[0]=s[1]=s[2]=s[3]=0;if(o?.length|0){for(let i of o){i>>>=0;if(i<128){s[i>>>5]|=1<<(i&31)}}}}}else if(s[9]<s[8]&&s[5]===(b[0]|0)&&s[6]===(b[1]|0)&&s[7]===(b[2]|0)){s[9]=-1}const i=++s[9];return i<128&&(s[i>>>5]&1<<(i&31))!==0}
+
+function getBitmaskOffsets(o,s=!1,B=10){const m=new Int32Array(4);if(o===null){m[0]=m[1]=m[2]=m[3]=0xFFFFFFFF}else if(o?.length|0){for(let i of o){i>>>=0;if(i<128){m[i>>>5]|=1<<(i&31)}}}if(s){const b=B|0;let r;if(b===10||b<2||b>36){r=`[${m[0]>>>0}, ${m[1]>>>0}, ${m[2]>>>0}, ${m[3]>>>0}]`}else{const p=(b===2?"0b":(b===8?"0o":(b===16?"0x":"")));r=`[${p}${(m[0]>>>0).toString(b)}, ${p}${(m[1]>>>0).toString(b)}, ${p}${(m[2]>>>0).toString(b)}, ${p}${(m[3]>>>0).toString(b)}]`}api.log(r)}return m}

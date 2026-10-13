@@ -1,0 +1,1446 @@
+// ===== PASTE ALL BLOXD.IO INFO BELOW THIS LINE =====
+SECTION 1 — WHAT IS BLOXD.IO (OVERVIEW & FULL EXPERIENCE)
+---------------------------------------------------------------------
+
+Bloxd.io is a free, browser-based multiplayer sandbox game built around blocky, voxel-style worlds. Players join servers and lobbies to play a wide variety of game modes, build and mine in shared worlds, fight other players, and create their own custom games using an in-game JavaScript-based scripting system (World Code and Code Blocks). It runs directly in the browser and is playable on both PC and mobile, though PvP is generally easier and more precise on PC. At its core, much of Bloxd.io is built around PvP (player-versus-player combat), but the game spans far beyond fighting — it includes survival, building, parkour, minigames, roleplay-style modes, and fully player-scripted experiences.
+
+The game is organized into GAME MODES. New modes are frequently introduced through a "gamemode voting" system, where two modes are released at once and the community effectively votes with playtime — whichever is played more stays, and the other is often moved to a "Legacy Games" category or removed. Because of this, the mode lineup changes over time. Existing and popular modes include Survival, Worlds, Bedwars, Skywars, One Block, Greenville, Creative, Pirates, Lucky Towers, Cube Warfare, Paintball, Infection, Rocket Spleef, Fishing, 1v1 Fights, Lucky Block Battlegrounds, Natural Disaster, Bridge Battle, Hide and Seek, 99 Nights, Frontline, Containment Breach, Core Defenders, The Bloxd SMP, Murder Mystery, Sky Wars, Plots, Sky Islands, and many more. Limited-time modes (added without voting) have included The Bloxd SMP, Survival with Guns, Day & Night Survival, Build a Factory, and Chunklock.
+
+The main pillars of the Bloxd.io experience are:
+
+BUILDING & CREATIVITY — Players place and break blocks to build structures, bases, cities, dungeons, parkour courses, and adventure maps. There is a huge palette of blocks (over a thousand block types), including natural blocks, colored variants (wool, concrete, glass, planks, ceramics, chalk), decorative blocks, and functional blocks. Creative mode and Worlds let players build freely and design their own spaces.
+
+SURVIVAL & PROGRESSION — In survival-style modes, players gather resources (wood, stone, ores like coal, iron, gold, diamond, moonstone, and lunite), mine, craft tools and gear at a Workbench or Artisan Bench, farm crops and food, tame/catch mobs and pets, and progress from basic wood gear up to diamond, moonstone, and specialized equipment. Players also manage hunger/health and can build automated systems (Auto-Miner, Auto-Crafter, Auto-Harvester).
+
+COMBAT (PvP) — Combat is spam-click based (similar to Minecraft 1.8/Bedrock PvP): you click to attack, but hits only register once every 0.4 seconds (about 2.5 hits/second max), so the ideal effective CPS is around 12–16 (up to 20 with control), and well-timed hits matter more than raw click speed. Critical hits (hitting an enemy while you are in midair) deal 1.3x (30% more) damage. The first hit while sprinting deals extra knockback (used in "sprint-cut" combos). Combat uses swords, axes, bows, crossbows, spears, daggers, clubs, maces, whips, boomerangs, potions, splash potions, effect arrows, fireballs, iceballs, moonstone explosives, moonstone orbs (throwable teleport, deals 15 self-damage per throw), guns and RPGs (only obtainable via interactive boards or code blocks in worlds), plus improvised weapons like sticks (knockback), pebbles, snowballs, fat cactus, mangoes, and coconuts. IMPORTANT: cheating (autoclicking, drag-clicking, or exceeding ~20 CPS) can get a player auto-banned because the game flags it as an autoclicker.
+
+PROTECTION & MULTIPLAYER — Since worlds are shared, players use Protector blocks (and Tribe/Faction Protectors) to claim land and prevent griefing (block breaking, placing, chest access) within a protected region.
+
+CUSTOM WORLDS & SCRIPTING — This is a defining feature: players who own worlds can script custom gameplay using Bloxd's JavaScript-based coding system. World Code (opened with F8) runs globally in response to game events via callbacks (onPlayerJoin, tick, etc.), and Code Blocks are placed in the world and run when clicked/interacted with. Through the api object, scripts can control players, blocks, mobs, inventories, messages, effects, UI, and persistent data — enabling fully custom game modes, minigames, teleporters, shops, boss fights, and more. (Detailed API/scripting knowledge is in the scripting section.)
+
+COMMUNITY — Bloxd.io has official in-game community rules (respect others; no harassment/bullying, hate speech, spam, links, NSFW content, online dating, impersonation, cheating/autoclicking, or userscripts/extensions/mods). NOTE: Bloxd.io (the game) rules are SEPARATE from BloxdHub (the community platform) rules — never mix them.
+
+
+HISTORY & ORIGIN
+---------------------------------------------------------------------
+Bloxd.io was created by Arthur Baker (username "Arthur"), a UK developer born November 1999 and the founder/owner of the game. He built Bloxd.io using a free open-source voxel game engine called Noa. Before Bloxd.io, Arthur worked at Veea Systems (software dev intern), taught first-year algorithms at the University of Bath, interned at Microsoft as a Product Manager, and worked at Improbable as a software engineer (where he built tech for massive multiplayer worlds in Unreal Engine). Microsoft's acquisition of Minecraft was part of what drove him to create Bloxd.io. He has been developing the game for roughly 5 years. Arthur personally created about 15 of the game modes, including Evil Tower, Doodle Cube, Cube Warfare, Peaceful, Bloxd (Gamemode), Survival, Creative, Bedwars, Worlds, Duels, and Hide and Seek; his first mode, Bloxd Hop, was made with his own engine alongside a collaborator (Weiqing). The game was originally known under earlier names before becoming "Bloxd.io."
+
+CORE PLAYER MECHANICS
+---------------------------------------------------------------------
+HEALTH & COMBAT: Players have a health bar; combat is click-based with hits registering once every 0.4 seconds (max ~2.5 landed hits/sec), ideal effective CPS ~12-16. Critical hits (attacking while airborne) deal 1.3x damage. Armour reduces incoming damage but splash poison and instant-damage potions bypass armour. Health regenerates over time and can be restored with food and potions.
+
+AURA XP (THE EXPERIENCE / LEVELING SYSTEM): Aura XP is Bloxd's experience system, shown as a bar above the hotbar with a star icon showing your current level. Key mechanics:
+- You LOSE exactly HALF your XP levels when you die.
+- When you KILL someone, you gain the amount they lost (half their XP); if they had none, you get 1 level.
+- Maximum is 300 levels (can be changed via code blocks).
+- Earned from: killing mobs (Cow/Pig/Sheep/Deer = 20, Horse = 25, Wolf/Wildcat/Stag/Draugr Skeleton = 30, Gorilla/Bear/Draugr Zombie = 40, Cave Golem = 50, Draugr Knight = 75), mining ores (Coal = 5, Iron = 15, Gold = 30, Diamond = 40, Moonstone = 50), smelting (Iron = 10, Gold = 15), harvesting crops, breaking mob spawners, and consuming Aura XP items (Fragment = 1 level, Orb = 3 levels, Potion = 10 levels, Potion II = 15 levels; splash versions are instant).
+- Aura XP is SPENT on enchanting armour and tools.
+
+ENCHANTING: Done at Enchantment Tables (5 tiers: wooden, stone, iron, gold, diamond — higher tiers give better odds of stronger enchants). Enchantment effects come in tiers I, II, III (increasing power); items are enchanted at tiers 1-5 (the number = total combined enchant levels, e.g. tier 5 could give a III + a II). Enchanting spends Aura XP levels, and results are RANDOM — you pick from three XP "prices" (higher price = better odds), but can't choose exact enchants. Re-enchanting overwrites previous enchantments.
+Enchantments by item type:
+- ALL ARMOR: Health (+4 max HP per level), Health Regen, Protection (reduces damage). Fur Chestplate also: Knockback Resist. Spiked Boots also: Stomp Damage.
+- SWORDS: Damage (+20%/32%/40% by level), Attack Speed, Critical Damage (+42%/51%/58% by level). Knight Sword also: Horizontal Knockback.
+- STICK: Damage, Horizontal Knockback, Vertical Knockback.
+- ALL TOOLS: Break Speed, Momentum (faster breaking as you break more).
+- PICKAXE (except Moonstone): Mining Aura (more XP mining), Mining Yield (more drops).
+- SPADE: Digging Aura. HOE: Farming Aura, Farming Yield. AXE: Lumber Aura.
+- BOW/CROSSBOW: Arrow Speed, Arrow Damage (+23.5%/35%/44% by level), Quick Charge.
+
+CRAFTING: The Workbench is the core crafting station (hand-craftable from 4 Wood Planks of any type). It crafts tools, armour, weapons, utilities, and equipment. Decorative blocks require the Artisan Bench. Other stations: Furnace (smelting ores — 8 stone to craft), Potion Table (2 Glass + 2 Wood Planks), Salvaging Table (2 Iron Bars + 2 Wood Planks; salvages minerals into Aura XP Fragments), Enchantment Tables. You can only craft when you have all materials AND an empty inventory slot for the output. Armour costs: Helmet = 5, Chestplate = 8, Leggings = 7, Boots = 4, Gauntlets = 4 of the material (+ full set = 26 total).
+
+MINING & ORE DEPTH: Ores are found underground at depth (y-levels): iron roughly y -15 to -80, gold roughly y -75 to -99, diamond roughly y -85 to -99, moonstone y -84 and below. Better pickaxes mine higher-tier ores (iron pick for gold, gold pick for diamond, diamond pick for moonstone/obsidian). Moonstone pickaxe drops the exact block and mines fastest.
+
+PROGRESSION LOOP (survival-style modes): gather wood → craft basic tools → mine stone → better tools → mine deeper ores (iron→gold→diamond→moonstone) → craft armour/weapons → farm Aura XP → enchant gear → build/protect a base → PvP or take on tougher mobs (Draugr, golems, bosses).
+
+MOVEMENT & UTILITY: Hang Gliders (Wood/Iron/Gold/Diamond) for gliding and fall protection; Boats/Speedboats/Obsidian Boats for water; Moonstone Orbs for throwable teleportation; jump pads and spears for mobility; double-jump available via client options in scripted worlds.
+
+GENERAL / META
+---------------------------------------------------------------------
+- PLATFORM: free, browser-based, PC + mobile. PC PvP is more precise than mobile.
+- GAMEMODE VOTING: new modes are added in pairs and the community "votes" by playtime; losers go to Legacy Games or are removed. Mode lineup rotates frequently.
+- ANTI-CHEAT: autoclicking, drag-clicking, or exceeding ~20 CPS can trigger an automatic ban (flagged as autoclicker). Cheating, userscripts, extensions, and mods are against the rules.
+- DATA PERSISTENCE: worlds and player progress can be saved; scripted worlds use player DB values (per-account) and lobby DB values (world-wide).
+
+[VERIFIED: sourced from the official Bloxd.io Fandom wiki, July 2026. Some exact numeric edge-cases (e.g. precise regen rates) not fully documented — treat unlisted specifics cautiously.]
+
+
+=====================================================================
+SECTION 2 — WEAPONS, PLAYER STATS & ARMOR (FULL DATA)
+=====================================================================
+NOTE: All damage is shown as base\critical, applies to an UNARMORED target,
+and is reduced by the target's armor and enchantments. Verified from the
+official Bloxd.io Fandom wiki (Equipment & Armour pages), July 2026.
+Only WOOD tools/weapons/armor can be handcrafted or made at an Artisan Bench;
+stone/iron/gold/diamond/moonstone gear requires a Workbench.
+
+---------------------------------------------------------------------
+PLAYER DEFAULT STATS
+---------------------------------------------------------------------
+- Base damage reduction: the player has a BASE 30% damage reduction as of a
+  recent update (this is separate from and stacks conceptually with armor).
+- Hands (no weapon): 4\5 damage. Used to slowly break most blocks (not Bedrock)
+  and to interact/right-click.
+- Hits register once every ~0.4 seconds (~2.5 landed hits/sec max).
+- Critical hit (attacking while airborne) = 1.3x damage.
+- Max Aura XP: 300 levels. Health regenerates over time.
+[FILL IN: exact base max health value and base movement speed — not clearly
+documented on the wiki; add real in-game numbers here.]
+
+---------------------------------------------------------------------
+MELEE WEAPONS (base\crit, vs unarmored)
+---------------------------------------------------------------------
+SWORDS (close range; craft = 2 material + 1 Wood Plank; Wood Sword = 3 planks):
+- Wood Sword: 22\30
+- Stone Sword: 27\36
+- Iron Sword: 34\46
+- Gold Sword: 37\50
+- Diamond Sword: 40\54
+- Knight Sword: 43\58 (best; craft = 1 Diamond Sword + 3 Knight Hearts; has knockback)
+
+AXES (2nd-best melee; also chop wood):
+- Wood Axe: 20\27 | Stone: 24\32 | Iron: 31\42 | Gold: 33\45 | Diamond: 36\49
+- Moonstone Axe (new): 36\49 (breaks up to 6 blocks above the mined block)
+- Artisan Axe: 31\42 (Code Blocks only)
+
+SPEARS (dash/lunge movement; cannot be crafted normally):
+- Wood: 18\24 | Stone: 22\30 | Iron: 28\38 | Gold: 30\41 | Diamond: 32\43
+- Moonstone Spear: 32\43 (removed; via Code Blocks / Dimension Z)
+
+DAGGERS (backstab = 2x from behind; crit+backstab ~3x; ramping damage; cannot craft normally):
+- Wood: 10 | Stone: 12.5 | Iron: 15.5 | Gold: 17 | Diamond: 18 | Moonstone: 18 (removed)
+
+CLUBS (damage + increased knockback; cannot craft normally):
+- Wood: 22 | Stone: 27 | Iron: 34 | Gold: 37 | Diamond: 40 | Moonstone: 40 (removed)
+
+MACES (damage scales with your movement/fall speed; value = stationary; cannot craft normally):
+- Wood: 11 | Stone: 14 | Iron: 17 | Gold: 19 | Diamond: 20 | Moonstone: 20 (removed)
+
+WHIPS (NEGATIVE knockback — pulls enemies in; cannot craft normally):
+- Wood: 8 | Stone: 11 | Iron: 14 | Gold: 16 | Diamond: 17 | Moonstone: 17 (removed)
+
+BOOMERANGS (thrown, returns, can hit twice; cannot craft normally):
+- Wood: 8 | Stone: 11 | Iron: 14 | Gold: 16 | Diamond: 17 | Moonstone: 17 (removed)
+
+OTHER MELEE:
+- Stick: low damage, high knockback (craft = 1 Wood Plank).
+- Fat Cactus: 22\27. Dry Fat Cactus: 27\33.
+- Shears: 27\36. Compass: 4\5.
+
+---------------------------------------------------------------------
+RANGED WEAPONS
+---------------------------------------------------------------------
+BOWS (charge-dependent dmg; fire on release; craft = 3 material + 1 Cotton + 2 Sticks):
+- Wood: 37 dmg, 0.9s full charge | Stone: 45 | Iron: 57 | Gold: 62 | Diamond: 68
+
+CROSSBOWS (hold charge indefinitely, always same dmg; 1.15s charge):
+- Wood: 37 | Stone: 45 | Iron: 57 | Gold: 62 | Diamond: 68
+- (Wood/Stone/Gold/Diamond = 4 material + 1 Cotton + 2 Sticks + 2 Iron Bars; Iron = 6 Iron Bars + 1 Cotton + 2 Sticks)
+
+GUNS (obtainable ONLY via interactive boards / Code Blocks in worlds; damage = Head/Body/Leg):
+- AK-47: 30/20/16 (30 mag, 800rpm, 3.2s reload) | MP40: 21/14/11 | TAR-21: 54/36/28 (20 mag)
+- M1911: 33/22/17 (16 mag, starter) | Double Barrel: 150/100/80 (2 mag) | AWP: 122/70/56 (5 mag)
+- Deagle: 63/63/36 | VSR: 21/21/12 | FMR: 26/26/15 | Striker-12: 8/8/5 | SKAR: 57/57/33
+- DMR: 59/59/34 | Mini Izu: 22/22/13 | Block-19: 35/35/20 | GPMG: 24/42/42 (75 mag)
+- (Also exist: M16, Minigun — exact per-part values not fully documented.)
+
+THROWN / EXPLOSIVE:
+- Fireball (4 Magma + 1 Moonstone), Iceball (4 Ice + 1 Moonstone; freezes on hit): high damage.
+- Moonstone Explosive (1 Moonstone + 10 Sand = 4): can one-shot weakly-armored players.
+- Moonstone Orb (2 Moonstone + 2 Reinforced Pebble): throwable teleport; deals 15 self-damage per throw regardless of armor.
+- Pebbles (1 Stone each), Snowballs (4 Snow each): low ranged damage.
+[FILL IN: exact fireball/iceball/explosive damage numbers — not documented; add real values.]
+
+---------------------------------------------------------------------
+ARMOR — EACH PIECE (protection % shown; craft cost in material)
+---------------------------------------------------------------------
+IMPORTANT: The wiki notes these per-piece % values are PRE-UPDATE and may be
+OUTDATED — as of a recent update the player has a base 30% damage reduction and
+the armor system was rebalanced. Treat the % below as approximate/legacy.
+Full set = 28 of the material (Helmet 5 + Chestplate 8 + Leggings 7 + Boots 4 + Gauntlets 4).
+
+WOOD ARMOR (can be DYED with flowers into color variants for team differentiation):
+- Wood Helmet: 5.97% (5 Wood Planks)
+- Wood Chestplate: 11.98% (8)
+- Wood Leggings: 9.18% (7)
+- Wood Boots: 4.10% (4)
+- Wood Gauntlets: 4.80% (4)
+- Full set: 39.92% (28)
+
+IRON ARMOR:
+- Iron Helmet: 7.98% (5 Iron Bars)
+- Iron Chestplate: 17.16% (8)
+- Iron Leggings: 13.06% (7)
+- Iron Boots: 5.97% (4)
+- Iron Gauntlets: 6.63% (4)
+- Full set: 54.99% (28)
+
+GOLD ARMOR:
+- Gold Helmet: 9.43% (5 Gold Bars)
+- Gold Chestplate: 19.96% (8)
+- Gold Leggings: 14.88% (7)
+- Gold Boots: 7.98% (4)
+- Gold Gauntlets: 9.18% (4)
+- Full set: 66.04% (28)
+
+DIAMOND ARMOR:
+- Diamond Helmet: 11.98% (5 Diamonds)
+- Diamond Chestplate: 22.49% (8)
+- Diamond Leggings: 17.68% (7)
+- Diamond Boots: 9.18% (4)
+- Diamond Gauntlets: 9.43% (4)
+- Full set: 75.47% (28)
+
+SPECIAL ARMOR:
+- Fur Chestplate: 18% protection (same as iron chestplate) + reduces knockback. Craft = 8 Fur + 1 Iron Chestplate + 3 Knight Hearts.
+- Spiked Boots: same protection as iron boots + deals stomp damage when you land on players/mobs + walk faster on snow. Craft = 4 Fur + 1 Iron Spike.
+- Mining Helmet: gives light. Craft = 1 Torch + 1 Wood Helmet. [Protection TBA]
+- Military Armor (Helmet/Chestplate/Gauntlets/Leggings/Boots): UNOBTAINABLE in survival. [Protection values not documented.]
+- Moonstone armor: obtainable in "Jump to Get OP Items" mode and via code/Sky Islands.
+
+WOOD ARMOR COLOR VARIANTS (each of the 5 pieces exists in all 16 colors — same stats as base wood, cosmetic/team differentiation via flower dyeing):
+Colors: White, Orange, Magenta, Light Blue, Yellow, Lime, Pink, Gray, Light Gray, Cyan, Purple, Blue, Brown, Green, Red, Black.
+So: [Color] Wood Helmet / Chestplate / Leggings / Boots / Gauntlets — for all 16 colors above (80 total colored wood armor pieces).
+
+---------------------------------------------------------------------
+HANG GLIDERS (transport; better tier = longer/faster flight)
+---------------------------------------------------------------------
+- Wood Hang Glider: 6 Wood Planks + 4 Cotton
+- Iron Hang Glider: 4 Iron Bars + 4 Wood Planks + 4 Cotton
+- Gold Hang Glider: 4 Gold Bars + 4 Wood Planks + 4 Cotton
+- Diamond Hang Glider: 4 Diamonds + 4 Wood Planks + 4 Cotton
+
+[VERIFIED: Bloxd.io Fandom wiki Equipment & Armour pages, July 2026. Armor % marked
+as possibly-outdated per the wiki's own update notice.]
+
+
+=====================================================================
+SECTION 3 — ALL BLOCKS
+=====================================================================
+NOTE: Blocks make up the entire world and all gamemode maps. They sit in a 3D grid
+of 1m cubic cells. Some are solid/opaque (dirt, stone), others transparent/non-solid
+(glass, flowers, leaves). Explosions destroy some blocks easily and some are immune.
+Items/tools/armor/weapons are covered in SECTION 2 and are NOT repeated here.
+Verified from the official Bloxd.io Fandom wiki (Blocks, Natural Blocks, Stone Variants,
+Ores, Natural Soils pages), July 2026.
+
+Best mining tool legend: Spade = soft ground, Pickaxe = stone/ore, Axe = wood,
+Shears/Hoe = leaves/grass/plants. "Moonstone Pickaxe" drops the ORE/STONE block
+itself instead of the messy/mineral drop.
+
+---------------------------------------------------------------------
+NATURAL SOIL & GROUND BLOCKS
+---------------------------------------------------------------------
+- Grass Block (Spade) — surface of plains/forests. Shear it → turns to Dirt + drops a
+  Grass Block (renewable infinite grass/dirt). Hoe it → Tilled Soil.
+- Dirt (Spade) — 4 layers under any grass before stone. Craft: 2 Dirt → 1 Messy Dirt;
+  2 Dirt → 4 Dirt Slabs; Messy Stone + Dirt → Rocky Dirt.
+- Rocky Dirt (Spade) — natural in mountains/hills, or craft 1 Messy Stone + 1 Dirt.
+- Messy Dirt (crafted from 2 Dirt; reversible to 2 Dirt).
+- Sand (Spade) — deserts, riverbeds. Smelt → Glass; used for Sandstone, Bricks, bottles.
+- Red Sand (Spade) — badlands surface. Boosts cactus growth (+1 max height) & plant growth (+30%).
+- Snow (Spade) — snowy plains, mountain tops. Craft Snow + Ice → Ice Bricks.
+- Packed Snow (Spade) — frozen badlands. Crafted from 2 Snow.
+- Clay (Spade) — riverbeds. → Baked Clay (dyeable), Concrete, Bricks, decorative blocks.
+- Chalk (Spade/Pickaxe) — mined from rivers; dyeable at Artisan Bench.
+
+---------------------------------------------------------------------
+STONE & STONE VARIANTS (Pickaxe)
+---------------------------------------------------------------------
+- Stone — always 5 blocks under surface, and exposed on steep hills. Drops MESSY STONE
+  when mined with any pickaxe EXCEPT the Moonstone Pickaxe (which drops Stone itself).
+  Smelt 4 Messy Stone + 1 Coal in a Furnace → Stone.
+- Andesite (grayish-blue) — Andesite Pit biome. Drops itself. → Smooth/Engraved/Bricks.
+- Granite (brown) — Granite Valley biome. Drops itself. → Smooth/Engraved/Bricks.
+- Diorite (white w/ gray squares) — Diorite Cave biome. Drops itself. → Smooth/Engraved/Bricks.
+- Sandstone & Red Sandstone — crafted from Sand / Red Sand (NOT true stone; can't sub
+  for stone in recipes). Each → Smooth, Marked, Engraved versions.
+
+MESSY STONE COMPRESSION CHAIN (each = 9 of the previous, decorative/storage):
+Messy Stone → Compressed → Extra Compressed → Super Compressed → Hyper Compressed →
+Ultra Compressed → Mega Compressed Messy Stone.
+Other Messy Stone variants: Mossy Messy Stone (Messy Stone + grass/tall grass/cactus),
+Snowy Messy Stone (Messy Stone + snow), Carved Messy Stone (2 Messy Stone).
+
+Stone-family block breaking time (Stone, seconds): Fists 4.65 (no drop) | Wood Pick 1.00 |
+Stone Pick 0.66 | Iron Pick 0.40 | Gold Pick 0.34 | Golem Pick 0.28 | Diamond Pick 0.21.
+
+Ice (Pickaxe) — forms on top of water in snowy biomes. +1.4 walk speed on it. → Iceballs, Ice Bricks/Slabs.
+
+---------------------------------------------------------------------
+ORES (see SECTION 1B for full mining/XP detail; block facts here)
+---------------------------------------------------------------------
+Colors: Coal=black, Iron=beige, Gold=yellow, Diamond=cyan, Moonstone=bluish-white,
+Lunite=magenta on Yellowstone. Ores double as decorative blocks; Moonstone Pickaxe
+drops the ore block itself.
+- Coal Ore: y=60 down to y=-70 (best ~y=-45). Needs ≥ Wood Pickaxe.
+- Iron Ore: y=0 to y=-80 (rare to y=-94; best ~y=-62). Needs ≥ Stone Pickaxe. Drops Raw Iron → smelt w/ Coal → Iron Bar.
+- Gold Ore: y=-75 to y=-99 (deep caves). Needs ≥ Iron Pickaxe. Drops Raw Gold → smelt → Gold Bar.
+- Diamond Ore: y=-85 to y=-99 (best -90 to -92; also Diamond Mountains in Frozen Badlands, Skull/Lava Golem ruins). Needs ≥ Iron Pickaxe.
+- Moonstone Ore: y=-85 ONLY (also Skull/Lava Golem ruins). Needs ≥ Iron Pickaxe.
+UNUSED/CODE-ONLY ORES: Emerald Ore (Doodle Cube, Greenville), Lapis Lazuli Ore
+(Greenville/old Pirates map), Lunite (Build A Factory, y=-10000 on the Moon).
+Mineral blocks (Diamond Block, Iron Block, Apple Block, etc.) = 9 of an item at Artisan
+Bench; reversible with a Workbench.
+
+---------------------------------------------------------------------
+WOOD BLOCKS — LOG + LEAVES per tree (Axe for logs; Shears/Hoe for leaves)
+---------------------------------------------------------------------
+Each Log → 4 Planks of that type (planks used for tools/armor/utility blocks).
+Tree types (Log + Leaves each): Maple, Aspen, Plum, Pine, Cedar, Elm, Jungle, Palm,
+Mango, Pear, Cherry.
+FRUITY LEAVES (drop fruit when broken): Fruity Maple → Apples, Fruity Plum → Plums,
+Fruity Palm → Coconuts, Fruity Mango → Mangoes, Fruity Pear → Pears, Fruity Cherry →
+Cherries, Pine Cone Leaves → Pine Cones.
+Plain leaves drop saplings of their tree (Aspen→Aspen Sapling, etc.).
+DECORATIVE-ONLY LEAVES (non-renewable): Autumn Maple Leaves, Autumn Aspen Leaves,
+Fallen Cherry Leaves & Fallen Maple Leaves (slab-like, walk-through).
+
+---------------------------------------------------------------------
+PLANT / VEGETATION BLOCKS (Shears or Hoe)
+---------------------------------------------------------------------
+- Grass & Tall Grass — shear to drop, else vanish; chance of Wheat Seeds; dye items green.
+- Spectral Grass — frozen badlands version, same use.
+- Vines — climbable, grow upward (all forests).
+- Cactus — desert/badlands/canyons; grows to 3 tall on sand; farmable; sub for grass in recipes.
+- Fat Cactus — right-click w/ Bucket → fills Bucket + becomes Dried Cactus (reverts on sand).
+  Grows to 3 tall (4 on red sand). Also a weapon (see SECTION 2).
+- Watermelon (Axe) — chop → 4 Watermelon Slices (temp Jump Boost).
+- Melon (Axe) — chop → 4 Melon Slices (temp invisibility).
+- Pumpkin (Axe) — drops as a block; → Pumpkin Pie.
+- Wheat — farmed crop block.
+
+---------------------------------------------------------------------
+CRAFTED / DECORATIVE BLOCK FAMILIES
+---------------------------------------------------------------------
+- Glass — smelt 4 Sand → 4 Glass. Dyeable + Patterned Glass at Artisan Bench.
+- Baked Clay — from Clay; colorable.
+- Concrete — from Clay-family (colorable decorative).
+- Ceramic — crafted decorative block.
+- Bricks — from Artisan Bench (stone/sandstone/clay families all have brick versions).
+- Wool — from Sheep; dyeable at Artisan Bench.
+- Slabs — half-height versions of most block families (stone, smooth, brick, dirt, ice, wood).
+- Ice Bricks / Ice Slabs — Snow + Ice at Artisan Bench.
+Every stone-family & sandstone block generally has: Smooth, Bricks, Engraved/Marked,
+Slab, and Brick-Slab variants (craftable at Artisan Bench).
+
+---------------------------------------------------------------------
+SPECIAL / NON-STANDARD BLOCKS
+---------------------------------------------------------------------
+- Bedrock — y=-100 only. UNBREAKABLE except in Creative; immune to tools & explosives.
+- Cobweb — slows players inside. Not craftable; from Ruins, Sky Wars (natural), some glitches.
+- Water Block — rivers. Decoration, elevators, parkour, double-jumping. Not obtainable
+  normally (dev/bucket only).
+- Utility blocks (crafting/functional — full recipes in a later step): Workbench,
+  Artisan Bench, Furnace, Enchanting Tables (Wood/Stone/Iron/Gold/Diamond), Chests, Beds,
+  Ladders (Iron etc.), Spikes (Wood/Stone), Code Blocks, Protectors/Tribe Protectors.
+- Illegal / unobtainable blocks: Military-type & certain dev blocks; unused stones in
+  files (Green Stone, Block of Quartz, Yellowstone) — Minecraft-inspired, not in survival.
+
+[VERIFIED: Bloxd.io Fandom wiki — Blocks, Natural Blocks, Stone Variants, Ores,
+Natural Soils. July 2026. Spawn depths and breaking times as listed on the wiki.]
+
+
+=====================================================================
+SECTION 4 — BIOMES, STRUCTURES, GAMEMODES, CUSTOM GAMES & PLAYER SETTINGS
+=====================================================================
+Verified from the official Bloxd.io Fandom wiki (Biomes, Structures, Underground Ruins,
+Magma Golem, Settings, Worlds, Custom Games, Gamemodes pages), July 2026. Blocks/items
+are covered in SECTIONS 2 & 3; mobs in a later step.
+
+---------------------------------------------------------------------
+BIOMES (21 total)
+---------------------------------------------------------------------
+Biomes are distinct world areas; each offers different blocks/resources.
+
+GRASS-BASED (grass block surface; common: trees, grass, tall grass, flowers; rare:
+melons, watermelons, pumpkins, cotton, rice, forest mushrooms, corn. Structures:
+Mysterious Ruins (rare), Rivers (common), Lava Pools (uncommon), Great Maple Trees):
+- Plains — sparse maple trees; all grass-based resources except mushrooms.
+- Grassy Plains — plains variant, heavy grass/tall grass cover.
+- Meadows — plains variant, flower-covered; ONLY biome with Corn; extra Cotton.
+- Maple Forests — dense maple + occasional aspen/plum/pear (only one of the three);
+  no cotton/rice in forests, but fat mushrooms spawn.
+- Pear / Aspen / Plum Forests — forest of that tree type plus some maple.
+- Bluebell Forests — rare maple-forest variant; ONLY source of Bluebells (cover ground).
+- Autumn Forests — maple-forest variant; orange/yellow autumn leaves, fallen leaves, autumn ferns.
+- Cherry Blossom Forests — cherry trees + occasional maple/aspen; fallen cherry leaves; NO structures.
+
+SAND-BASED (flat, sand surface; resources: cactus, fat cactus, chili peppers (rare).
+Structures: Lava Pools, Rivers):
+- Deserts — standard sand-based biome.
+- Cactus Fields — rare desert variant, huge amount of cacti/fat cacti.
+- Red Deserts — rare desert variant with Red Sand surface.
+
+SNOW-BASED (trees + snow on ground; rivers get an Ice top layer):
+- Snowy Plains — plains-like, cranberry patches, snow ground, no grass, maple trees still spawn.
+- Snowy Pine / Cedar Forests — pine/cedar forest variants with snow surface.
+- Frozen Badlands — MOST DANGEROUS biome (also most rewarding). Packed Snow surface,
+  Snow instead of dirt. Structures: Graves, Skull Temples, large Ice Spikes (often
+  containing Diamond/Moonstone ore). Frozen undead mobs: Draugr Zombies, Frost Golems,
+  Frost Skeletons, Draugr Knights, + Spectral Wolf. Spectral Trees / Great Spectral Trees.
+
+OTHER FOREST BIOMES (unique, don't share traits):
+- Spectral Forest — packed with Spectral Trees (sometimes Great); occasional ruins.
+- Pine Forest — mostly Pine Trees, occasional Cedar.
+- Cedar Forest — mostly Cedar Trees.
+- Jungle — jungle trees.
+
+CAVE BIOMES (underground; see SECTION 3 for ores):
+- Stony Caves, Andesite Caves, Granite Caves (Granite Valley), Diorite Caves.
+
+---------------------------------------------------------------------
+STRUCTURES
+---------------------------------------------------------------------
+Structures = groups of blocks placed in an unnatural way (stone bricks, etc.), generated
+naturally in Open World gamemodes (Survival, Peaceful, Creative, Factions). Trees and
+caves are NOT structures. 5 core types + terrain features. Loot chest tiers:
+common → uncommon → rare → epic → legendary (higher = better loot).
+
+1. MYSTERIOUS RUINS (surface) — Plains & Forests (NOT Cherry Blossom). ~20 variations.
+   Built from Messy Stone / Compressed Messy Stone / Stone Brick variants; almost all
+   have Vines; bigger ones add Wood + Patterned Glass. Forms: castles, churches, walls,
+   statues, forts, colosseums. Loot: Food, smelted Ores, Tools/Armor, building materials
+   (Stone/Concrete/Ceramics) — from coal/bread up to tier-5 enchanted diamond gear,
+   bouncy bombs, spirit animals by chest tier. NO Diamonds/Moonstone/Diamond gear EXCEPT
+   secret chests. Some chests buried (bring a Spade). Spawners always hostile (Cave Golem,
+   Draugr Zombie, or Draugr Skeleton). Each ruin type has 1 hidden best-loot chest.
+
+2. LAVA POOLS (anywhere, above/underground; can be a straight "lavafall") — medium lava
+   pool; surrounding blocks replaced with Magma, Compressed Messy Stone, Stone. If there's
+   no magma/stone border or it's arranged neatly, it's likely player-made, not natural.
+
+3. JUNGLE RUINS (Jungle biome) — 3 variants: 1 chalk-brick type (chalk bricks, brown
+   mushrooms, stone spikes, cobwebs, dangling vine, diamond/coal ore, jungle blocks,
+   loot chest) + 2 waterfall types (straight w/ center loot chamber; corner w/ chamber chest).
+
+4. FROZEN RUINS (Frozen Badlands — best looting biome, 5–10 per biome) — 6 variations.
+   Built from Stone Slabs, Messy Stone, Spruce/Pine Planks, Spectral Log, Dirt, Spawners
+   (all hostile). Variants: gigantic Skull Temples, small graveyards, 2 hut types (spike-
+   trap hut w/ graveyard + 1 spawner; larger hut w/ 3 chests + 1 spawner); some spawn like
+   normal ruins. SKULL TEMPLE chests (normal AND secret): can contain Diamonds, Moonstone,
+   Diamond gear (Moonstone gear sometimes) — the high-value frozen loot.
+
+5. UNDERGROUND RUINS (caves; added Oct 2025) — walls always include Messy Stone (easy to
+   spot when near, though rare). Introduced Magma Golem & Draugr Huntress to Survival. Variants:
+   - MAGMA GOLEM RUIN — largest; hollowed cave w/ stone pillars, a ring/"donut" of Magma +
+     Lava w/ a center magma island. 4 Magma Golem Spawners. 4 chests (2 uncommon/rare around
+     the donut; 2 GUARANTEED EPIC, chance LEGENDARY on the island). Diamond & Moonstone Ore
+     at the bottom of the lava. Also spawns Draugr Zombies/Skeletons, Cave Golems (+ under a
+     frozen biome: Frost Golems/Zombies/Skeletons, Draugr Knights). Epic/legendary loot:
+     gold, diamonds, moonstone, epic/legendary-enchanted Fur Chestplates/Spiked Boots/gold &
+     diamond armor, Aura XP Potions I/II, Chaos Potions (rare), spirit animals (Gorilla/Bear/
+     Stag/Wolf/Golem — guaranteed in legendary chest), firecrackers, arrows, blocks, food.
+   - LARGE ARENAS — biggest arena; 2 spawners (Draugr Huntress/Skeleton/Zombie/Cave Golem),
+     smooth stone pillars, sunken middle. Draugr Banners spawn here. 2 chests epic/legendary.
+   - SMALL ARENAS — small sunken platform; 1 Draugr Huntress OR Cave Golem spawner + 2 chests.
+     Draugr Banners on walls.
+   - DUNGEONS (Large Dungeon) — Stone/Smooth Stone/Mossy Messy Stone/Andesite/Stone Bricks/
+     Cracked & Mossy Bricks + chests. Multiple spawner types. ONLY place to find the Draugr
+     Banner. 2 chests epic/legendary. One variant resembles Minecraft Trail Ruins.
+   - Also: Small Dungeon + standalone Spawner blocks generate underground/in caves.
+
+TERRAIN FEATURES (natural formations, not "structures"):
+- Rivers — common in grass/sand/snow biomes; snowy-biome rivers get an Ice top layer.
+- Ice Spikes — large spikes across Frozen Badlands; many contain ore (incl. Diamond/Moonstone).
+- Great Trees — uncommon oversized trees: Great Maple (grass biomes), Great Spectral
+  (Spectral Forest / Frozen Badlands).
+- Graves — small grave formations in Frozen Badlands (part of the Frozen Ruins family).
+
+FACTIONS PRESET STRUCTURES (utility, not random world-gen): Shop, Camps, Sand Mine, Wood Mill
+(like Greenville's work stations).
+
+[CAVEAT: the wiki's Structures page is flagged "under development," so newer structures may
+exist beyond these five core types.]
+
+---------------------------------------------------------------------
+ALL CURRENT GAMEMODES (specific, from the official gamemode navbox)
+---------------------------------------------------------------------
+Bloxd.io's main menu lists official developer-made gamemodes + player Custom Games.
+New modes launch in PAIRS; the one PLAYED MORE (not website-voted) survives; losers go
+to "Legacy Games". Full list:
+
+OPEN-WORLD / SANDBOX:
+- Worlds (script `classic`) — create your own custom lobby/game (see WORLDS section below).
+  Includes "My World" (your personal saved world).
+- Survival — core mode: gather, mine, craft, enchant, build, fight mobs, with a health bar.
+- Peaceful — Survival with infinite health / no health bar.
+- Creative — infinite blocks + flight; pure building.
+- One Block — start on a single infinitely-regenerating block; expand your world from it.
+- Plots — each player gets a plot of land to build on.
+- Factions — team/faction survival with raiding (vote-won originally, later removed from rotation).
+- Build a Factory (script `survivalFactory`) — automate a factory (Auto-Miners, Auto-Crafters,
+  Auto-Harvesters, pipes, wires, solar panels) to build & launch a rocket fastest. Classic
+  resets every 6h; Persistent never resets, lets you launch multiple rockets to reach the
+  MOON dimension and mine exclusive Lunite ore (5 machine/chunk limits).
+- Day & Night Survival — survival with a day/night threat cycle.
+- Survival with Guns — survival featuring the gun arsenal (SECTION 2 guns).
+- The Bloxd SMP — persistent survival-multiplayer community server.
+- Chunklock — world locked chunk-by-chunk; unlock new chunks to expand.
+
+PVP / COMBAT:
+- Bedwars — protect your bed, destroy enemy beds; modes: Solos, Duos, Trios, Squads, 4v4.
+- Skywars (Sky Wars) — spawn on a floating island, loot chests, knock others into the void.
+- Cube Warfare — gun/block combat; Free-For-All (FFA) and Teams variants.
+- 1v1 Fights — duel modes: Sword Fight, Build Fight, Bridge Fight, Bed Fight.
+- Clutch — PvP mode focused on clutch/bridging skill.
+- Pirates — pirate-themed PvP/adventure with ships.
+
+SURVIVAL-CHALLENGE / WAVE / TEAM-DEFENSE:
+- Last Stand — survive escalating enemy waves.
+- 99 Nights — survive 99 in-game nights of threats.
+- Infection — infected players hunt survivors; tagged survivors join the infected.
+- Core Defenders — defend a central core from waves.
+- Containment Breach — contain/escape a breach scenario.
+- Frontline — team-based frontline combat.
+
+CASUAL / PARTY / MINIGAME:
+- Greenville — town/roleplay mode; sub-games: Isle of Grove, Spleef.
+- Doodle Cube — creative/drawing-block minigame.
+- Murder Mystery — hidden murderer vs innocents vs sheriff social-deduction rounds.
+- Hide and Seek — hiders vs seekers.
+- Lucky Blocks Battlegrounds — break lucky blocks for random items, then fight.
+- Lucky Towers — climb/fight up tower floors using lucky blocks.
+- Fishing — relaxed fishing/collection mode.
+- Evil Tower — vertical parkour/escape tower challenge.
+- Tsunami Steal Brainrots — steal "brainrot" statues while surviving tsunamis.
+- Sky Islands — build/progress on floating islands.
+- Eat To Grow — grow by eating.
+- Backrooms — liminal-space survival/exploration.
+
+CUSTOM GAMES — player-published games (its own section below).
+
+GAMEMODE VOTING: new modes launch in pairs; the more-played one stays. Limited-time modes
+added WITHOUT voting: The Bloxd SMP, Survival with Guns, Day & Night Survival, Build a
+Factory, Chunklock. LEGACY / REMOVED (some survive as Worlds map types): One Block Wide &
+Sky Grid (now Worlds map types), Bingo, Bridge Battle, Dress Up, DimensionZ, Rocket Spleef,
+Rocket Obby, Natural Disaster, Anarchy, Prison, Walls, Duels, The Pit, Minigames, etc.
+
+---------------------------------------------------------------------
+WORLDS (custom lobbies) & WORLDS GAME MODES
+---------------------------------------------------------------------
+"Worlds" = the system for player-created custom lobbies (public/unlisted/private). NOT
+the same as the (removed) old "Worlds" gamemode. Owners get moderation + build tools.
+
+WORLD LOBBY SETUP OPTIONS:
+- General: Name (unique, CANNOT be renamed later), Visibility (Public/Unlisted/Private),
+  Default Gamemode.
+- Public-only display: Description, Colour, Emojis (up to 3) — shown on the browser card.
+- Map Type: Default (infinite biomes), Flat (grass/4 dirt/stone/bedrock), One Block Wide,
+  Sky Grid (random blocks 3 apart in all directions).
+- Advanced: Disable Protectors, Disable Teleport Requests, Disable Tribe Creations,
+  Void Death Height (must be ≤ -100; default -10000; 0 = disabled), Disable Lobby Spawn,
+  World Border (radius; can be infinite/off), Disable Fall Damage, Disable Mobs, Set Warp.
+
+WORLDS GAME MODES (owner sets default or per-player; only inside Worlds):
+- Survival (default; "s"/"0") — health bar, can take damage.
+- SurvivalAdventure — Survival but can't mine/place; can still use doors, beds, benches,
+  furnaces, salvaging/enchanting tables, chests, mobs/players, interactive boards, code
+  blocks, checkpoints.
+- Hardcore / Lifesteal — Hardcore: die = no respawn. Lifesteal: respawn w/ less max HP;
+  banned if max HP hits 0. Configure via /hardcore.
+- Peaceful ("p"/"2") — like Survival but infinite health (no health bar).
+- PeacefulAdventure ("pa"/"4") — SurvivalAdventure + infinite health.
+- Creative ("c"/"1") — infinite blocks + flight.
+- Spectator ("sp"/"5") — fly, can't build/interact, invisible to others.
+- None — REMOVED.
+
+FALL DAMAGE RULE (when enabled): damage starts above 5 blocks fallen = 4 HP per extra
+block; death at 30+ blocks. Only in modes with a health bar.
+
+SPAWN PROTECTION at true spawn (0,0): can't place Protectors within 192-block radius;
+a 21(X) × 20000(Y) × 21(Z) area around true spawn blocks breaking / Moonstone Explosives
+(water/lava buckets still work).
+
+WORLDBUILDER (mass block editing) commands: //help, //pos1, //pos2, //copy, //paste,
+//set [block], //replace [a] [b], //schematic save/load/list, //worldexport, //wand, //clear.
+OWNER COMMANDS: /gamemode, /gm [user] [mode], /setspawn, /togglelock, /toggleopen,
+/kick, /kickall, /ban, /unban, /desc, /toggle [tp requests|Protectors|Tribe Creation|
+Lobby Spawn|Keep Inventory].
+
+---------------------------------------------------------------------
+CUSTOM GAMES (the concept)
+---------------------------------------------------------------------
+Custom Games = games published by players (added May 1, 2025; developer: Oliver;
+script `customGames`). Built in a Worlds lobby and submitted via `//schematic list`
+(owner/co-owner) or "Export as Custom Game" / `//exportworld`.
+CATEGORIES: Minigames, PvP, Simulator, Parkour Obby, Modded Survival, PvE — each carries
+its category tag plus the common "Player Crafted" tag. Main menu shows the 8 most-active
+games per category; the rest are behind the category arrow. Uncategorized ones live under
+the general "custom games" list. Owners can toggle Spawn Protection, Fall Damage, World
+Borders, and (since Apr 2026) upload custom thumbnails.
+
+---------------------------------------------------------------------
+PLAYER SETTINGS (full menu — open with [O], Esc, or the gear icon)
+---------------------------------------------------------------------
+GENERAL:
+- Language: 20 options — Arabic, German, Dutch, English, Spanish, French, Hindi,
+  Indonesian, Italian, Japanese, Portuguese, Brazilian Portuguese, Russian, Tamil,
+  Turkish, Vietnamese, Simplified Chinese, Traditional Chinese, Polish, Ukrainian.
+- Music Volume (default 50, range 0–100).
+- Sound Effects Volume (default 50, range 0–100).
+- Disable Full Screen Mode (Safari fullscreen can trigger a data-warning).
+- Show Coordinates.
+- Show Chunk Coordinates (chunks = 32×32×32).
+- Show FPS.
+- Disable Bunny Hopping (bunny hop = brief speed boost on landing).
+- Show Chat (chat is the main comms + game-info channel; hiding it loses info).
+
+GRAPHICS:
+- Chunk Load Distance — Horizontal (default 2, range 2–10), Vertical (default 2, range 2–3).
+- Lighting — toggle the Lighting System (added Apr 7 2026).
+- Fog — off by default; enhances look but cuts visibility; requires page reload to toggle.
+- Disable Block Texture Atlas — enable if blocks render all black; DISABLES texture packs
+  but reduces lag.
+- Field Of View — low = magnified/narrow, high = wide but edge distortion.
+- Anti-aliasing — reduces jagged edges; requires page reload.
+- Pixel Scale — 1 (normal) to 8 (retro/blurry).
+- Pixel Smoothing — softens individual pixels.
+
+CONTROLS:
+- Crouch Toggle — hold vs. toggle crouch.
+- Mouse Sensitivity — camera speed.
+- List of Controls — full remappable key/action list.
+REMOVED CONTROLS (historical): Reduce Lag, Enable Lighting.
+
+---------------------------------------------------------------------
+TEXTURE PACKS
+---------------------------------------------------------------------
+- Bloxd.io supports custom Texture Packs (Settings → Texture Pack section).
+- Texture packs will NOT load if "Disable Block Texture Atlas" is enabled.
+
+[VERIFIED: Bloxd.io Fandom wiki — Biomes (21), Structures, Underground Ruins, Magma Golem,
+Settings, Worlds, Custom Games, Gamemodes + navbox + voting history. July 2026.]
+
+
+=====================================================================
+SECTION 5 — MOBS & ITEMS
+=====================================================================
+Verified from the official Bloxd.io Fandom wiki (Mobs, Draugr Zombie, Magma Golem,
+Potions, Food, Entities pages), July 2026. Tools/weapons/armor = SECTION 2; blocks =
+SECTION 3. This section = mobs + consumable/misc items (potions, food, projectiles).
+NOTE: the wiki says "28 mobs" but only fully stats the ones below; damage values are
+vs an UNARMORED player. Aura XP shown is levels gained on kill.
+
+=====================================================================
+PART A — MOBS
+=====================================================================
+SPAWNING: naturally in biomes, OR via Code Blocks, Mob Spawn Orbs (Creative/Plots/Worlds;
+spawn orb exists for every mob EXCEPT Iron Golem; max 5 mobs per chunk), OR Mob Spawner
+Blocks (added Apr 17 2025; 1–3 hostile spawners per Ruins/Underground Ruins; drop
+themselves only to a Moonstone Pickaxe, else give XP).
+BEHAVIOR TYPES: Passive (never attack, flee when hit) / Neutral (attack only if attacked)
+/ Hostile (always attack nearby players; can hit through walls).
+
+--- PASSIVE MOBS (HP | drops | Aura XP | spawns) ---
+- Pig: 75 HP | Raw Porkchop | 0.2 | Plains, Forests, Pine Forest, Cherry Forest, Meadows.
+- Cow: 100 HP | Raw Beef, Leather | 0.2 | Plains, Maple Forests, Meadows. Milk w/ Glass Bottle.
+- Sheep: 60 HP | Raw Mutton, White Wool | 0.2 | Forests. Shear (w/o killing) for wool.
+- Deer: 50 HP | Raw Venison | 0.2 | Pine Forest. Weakest mob.
+- Horse: 112 HP | none | Plains, Autumn Forests. TAMEABLE (Apple/Wheat) + rideable w/
+  Saddle (big speed boost). Doesn't despawn.
+
+--- HOSTILE MOBS (HP | damage no-armor | drops | Aura XP | spawns) ---
+- Cave Golem: 200 HP | 45 melee | Mossy Messy Stone, Golem Eye | 0.5 | Caves.
+- Draugr Zombie: 150 HP | 30 melee | Rotten Flesh (100%), Rotten Brain (20%), Raw Potato
+  (6.67%), Carrot (4%), Wheat Seeds (1%), Iron Bar (1%), Bucket (1%), Gold Bar (0.5%) |
+  0.4 (XP 40) | Caves below y=0 (groups 3–6). Attacks from 2 blocks; outrunnable; won't
+  walk off ledges/into liquid. 11 skin variants. Speeds: walk 3.15 / run 3.64, hostility
+  radius 16, attack interval 1000ms. Armor-dmg table: none 30 / wood 18 / iron 14 / gold
+  10 / diamond 7.
+- Draugr Skeleton: 150 HP | 15 (stone bow) | Bone, Arrow, Stone Bow | 0.3 | Caves.
+- Frost Golem: 200 HP | 45 + 3s Slowness | Snowy Messy Stone, Golem Eye | 0.5 | Frozen Badlands.
+- Frost Zombie: 150 HP | 30 + 3s Slowness | same drops as Draugr Zombie | 0.4 | Frozen Badlands.
+- Frost Skeleton: 150 HP | 15 + 3s Slowness (arrows of slowness) | Bone, Arrow of Slowness,
+  Stone Bow | 0.2 | Frozen Badlands.
+- Draugr Knight: 250 HP | 55 + 9.2-block knockback (Knight Sword) | Knight Heart | 0.75 |
+  Frozen Badlands. Strong knockback, jumps up to 4 blocks.
+- Stag: 120 HP | 25 melee | Raw Venison, Antlers | Pine/Autumn Forest.
+- Bear: 150 HP | 40 melee | Fur | 0.4 | Pine Forest.
+- Gold Watermelon Stag: 300 HP | 25 + 5s Jump Boost | Gold Fragment, Gold Watermelon Slice,
+  Gold Antlers | 1.0 | Pine Forest. Very rare stag variant.
+- Gorilla: 180 HP | 30 melee / 4 thrown mango | Banana, Mango | 0.4 | Jungle. Double-jumps.
+- Magma Golem: 180 HP | 53 (fireballs + melee) | Fireball (2–4), Magma (5–10), Golem Eye (1)
+  — all 100% | 0.8 | Underground Ruins. Throws fireballs from ~20 blocks (5–10s cd), keeps
+  ~7 blocks distance, melee once/5s. Armor-dmg: none 20 / wood 12 / iron 9 / gold 7 / diamond 5.
+- Draugr Huntress: 80 HP | 14 (gives Weakness) | Rotten Flesh, Rotten Brain, Beetroot, Potato |
+  0.45 | Underground Ruins.
+- Iron Golem: HP/damage unknown | Mossy Messy Stone, Golem Eyes | ONLY in Last Stand &
+  Core Defenders (via Mob Catchers); no spawn orb.
+- Also exist (newer/less-documented): Draugr Warper, Draugr Reaver, Frost Wraith, Stalker,
+  Crone, Corrupted Golem, Camel, Watermelon Stag.
+
+--- NEUTRAL MOBS ---
+- Wolf — tameable pet; attacks if provoked.
+- Wildcat — tameable pet; attacks if provoked.
+- Slime — bounces; splits/attacks if provoked.
+- SPIRIT MOBS (from loot chests / spirit items; pet-like companions): Spirit Golem,
+  Spirit Wolf, Spirit Stag, Spirit Bear, Spirit Gorilla.
+
+--- NPCs (non-combat, gamemode-specific) ---
+Shopkeeper, Maverick, Draugr Survivor, Bling Bling, Fred, Gill, Stinky, Commander Soap,
+Lorenzo, Spencer, The Collector — shop/quest/story NPCs in specific modes. Bots = AI players.
+
+TAMING: some mobs (Horse w/ Apple/Wheat + Saddle; Wolf/Wildcat) can be tamed into pets.
+A Pet Catcher / Mob Catcher captures mobs.
+
+=====================================================================
+PART B — ITEMS (potions, food, projectiles/misc — NOT tools/weapons/armor/blocks)
+=====================================================================
+
+--- POTIONS ---
+Brewed at a POTION TABLE (craft: 4 Wood Planks + 2 Glass, or break w/ any Axe; no hitbox).
+Base = Water Bottle + 1 ingredient. Water Bottle = right-click Fat Cactus or water w/ an
+Empty Bottle (Bottle = 3 Glass + 1 Coal in Furnace/Potion Table). Max stack: 1.
+SPLASH POTIONS: 2 of a potion → thrown version (effect on landing, shorter duration, no
+bottle back). UPGRADE to "II": Strength/Defense/Speed use MOONSTONE; all others use IRON
+BAR. Cannot upgrade: Milk, Chaos, Brain Rot, Double Jump, Knockback, X-Ray Vision.
+ARROWS W/ EFFECTS: 1 non-upgraded potion + 3 Arrows → 3 effect-arrows (can't be "II").
+
+Potion → ingredient → effect:
+- Strength ← Plum → Damage boost
+- Defense ← Pear → damage reduction
+- Speed ← Cracked Coconut → speed
+- Jump ← Watermelon Slice → jump boost
+- Invisibility ← Melon Slice → invisible (12s; splash 8s)
+- Haste ← Full Bowl of Cranberries → mining speed
+- Regeneration ← Cherry + Melon Slice → heal over time
+- Instant Healing ← Apple + Watermelon Slice → instant heal
+- Instant Damage ← Cactus + Pumpkin Pie → instant damage
+- Weakness ← Pumpkin → weaken
+- Poison ← Cactus → poison
+- Slowness ← Bread + Poppy → slow
+- Heat Resistance ← Chili Pepper
+- Shield ← Corn
+- X-Ray Vision ← Carrot
+- Double Jump ← Banana
+- Knockback ← Mango
+- Mining Yield ← Beetroot
+- Brain Rot ← Rotten Brain (affects ALL mobs, even zombies)
+- Milk ← from Cow w/ bottle (cures effects); Chaos Potion (rare, from loot)
+
+--- FOOD (eat time | HP/effect | source | stackable) ---
+- Apple: 0.75s | +12 HP | Fruity Maple Leaves | yes
+- Bread: 0.95s | +24 HP | 3 Wheat | yes
+- Cornbread: 0.95s | +24 HP + 20 shield | UNOBTAINABLE now (was 2 Bread + 2 Corn)
+- Bowl of Rice: 0.45s | +26 HP | 6 Rice + 1 Bowl | no
+- Mushroom Soup: 0.45s | +15 HP (+55 if HP<50) | 2 Brown + 2 Red Mushroom + Bowl | no
+- Raw Porkchop: 1s | +25 HP + Poison 4s | kill Pig | yes  → Cooked Porkchop: +25 HP (smelt)
+- Raw Beef: 1.25s | +28 HP + Poison 4s | kill Cow | yes  → Steak: +28 HP (smelt)
+- Raw Mutton: 0.75s | +20 HP + Poison 4s | kill Sheep | yes → Cooked Mutton: +20 HP
+- Raw Venison: 1s | +16 HP + Poison 4s | kill Stag/Deer | yes → Cooked Venison: +16 HP
+- Plum: 1s | Damage I (8s) | Fruity Plum Leaves | yes
+- Pumpkin Pie: 3s | Damage I (16s) | Pumpkin + 3 Wheat | yes
+- Pear: 1s | Damage Reduction I (13s) | Fruity Pear Leaves | yes
+- Banana: 1s | Double Jump | Gorilla drop / banana seeds | yes
+- Corn: 1s | 20 HP shield | Corn Seeds / Meadow | yes
+- Bowl of Cranberries: 1s | eaten 4×, +10 HP each | cranberry bush + bowl | no
+- Watermelon Slice: 0.55s | Jump Boost (12s) | Forests / Watermelon Seeds | yes
+- Melon Slice: 0.75s | Invisible (12s) | Forests / Melon Seeds | yes
+- Gold Watermelon Slice: 2s | Jump Boost (18s) | 2 Watermelon Slice + Gold Bar | yes
+- Gold Melon Slice: 2s | Invisible (18s) | 2 Melon Slice + Gold Bar | yes
+- Cherry: 0.75s | Health Regen (5s) | Fruity Cherry Leaves | yes
+- Chili Pepper: 0.75s | Heat Resistance (30s) | Chili Plants | yes
+- Cracked Coconut: 0.75s | Speed (8s) | Fruity Palm Leaves | yes
+- Carrot: 0.8s | X-Ray Vision (30s) | Carrot Plants / zombie drop / Ruins | yes
+- Raw Potato: 1.15s | Poison (5s) | Potato Plants / zombie drop / Ruins | yes
+FOOD BLOCKS: fruits/veg/bread → storage blocks (only space-saving past 999). Rice/cranberry/
+mushroom soup bowls DON'T stack. Eating has a cast time (no more "bread spamming" since Nov 2023).
+
+--- PROJECTILES & MISC ITEMS (non-block, non-tool) ---
+- Fireball — floats infinitely one direction; damage + big knockback; slowed by water.
+- Iceball — like fireball but applies Frozen effect.
+- Moonstone Explosive (entity) — explodes 3.5s after placing.
+- Moonstone Orb — throwable teleport (15 self-damage per throw; SECTION 2).
+- Arrows — normal + effect-arrows (see potions). Pebbles, Snowballs — cheap thrown.
+- Boat / Obsidian Boat — right-click to ride on water (faster).
+- Bucket — carry water/lava/milk. Empty Bottle / Water Bottle — potion base.
+- Saddle — ride tamed Horse. Golem Eye — mob drop (crafting, e.g. Golem Pickaxe).
+- Rotten Flesh / Rotten Brain — zombie drops (Brain Rot potion). Bone — skeleton drop.
+- Leather — cow drop. Fur — bear drop (Fur armor). Knight Heart — Draugr Knight drop
+  (Knight Sword/Fur Chestplate). Antlers / Gold Antlers / Gold Fragment — stag drops.
+- Firecrackers / Firecracker Pebbles, Bouncy Bombs — loot-chest items. Spirit Animals —
+  loot-chest companions (see mobs).
+
+[VERIFIED: Bloxd.io Fandom wiki — Mobs, Draugr Zombie, Magma Golem, Potions, Food, Entities.
+July 2026. Mob page flagged needing an update (newer mobs Stalker/Crone/etc. less documented).]
+
+=====================================================================
+SECTION 6 — CODING (BLOXD WORLD CODE, CODE BLOCKS & THE api.* OBJECT)
+=====================================================================
+This is the section for writing Bloxd code (the "Orbit" domain). Verified from the
+official Bloxd.io docs (bloxd.io/docs), the Bloxd Fandom "Code Block"/"JavaScript API
+Functions" pages, and the official code-api GitHub. July 2026.
+CRITICAL: Every function lives on the `api.` object. NEVER invent functions like
+`inventory.addItem` or `getPlayerPosition` — they do not exist. Only use verified names.
+
+---------------------------------------------------------------------
+THE THREE WAYS TO RUN CODE
+---------------------------------------------------------------------
+- WORLD CODE — main game logic. Press F8 (world owners only). Runs on CALLBACK EVENTS
+  (onPlayerJoin, tick, etc.). Supports ALL callbacks. 16,000 char limit. myId = null,
+  thisPos = null (no clicker/position context).
+- CODE BLOCKS — physical blocks from the creative menu. Right-click to edit. Run when
+  clicked or triggered by an adjacent "Press to Code" board. CANNOT use callbacks.
+  16,000 chars each. myId = the player who clicked; thisPos = the block's [x,y,z].
+- CODE BOARDS — a sign whose text starts with "press to code"; runs JS on right-click.
+  Tiny space (~96 chars / 16×6). Use Code Blocks for anything longer.
+
+---------------------------------------------------------------------
+THE CODE ENVIRONMENT (QuickJS) — HARD CONSTRAINTS
+---------------------------------------------------------------------
+Bloxd runs code in QuickJS, a limited JS engine. This means:
+- NO async/await — QuickJS is synchronous only. Cannot use async functions.
+- NO setTimeout, setInterval, Promises, window, document, fetch, or browser APIs.
+- For timing/delays: use the `tick` callback + `api.now()` (ms timestamp) to track
+  elapsed time. Store per-player state in GLOBAL variables (declared with `var`, or
+  assigned without a keyword) so it persists across ticks.
+- AVOID `let`/`const`/`var` in GLOBAL scope (outside a function) — it can break the script.
+  Either wrap code in a function `(() => { ... })()`, or assign globals WITHOUT a keyword.
+- Code runs in ISOLATION per Code Block and RESETS each run — no saved state unless you
+  use a global (`var` globals are shared across World Code, Code Blocks & Boards).
+- Comments work: `// line` and `/* block */`. Debug with `api.log("x")` or `console.log("x")`.
+- Standard JS (Math, arrays, objects, for/while, destructuring, arrow funcs) all work.
+
+---------------------------------------------------------------------
+GLOBAL VARIABLES (auto-available)
+---------------------------------------------------------------------
+- myId / playerId — player ID of whoever triggered the code (null in World Code). Also
+  works as entityId (players AND mobs share the entityId concept).
+- thisPos — [x, y, z] of the Code Block/Board running (null in World Code).
+- api — the global object holding ALL API methods.
+
+---------------------------------------------------------------------
+THE api.* FUNCTION LIST (verified signatures — the anti-hallucination core)
+---------------------------------------------------------------------
+POSITION / MOVEMENT / PLAYER ACTIONS:
+- api.getPosition(entityId) → returns an ARRAY [x, y, z] (NOT an object). Use:
+    let [x, y, z] = api.getPosition(id)
+- api.setPosition(entityId, x, y, z)
+- api.setVelocity(playerId, x, y, z)
+- api.applyImpulse(playerId, x, y, z)
+- api.setCameraDirection(playerId, [x, y, z])
+- api.forceRespawn(playerId)
+- api.setPlayerPose(playerId, "zombie")   // e.g. "driving"
+- api.setPlayerOpacity(playerId, value)
+- api.kickPlayer(playerId, "reason")
+- api.setClientOption(playerId, "airJumpCount", 3)  // extra jumps (n-uple jump = n-1)
+- api.setClientOption(playerId, "music", SONG_NAME) // per-player music
+
+PLAYER INFO / QUERY:
+- api.getPlayerIds()  // array of all player IDs (arg like 999 = optional cap)
+- api.getNumPlayers()
+- api.playerIsInGame(playerId)
+- api.getEntityName(entityId)
+- api.getBlockCoordinatesPlayerStandingOn(playerId)
+- api.getBlockTypesPlayerStandingOn(playerId)
+
+HEALTH & COMBAT:
+- api.getHealth(entityId)
+- api.setHealth(entityId, value)
+- api.applyHealthChange(entityId, delta)   // NEGATIVE = damage, POSITIVE = heal
+- api.killLifeform(entityId)
+- api.isAlive(lifeformId)
+- api.getCurrentKillstreak(playerId) / api.clearKillstreak(playerId)
+- api.applyEffect(id, "EffectName", durationMs, {inbuiltLevel: 1})
+    // e.g. api.applyEffect(pid, "Frozen", 5000, {inbuiltLevel:1})
+    // duration can be null for effects like "Damage" with {inbuiltLevel:2}
+
+INVENTORY & ITEMS:
+- api.giveItem(playerId, "ItemName", amount)   // e.g. api.giveItem(id, "Diamond", 1)
+    // 4th arg = options: {customDisplayName, customAttributes:{enchantments:{...},
+    //   enchantmentTier:"Tier 5"}}
+- api.removeItemName(playerId, "ItemName", amount)
+- api.getHeldItem(playerId)
+- api.setItemSlot(playerId, slotIndex, "ItemName")
+- api.clearInventory(playerId)
+NOTE: item names are EXACT strings, singular ("Gold Coin" NOT "Gold Coins"). Full item
+list from source: github.com/Quentin-X/filehosting/blob/main/blocks.js.
+
+BLOCKS:
+- api.setBlock(x, y, z, "BlockName")   // e.g. "Block of Gold", "Stone"
+- api.getBlock(x, y, z)
+- api.setBlockRect(pos1, pos2, "BlockName")
+
+MESSAGING (⚠ wiki notes the chat system is currently buggy/unreliable):
+- api.sendMessage(playerId, "text", { color: "cyan" })   // to one player
+- api.broadcastMessage("text", { color: "red" })          // to global chat
+- api.sendFlyingMiddleMessage(playerId, ["text"], 120)
+- api.sendTopRightHelper(playerId, "star", "text", {color:"yellow", duration:9, ...})
+- COLOR NOTE: "green" renders dark — use "lime" instead.
+
+ENTITIES / MOBS:
+- api.attemptSpawnMob("MobName", x, y, z, {options})  // returns a mobId
+    // options: {name, variation, playSoundOnSpawn}
+    // e.g. api.attemptSpawnMob("Cave Golem", x,y,z, {name:"Iron Golem", variation:"iron"})
+    // Sheep colors: default,black,red,orange,pink,purple,yellow,blue,brown,cyan,gray,
+    //   green,lightBlue,lightGray,lime,magenta
+- api.animateEntity(entityId, animationSchema, initialTimeFraction, animationSpeed)
+- api.addFollowingEntityToPlayer(playerId, eId, [0,0,0], followsPlayerRotation)
+- api.checkValid(entityId)   // validity check
+
+CHEST & CRAFTING:
+- api.getStandardChestItems([x, y, z])
+- api.setStandardChestItemSlot([x, y, z], slot, "ItemName")
+- api.editItemCraftingRecipes(playerId, "ItemName", [...])
+- api.resetItemCraftingRecipes(playerId, "ItemName")
+
+APPEARANCE / MESH:
+- api.changePlayerIntoSkin(myId, "head", "SkinName")  // e.g. "farmer","Wizard","Zombie"
+- api.scalePlayerMeshNodes(id, {NodeName:[x,y,z], ...})
+- api.updateEntityNodeMeshAttachment(id, "NodeName", "BloxdBlock",
+    {blockName, size, meshOffset:[0,0,0]}, [pos], [rot])
+    // mesh nodes: TorsoNode, HeadMesh, ArmRightMesh, ArmLeftMesh, LegLeftMesh, LegRightMesh
+- api.setTargetedPlayerSettingForEveryone(id, "nameTagInfo", {...}, true)
+
+UI & VISUALS:
+- api.playParticleEffect({dir1, dir2, pos1, pos2, texture, minLifeTime, maxLifeTime,
+    minEmitPower, maxEmitPower, minSize, maxSize, manualEmitCount, gravity, colorGradients,
+    velocityGradients, blendMode})
+    // textures: bubble, critical_hit, drift, effect_5, generic_2, glint, heart, soul_0,
+    //   square_particle
+- api.progressBarUpdate(playerId, fraction, ms)
+- api.showShopTutorial(playerId)
+- api.createShopItem(category, key, {image, customTitle, description, buyButtonText,
+    canBuy, sortPriority, onBoughtMessage})
+- api.addQTE(playerId, {type:"progressBar"|"precisionBar", parameters:{...}}) → QTERequestId
+    // progressBar params: progressStartValue, progressDecreasePerTick, progressPerClick,
+    //   canFail, description:[{str}], clickIcon, scale, rotation. Handle via onPlayerFinishQTE.
+- api.addCustomKillfeedMessage(killer, victim, "withItem")
+
+UTILITIES / DEBUG:
+- api.log("msg")   // or console.log("msg")
+- api.now()        // ms timestamp (use INSTEAD of Date.now-based timers/setTimeout)
+
+(The full api object is large; official README: github.com/Bloxdy/code-api/blob/main/README.md.
+The in-editor "Show Docs" button lists more. Community docs at bloxdhub.com/bloxd-api cover
+~45-50%. If a function isn't verified here or in those sources, DO NOT invent it.)
+
+---------------------------------------------------------------------
+CALLBACKS (World Code only — 64 total; assign or define, DON'T prefix with api.)
+---------------------------------------------------------------------
+Callbacks are functions YOU define/assign; the engine calls them. Two valid forms:
+    function onPlayerJoin(id) { ... }
+    onPlayerJoin = (id) => { ... }
+NEVER call a callback yourself and NEVER write api.onPlayerJoin. World Code re-runs when
+it's updated or when the lobby comes back online.
+
+Full callback list (64):
+tick, onClose, onPlayerJoin, onPlayerLeave, onPlayerJump, onRespawnRequest, playerCommand,
+onPlayerChat, onPlayerChangeBlock, onPlayerDropItem, onPlayerPickedUpItem,
+onPlayerSelectInventorySlot, onBlockStand, onPlayerAttemptCraft, onPlayerCraft,
+onPlayerAttemptOpenChest, onPlayerOpenedChest, onPlayerMoveItemOutOfInventory,
+onPlayerMoveInvenItem, onPlayerMoveItemIntoIdxs, onPlayerSwapInvenSlots,
+onPlayerMoveInvenItemWithAmt, onPlayerAttemptAltAction, onPlayerAltAction, onPlayerClick,
+onPlayerClickUp, onClientOptionUpdated, onMobSettingUpdated, onInventoryUpdated,
+onChestUpdated, onWorldChangeBlock, onCreateBloxdMeshEntity, onEntityCollision,
+onPlayerAttemptSpawnMob, onWorldAttemptSpawnMob, onPlayerSpawnMob, onWorldSpawnMob,
+onWorldAttemptDespawnMob, onMobDespawned, onPlayerAttack, onPlayerDamagingOtherPlayer,
+onPlayerDamagingMob, onMobDamagingPlayer, onMobDamagingOtherMob, onAttemptKillPlayer,
+onPlayerKilledOtherPlayer, onMobKilledPlayer, onPlayerKilledMob, onMobKilledOtherMob,
+onPlayerPotionEffect, onPlayerDamagingMeshEntity, onPlayerBreakMeshEntity,
+onPlayerUsedThrowable, onPlayerThrowableHitTerrain, onTouchscreenActionButton,
+onTaskClaimed, onChunkLoaded, onPlayerRequestChunk, onItemDropCreated,
+onPlayerStartChargingItem, onPlayerFinishChargingItem, onPlayerFinishQTE,
+onPlayerBoughtShopItem, doPeriodicSave.
+
+KEY CALLBACK SIGNATURES (verified):
+- tick — NO parameters. Runs repeatedly. Do timing here with api.now(); iterate players
+  via api.getPlayerIds(). Do NOT assume tick = 1/second or that playerId exists in it.
+- onPlayerJoin(id) — one param: the joining player's id. (A second param exists on some
+  versions; official docs use fromGameReset, NOT "fromSameServer".)
+- onBlockStand(id, x, y, z, blockName) — fires when a player stands on a block.
+- onPlayerDamagingOtherPlayer(damagedId, pid, damage, weaponName) — pid = attacker.
+- onPlayerDamagingMob(damagedId, pid, damage, weaponName)
+- onPlayerKilledOtherPlayer(a, b, c, d) — a = killer id (use to reward the killer).
+
+---------------------------------------------------------------------
+VERIFIED WORKING EXAMPLES (safe patterns to imitate)
+---------------------------------------------------------------------
+// Welcome message on join
+function onPlayerJoin(id) {
+  api.sendTopRightHelper(id, "star", "WELCOME!", {color:"yellow", duration:9})
+}
+
+// Trampoline block
+onBlockStand = (id, x, y, z, blockName) => {
+  if (blockName === "Red Chalk") { api.setVelocity(id, 0, 20, 0) }
+}
+
+// Freeze + damage on hit with a Diamond Sword
+onPlayerDamagingOtherPlayer = (damagedId, pid, d, w) => {
+  if (w === "Diamond Sword") {
+    api.applyHealthChange(pid, -30)
+    api.applyEffect(pid, "Frozen", 5000, {inbuiltLevel:1})
+  }
+}
+
+// Drop a coin when a player kills another (item name is SINGULAR)
+onPlayerKilledOtherPlayer = (a, b, c, d) => api.giveItem(a, "Gold Coin", 1)
+
+// Jump pad (Code Block)
+api.setVelocity(myId, 0, 12, 0)
+
+// Spawn an "Iron Golem" (reskinned Cave Golem)
+let [x, y, z] = thisPos
+api.attemptSpawnMob("Cave Golem", x, y, z, {name:"Iron Golem", variation:"iron"})
+
+// Timing WITHOUT setTimeout — global state + tick + api.now()
+var lastFire = {}
+tick = () => {
+  let t = api.now()
+  for (const id of api.getPlayerIds()) {
+    if (!lastFire[id] || t - lastFire[id] > 5000) {
+      lastFire[id] = t
+      // ...do the every-5-seconds thing for this player...
+    }
+  }
+}
+
+---------------------------------------------------------------------
+PERMISSIONS & EDITING NOTES
+---------------------------------------------------------------------
+- Only the world OWNER, CO-OWNER, coders, or users with canEditCode = true can place/edit code.
+- As of Apr 7 2026 (Slushie update): the editor auto-formats code, adds syntax colors,
+  shows API tooltips inline, has a copy-all button, and owners/co-owners can "Hide Lobby Code".
+- "Press to Code" boards were added quietly by dev Tom; code first existed as boards (early
+  2025) before Code Blocks.
+
+[VERIFIED: bloxd.io/docs, Bloxd Fandom (Code Block / JavaScript API Functions), code-api
+GitHub (README + CALLBACKS.md), bloxdhub.com/bloxd-api. July 2026. Community docs cover
+~45-50% of the API; the api object is larger than what's listed — do not invent unlisted functions.]
+
+=====================================================================
+SECTION 7 — CRAFTING RECIPES (FURNACE, WORKBENCH, ARTISAN BENCH)
+=====================================================================
+Bloxd has three crafting stations plus handcrafting (some items craft directly from the
+inventory with no station). Verified from the official Bloxd.io Fandom wiki (Workbench,
+Furnace/Smeltable Items, Artisan Bench, Gold pages), July 2026.
+NOTE: "Wood Planks" = planks of ANY tree type unless specified. "Stone" in recipes can
+usually be substituted with Messy Stone / Andesite / Granite / Diorite. Wiki flags its
+recipe tables as incomplete, so this is the largest verified set, not 100% exhaustive.
+
+STATION ROLES:
+- FURNACE (8 Messy Stone) — smelts ores/raw materials/food (needs Coal as fuel).
+- WORKBENCH (4 Wood Planks) — tools, weapons, armor, utilities, most survival gear.
+- ARTISAN BENCH (2 Wood Planks + 2 Stone) — decorative blocks, colored items, compression
+  blocks, banners/carpets. Also handcrafts anything handcraftable.
+- HANDCRAFT (no station) — Workbench, Wood Planks, and a few basics craft from inventory.
+
+---------------------------------------------------------------------
+FURNACE — SMELTING (each smelt needs Coal as fuel)
+---------------------------------------------------------------------
+- 1 Raw Iron + 1 Coal → 1 Iron Bar   (also: 1 Iron Ore + 1 Coal → 1 Iron Bar)
+- 1 Raw Gold + 1 Coal → 1 Gold Bar   (also: 1 Gold Ore + 1 Coal → 1 Gold Bar)
+- Diamond Ore + Coal → Diamonds (4 Diamond Ore → 4 Diamonds)
+- Moonstone Ore + Coal → Moonstone
+- 4 Messy Stone + 1 Coal → Stone   (turns messy stone back into smooth Stone)
+- Sand → Glass (smelt sand; used for bottles, potion tables, windows)
+- Magma → (smeltable material)
+- Coal Ore → Coal
+- Barkless Logs, Wheat → (processed forms)
+- FOOD (raw → cooked): Raw Porkchop → Cooked Porkchop; Raw Beef → Steak; Raw Mutton →
+  Cooked Mutton; Raw Venison → Cooked Venison; Potato → (baked).
+- Rotten Flesh, Rotten Brain → smeltable (processing).
+- Dark Red Stone → (smeltable variant).
+(Full smeltable list = 22 items per the wiki's Smeltable Items category.)
+
+---------------------------------------------------------------------
+WORKBENCH — TOOLS, WEAPONS, ARMOR, UTILITIES
+---------------------------------------------------------------------
+TOOLS & WEAPONS ([M] = Stone/Iron/Gold/Diamond material, + Moonstone where noted):
+- Sword: 2 [M] + 1 Wood Plank   (Wood Sword = 3 Wood Planks)
+- Pickaxe: 3 [M or Messy Stone/Moonstone] + 2 Wood Planks
+- Axe: 3 [M] + 1 Wood Plank
+- Spade: 1 [M] + 1 Wood Plank
+- Hoe: 2 [M] + 1 Wood Plank
+- Bow: 3 [M] + 2 Maple Leaves + 2 Sticks   (older recipe: 3 [M] + 1 Cotton + 2 Sticks)
+- Crossbow: 4 [M] + 2 Maple Leaves + 2 Sticks + 2 Iron Bars
+- Golem Pickaxe: 3 Moonstone + 3 Golem Eye + 1 Stone
+- Knight Sword: 1 Diamond Sword + 3 Knight Hearts
+- Arrows: 2 Stone + 1 Wood Plank → 4 Arrows
+- Stick: 1 Wood Plank
+- Compass: 1 Gold Bar + 2 Iron
+
+ARMOR (per piece, [M] = Wood Planks/Stone/Iron/Gold/Diamond):
+- Helmet: 5 [M] | Chestplate: 8 [M] | Leggings: 7 [M] | Boots: 4 [M] | Gauntlets: 4 [M]
+- Full set: 26 [M] (crafting page total; the Armor page's per-piece counts sum to 28 —
+  see SEC 2 caveat; use per-piece counts as the reliable figure).
+- Fur Chestplate: 8 Fur + 1 Iron Chestplate + 3 Knight Hearts
+- Spiked Boots: 4 Fur + 1 Iron Spike
+
+UTILITY BLOCKS / STATIONS:
+- Workbench: 4 Wood Planks (handcraft)
+- Furnace: 8 Messy Stone (any stone)
+- Artisan Bench: 2 Wood Planks + 2 Messy Stone (any stone)
+- Potion Table: 2 Glass + 2 Wood Planks
+- Salvaging Table: 2 Iron Bars + 2 Wood Planks
+- Enchantment Table: 2 Wood Planks + 2 [Stone/Iron/Gold/Diamond] (higher tier = better mat)
+- Chest: 8 Wood Planks | Iron Chest: 9 Iron | Moonstone Chest: 4 Moonstone
+- Empty Bottle: 3 Glass
+
+STORAGE / MINERAL BLOCKS:
+- Block of Coal/Iron/Gold/Diamond/Moonstone: 9 of that material each.
+
+HANG GLIDERS:
+- Wood: 6 Wood Planks + 4 Cotton
+- Iron: 4 Wood Planks + 4 Iron + 4 Cotton
+- Gold: 4 Wood Planks + 4 Gold + 4 Cotton
+- Diamond: 4 Wood Planks + 4 Diamond + 4 Cotton
+
+TRANSPORT / MISC:
+- Boat: 6 Wood Planks | Obsidian Boat: 6 Obsidian
+- Saddle: 5 Leather
+- Mailbox: 6 Wood Planks
+- Board: 1 Wood Plank
+- Ball: 4 Wood Planks | Reinforced Ball: 1 Stone + 1 Pine Log
+- Pebble: 1 Stone | Reinforced Pebble: 1 Compressed Messy Stone
+- Bone Meal: 1 Bone → 3 Bone Meal
+
+SPIKES:
+- Wood Spikes: 2 Sticks + 2 Wood Planks
+- Stone Spike: 2 Wood Spikes + 1 Stone
+- Iron Spikes: 2 Wood Spikes + 1 Iron
+- Gold Spikes: 2 Wood Spikes + 1 Gold
+- Diamond Spikes: 2 Wood Spikes + 1 Diamond
+
+THROWABLES / EXPLOSIVES:
+- Fireball: 4 Magma + 1 Moonstone
+- Iceball: 4 Ice + 1 Moonstone
+- Moonstone Explosive: 1 Moonstone + 10 Sand
+- Moonstone Orb: 2 Reinforced Pebble + 2 Moonstone
+- Firecracker: 1 Sand + 1 Coal + 1 Wood Plank
+- Snowball: 1 Snowball (crafts from snow)
+
+BEDS / OTHER:
+- Red Bed: 3 Red/White Wool + 3 Wood Planks (other colors = Artisan Bench)
+- Leaf Bed: 2 Leaves + 2 Wood Planks
+- Red Strongbed: 3 Iron Bars + 3 Red/White Wool + 3 Wood Planks (other colors = Artisan)
+- Pet Catcher: 4 Leaves
+- Net: 15 Leaves
+
+FOOD-RELATED (Workbench/handcraft):
+- Bread: 3 Wheat
+- Bowl of Rice: 6 Rice + 1 Bowl
+- Mushroom Soup: 2 Brown + 2 Red Mushroom + 1 Bowl
+- Pumpkin Pie: 1 Pumpkin + 3 Wheat
+- Gold Watermelon Slice: 1 Gold Bar + 2 Watermelon Slices
+- Gold Melon Slice: 1 Gold Bar + 2 Melon Slices
+- Gold Bar (from fragments): 9 Gold Fragments → 1 Gold Bar
+
+---------------------------------------------------------------------
+ARTISAN BENCH — DECORATIVE, COLORED & COMPRESSION
+---------------------------------------------------------------------
+COMPRESSION CHAIN (9 → 1 each step):
+- 9 Messy Stone → 1 Compressed Messy Stone → 1 Extra → 1 Super → 1 Hyper → 1 Ultra →
+  1 Mega Compressed Messy Stone (each stage = 9 of the previous).
+
+DECORATIVE / MINERAL:
+- 9 Coal → Block of Coal | 9 Iron Bar → Block of Iron | 9 Gold Bar → Block of Gold
+- 9 Gold Bars → 1 Golden Decoration (alt. use of gold) | 9 Diamond → Block of Diamond
+- 9 Moonstone → Block of Moonstone
+- Glass: dye + pattern (Patterned Glass) here | Baked Clay, Concrete, Ceramics: colored here
+- Stone family → Smooth / Bricks / Engraved / Slabs / Brick Slabs (stone/andesite/granite/
+  diorite/sandstone all have these variants); Ice + Snow → Ice Bricks/Slabs.
+
+WOOL / CARPET / BANNERS:
+- 2 Wool (any color) → 8 Carpet (same color)
+- 2 Wool (any color) + 2 Wood Planks → 1 Banner (same color)
+- Colored beds / strongbeds (all non-red colors) craft here.
+- Wood armor dyeing into the 16 color variants happens via flowers (see SEC 2).
+
+---------------------------------------------------------------------
+BUILD A FACTORY MACHINES (mode-specific; SEC 4 covers the mode)
+---------------------------------------------------------------------
+- Pipe: 1 Stone → 2 Pipe | Extractor Pipe: 1 Iron | Splitter Pipe: 1 Gold
+- Filter Pipe: 1 Iron + 1 Diamond → 3 | Merger Pipe: 1 Gold | Wire: 1 Iron → 16
+- Solar Panel: 2 Iron + 5 Glass + 1 Diamond
+- Auto-Miner: 10 Iron + 5 Glass + 2 Diamond
+- Auto-Crafter: 1 Diamond + 1 Workbench + 3 Gold
+- Auto-Harvester: 2 Iron + 4 Shears + 2 Gold
+- Lunite tier-2 upgrades: base machine + Lunite + Diamond + Moonstone (per-machine).
+ROCKET STAGES (total: 130 Iron + 60 Gold + 70 Coal + 50 Glass + 10 Diamond + 25 Moonstone):
+- S1: 20 Iron + 5 Gold | S2 Engine: 25 Coal + 25 Glass + 25 Iron + 8 Gold
+- S3 Hull: 25 Coal + 25 Glass + 25 Iron + 7 Gold | S4 Cockpit: 40 Gold + 10 Diamond +
+  30 Iron + 5 Moonstone | S5 Nose Cone: 20 Coal + 20 Moonstone + 30 Iron
+
+[VERIFIED: Bloxd.io Fandom wiki — Workbench, Furnace/Smeltable Items, Artisan Bench, Gold,
+Build a Factory. July 2026. Recipe tables flagged incomplete on-wiki; this is the largest
+verified set. POTION recipes are in SECTION 5 (potion table); enchant costs in SECTION 1B.]
+
+
+=====================================================================
+SECTION 8 — EVERYTHING ELSE (FLOWERS, XP VALUES, PROTECTORS/TRIBES,
+CURRENCY, PETS, SEEDS/FARMING & MISC)
+=====================================================================
+The catch-all section for systems not covered in Sections 1–7. Verified from the official
+Bloxd.io Fandom wiki (Flowers, Plants, Aura XP, Aura XP Orb, Protector, Gold Coins, Pet
+Friendship pages), July 2026. Cross-refs: enchanting = SEC 1B, potions/food = SEC 5,
+crafting stations = SEC 7, coding = SEC 6.
+
+---------------------------------------------------------------------
+AURA XP — FULL VALUE TABLE (SEC 1B has the mechanics; here are the numbers)
+---------------------------------------------------------------------
+Bar sits above the hotbar. On death: lose HALF your XP levels. Kill a player: gain what
+they lost (half theirs; min 1 if they had none). Max 300 levels (raisable via Code Blocks).
+Spent on enchanting (SEC 1B).
+
+KILLING MOBS (XP each): Cow 20, Pig 20, Sheep 20, Deer 20, Horse 25, Wolf 30, Wildcat 30,
+Stag 30, Draugr Skeleton 30, Gorilla 40, Bear 40, Draugr Zombie 40, Cave Golem 50,
+Draugr Knight 75. (Magma Golem see SEC 5.)
+MINING ORES (XP each): Coal 5, Iron 15, Gold 30, Diamond 40, Moonstone 50.
+SMELTING: Iron 10, Gold 15.
+CONSUMABLES (XP): Aura XP Fragment 1 level (~0.2s eat), Aura XP Orb 3 levels (1s),
+Aura XP Potion 10 levels (1.2s), Splash Aura XP Potion 10 (instant), Aura XP Potion II
+15 levels (1.2s), Splash II 15 (instant), Aura XP Arrow 1 level.
+(To max out 300 XP ≈ 30 Aura XP Potions. NOTE: the mob "consuming items" table on one wiki
+page lists higher round numbers [Orb 300, Potion 1000] — the per-item consumable table
+above [Orb=3, Potion=10] is the more consistent source; treat the big numbers as legacy.)
+SOURCES OF XP DROPS: killing mobs/players, harvesting crops, mining ores, smelting raw
+ores, breaking mob spawners — small chance to drop Aura XP Orbs. Fragments come from
+SALVAGING minerals (coal/gold/diamond/moonstone) at a Salvaging Table; 3 Fragments → 1 Orb.
+
+---------------------------------------------------------------------
+FLOWERS & THE FULL DYE CHART
+---------------------------------------------------------------------
+Flowers grow in all biomes EXCEPT deserts (Bluebell = Bluebell Forest only; Shadow Rose =
+Frozen Badlands only). No hitbox (walk through them). Farm by planting on Tilled/Fertilised
+Soil — they spread to adjacent tilled soil over time. Also from Greenville's flower pack.
+FLOWER LIST: Poppy, Red Tulip, Orange Tulip, Pink Tulip, White Tulip, Dandelion, Daisy,
+Bluebell, Forget-me-not, Allium, Shadow Rose (formerly "Wither Rose"). UNUSED/illegal:
+Lily of the Valley, Azure Bluet.
+
+DYEING (done at the ARTISAN BENCH; dyes Planks, Wool, Concrete, Glass/Patterned Glass,
+Baked Clay, Ceramic, Beds/Strongbeds, Wood Armor + colored variants, Chalk/Chalk Bricks,
+Firecrackers). Note: Cactus can replace Grass, and Poppy ↔ Red Tulip are interchangeable.
+FULL COLOR RECIPES:
+- Red: Poppy OR Red Tulip
+- Orange: Orange Tulip
+- Yellow: Dandelion
+- Lime: Grass/Cactus + White Tulip
+- Green: Grass/Cactus
+- Blue: Forget-me-not
+- Light Blue: Bluebell
+- Cyan: Grass/Cactus + Forget-me-not
+- Purple: Poppy + Forget-me-not
+- Magenta: Allium
+- Pink: Pink Tulip
+- White: White Tulip
+- Light Gray: White Tulip + Daisy
+- Gray: Daisy (or Lily of the Valley)
+- Black: Poppy + Dandelion + Forget-me-not (OR Shadow Rose)
+- Brown: Poppy + Grass/Cactus (OR Fallen Pine Cone)
+(Poppy is also the Slowness Potion ingredient — SEC 5.)
+
+---------------------------------------------------------------------
+SEEDS & FARMING (crops grown from seeds on Tilled Soil)
+---------------------------------------------------------------------
+- Wheat Seeds → 1–2 Wheat + 1 seed (Shears; ~4 min on tilled, 5 otherwise). Wheat → Bread.
+- Pumpkin Seeds → 1 Pumpkin (Axe). Pumpkin + 3 Wheat → Pumpkin Pie.
+- Melon Seeds → Melon → 4 Melon Slices (invisibility).
+- Watermelon Seeds → Watermelon → 4 Watermelon Slices (jump boost). 0.01% chance of an
+  Iron Watermelon growing on a stem.
+- Cotton Seeds → 2–3 Cotton (right-click grown plant, empty hand). Cotton → Bows/Crossbows/Wool.
+- Corn Seeds → 1–2 Corn (Shears; also found in Meadows).
+- Rice → 2–3 Rice (Shears; Plains). Rice → Bowl of Rice.
+- Cranberries → right-click bush w/ empty hand or bowl. → Bowl of Cranberries (Haste/heal).
+- Chili Pepper Seeds → 1 Chili (2 if Red Chili grown near lava; faster on sand/red sand).
+- Banana Seeds, Beetroot Seeds, Carrot Seeds → their crops.
+- Tilling: right-click grass/dirt with a Hoe → Tilled Soil. Fertiliser/Fertilised Soil
+  speeds growth (Poop from pets → Fertiliser).
+MUSHROOMS: Brown + Red (forests only); → Mushroom Soup (SEC 5). Fat Mushrooms are decorative.
+
+---------------------------------------------------------------------
+PROTECTORS & TRIBES (chunk protection)
+---------------------------------------------------------------------
+PROTECTOR — protects an entire CHUNK (32×32×32; actually 32×96×32 vertically) it's placed
+in, regardless of position within the chunk. Others can't edit protected chunks except
+utility blocks (workbench/artisan bench), Moonstone Chests, doors, and trapdoors.
+- Craft (Survival/Peaceful, Workbench): 2 Diamonds + 1 Stone.
+- Creative: earned by placing/breaking blocks (1st=200, 2nd=600, 3rd=1000, 4th=1800,
+  5th=2600, 6th=4200, 7th=5800, 8th=9000 blocks).
+- Plots/Doodle Cube: unlimited (area always protected).
+- You choose which players may edit your protected chunk. Protectors vanish if the owner
+  is offline 30+ days (rumored removed). `/protectors` command lists your protectors' coords.
+- Can't place within 192 blocks of true spawn (0,0) — see SEC 4.
+
+TRIBE PROTECTOR — like a Protector but ALL tribe members can edit. Only a tribe LEADER can
+make them: 2 Moonstone + 1 Stone (any) in the "manage tribe" menu (b-menu). Disband the
+tribe → its tribe protectors vanish.
+FACTION PROTECTOR — Factions only; all faction members can use. Not craftable — bought for
+100 Gold Coins (faction owner only). Max count scales with faction Power; low power = raidable
+(enemies press F in the chunk to break one). This is the only way to break another faction's protector.
+TRIBES — player groups; the leader creates the tribe and can make Tribe Protectors. Managed
+via the b-menu "manage tribe" screen.
+
+---------------------------------------------------------------------
+CURRENCY (Gold Coins / Coins)
+---------------------------------------------------------------------
+COINS are the main currency in many modes (mode-specific balances, not a global wallet):
+- Greenville: buy houses, blocks, flowers, beds, wool, equipment.
+- Cube Warfare: buy guns + powerups. | Evil Tower / Bloxd Hop: buy boosts.
+- Doodle Cube: buy rights to use blocks (wall/floor looks).
+- Murder Mystery: cosmetics. | Skywars / Pirates / Survival Royale: Mystery Kits (gems or kits).
+- Conqueror / The Pit: buy items.
+- FACTIONS: Gold Coin is a real inventory item — craft from a Gold Bar at a crafting table,
+  or buy via the [B] menu. Used for Faction Protectors (100 each), etc.
+NOTE: NOT every mode uses coins — BEDWARS economy is Coal / Iron Bars / Diamonds / Moonstone.
+
+---------------------------------------------------------------------
+PET FRIENDSHIP SYSTEM (added Nov 10, 2025)
+---------------------------------------------------------------------
+Tame a mob by clicking it while holding food (each food = small tame chance; bring several).
+Friendship has 5 levels (hearts); higher = more perks + a Painting at level 4.
+TAMING FOODS: Wolf = Bone | Wildcat = any raw/cooked meat (not rotten) | Pig/Cow/Sheep =
+Apple | Horse = Apple/Wheat (or ride w/ Saddle) | Deer = Cherry.
+PET BASE STATS (HP / walk speed / damage): Pig 300/3.87, Cow 400, Sheep 240, Horse 440/5,
+Deer 200, Wolf 320/5.46/10 dmg, Wildcat 315/5.92/10 (w/ Weakness).
+LEVEL PERKS (examples): L2 = pet drops its special food item when fed; L3 = per-pet perks;
+L4 = a Painting; L5 = advanced perks. Feed after being away → +60 friendship points bonus;
+don't feed for 68h+ → lose points (starving).
+SPECIAL PET FOOD ITEMS (fed pet drops → craft → effect, all 15s unless noted):
+- Wildcat → Caught Fish → Fish Fillet → "Pickpocketing" (steal items on attack).
+- Wolf → Meaty Bone → Blindness Pebbles (throw → Blindness on target).
+- Horse → Oats → Porridge → "Wall Climbing" (climb any block like a ladder).
+- Cow → Cow's Milk → Cheese → "Air Walk" 15s (walk on air at last block's height; jumping cancels).
+- Pig → Truffle → Truffle Oil → "Bounciness" (bounce on any block).
+- Sheep → Sheep's Milk → Yoghurt Pot → "Lifesteal" (steal HP on hit).
+- Deer → Acorn → Acorn Jelly → 2 min "Haste" (faster block breaking).
+PAINTINGS (7, one per tameable pet, at L4): Grant Wool (Sheep), Stampede (Cow), Unforgotten
+Pig (Pig), Sunbathed Gallope (Horse), Dreaming Canine (Wolf), A Doe through the Green (Deer),
+Whiskers (Wildcat).
+Pets can be renamed with a Nametag at friendship L1. Poop (from pets) → Fertiliser.
+
+---------------------------------------------------------------------
+MISC SYSTEMS & TERMS
+---------------------------------------------------------------------
+- SALVAGING TABLE (2 Iron Bars + 2 Wood Planks): salvage minerals into Aura XP Fragments.
+- MOB SPAWN ORBS: throw to spawn a mob (Creative/Plots/Worlds; every mob except Iron Golem;
+  max 5/chunk). MOB SPAWNERS: place to spawn mobs over time; 1–3 hostile per ruin.
+- BANNERS: 2 Wool (any color) + 2 Wood Planks at Artisan Bench (color = wool used). Draugr
+  Banner drops only in Dungeons/Arenas (SEC 4).
+- B-MENU: the in-game menu ([B] key) for tribe management, faction options, buying coins, etc.
+- FRIENDS SYSTEM: separate from pet friendship — add other players as friends.
+- CHUNK: 32×32×32 block cube; enable chunk coordinates in Settings to see which you're in.
+- OBSIDIAN: made by pouring water over lava; used for Obsidian Boat.
+- ILLEGAL/UNOBTAINABLE items exist (dev-only blocks, unused flowers/ores/stones) — reachable
+  only via glitches or Code Blocks, not normal survival.
+
+[VERIFIED: Bloxd.io Fandom wiki — Flowers, Plants, Aura XP, Aura XP Orb, Protector, Gold Coins,
+Pet Friendship. July 2026. Some wiki pages flagged incomplete/under-development; where two
+pages conflicted (Aura XP consumable values) the more consistent per-item table was used and
+the discrepancy flagged.]
+
+=====================================================================
+SECTION 9 — PLAYER-FACING SYSTEMS (BEDS/RESPAWN, DOORS/LADDERS,
+SKINS, BLOXDHUB, COCONUT, PARKOUR & GAMEMODE ECONOMIES)
+=====================================================================
+Closes remaining player-facing gaps not covered in Sections 1–8. Verified from the
+official Bloxd.io Fandom wiki (Bed, Doors and Trapdoors, Skins, Coconut, Parkour, Bloxd Hop
+pages) + BloxdHub (bloxdhub.com), July 2026. Cross-refs: crafting = SEC 7, potions/food =
+SEC 5, coding = SEC 6, pets/currency = SEC 8.
+
+---------------------------------------------------------------------
+BEDS — RESPAWN POINTS & SLEEPING PERKS
+---------------------------------------------------------------------
+Beds are utility blocks (mine with Axe). Two core functions:
+- SET SPAWN POINT: tap a bed to set your respawn there. You can only have ONE spawn point
+  at a time (on a bed OR a Checkpoint Block) — dying teleports you to the LAST one you set.
+- RESTED PERK: sleep (stay) on a bed 10+ seconds to pick ONE rested effect: increased
+  Damage, Haste (mining speed), Speed, Farming Yield, or extra Aura XP gained. Only one
+  rested effect at a time; picking another overwrites it.
+GOTCHAS: spikes on top of a bed damage you while sleeping (die → respawn where you clicked
+from). Fully enclosing a bed = you respawn glitched inside the blocks (must break out).
+RECIPES (see SEC 7): 3 Wool (any color) + 3 Wood Planks. White & Red beds craft at Workbench
+OR Artisan Bench; all other 14 colors = Artisan Bench only. Leaf Bed = 2 Leaves + 2 Planks
+(Workbench/Artisan/handcraft). 16 colors + Leaf variant.
+PER-MODE: Survival/Peaceful/Creative/Worlds/Custom = spawn + perks + homes. BEDWARS = your
+team's respawn anchor; destroy enemy beds to stop their respawns (can't sleep in Bedwars).
+Lucky Towers = given randomly, used to build up (can't set spawn). Pirates = decoration
+only. Greenville = restores energy (buy from shop; can't craft). PARKOUR use: beds are 2
+blocks long → "block clutching" across 6–7 block gaps; sleeping mid-fall cancels ALL fall damage.
+
+---------------------------------------------------------------------
+DOORS, TRAPDOORS & LADDERS
+---------------------------------------------------------------------
+- DOORS: block + item; tap to open/close. Closed by default. The door itself has no hitbox,
+  but a closed door has a 2-block-tall hitbox behind it; open doors have no hitbox (walk
+  through). Craft: 2 Wood Planks of a type → 1 Door of that wood (all 11+ tree types:
+  Maple/Aspen/Pine/Cedar/Jungle/Palm/Plum/Pear/Cherry/Spectral/Mango). Workbench.
+- TRAPDOORS: like doors, closed by default, tap to toggle. Closed trapdoor = 1-block hitbox
+  below it (opening removes it). Can also be CLIMBED like a ladder (but slower than a ladder).
+  Craft: Wood Planks at Workbench.
+- LADDERS (incl. Iron Ladder): climbable. Note the "ladder launching" parkour tech. Doors,
+  trapdoors, and beds are all usable even inside another player's protected chunk (SEC 8).
+
+---------------------------------------------------------------------
+SKINS & PLAYER CUSTOMIZATION
+---------------------------------------------------------------------
+Open the customization menu with N (PC) or the t-shirt icon bottom-left (mobile). As of the
+Oct 2, 2025 revamp, you customize: Skin Color, Hair, Eyebrows, Eyes (pupil color), Tops,
+Legs, Shoes — ~1.5 BILLION combinations (136 billion counting Super-Rank capes + name-tag
+colors). Preset characters exist (Bob = default/the Bloxd icon, plus Sara, Emma, Leo, Enoch,
+Isabel, Imara, Sanjay, Knight, King, Queen, Jester, Gnome, etc.).
+SUPER RANK (paid) unlocks: Capes + custom name-tag colors. Zombie skin is forced in Infection.
+CODING NOTE: scripts can force a skin via api.changePlayerIntoSkin (SEC 6).
+
+---------------------------------------------------------------------
+COCONUT (thrown projectile — the uncracked form)
+---------------------------------------------------------------------
+- Coconut (uncracked): a THROWABLE. On landing it becomes a Cracked Coconut. If it hits a
+  PLAYER: gives them 8 seconds of Speed BUT deals 5 damage. From Fruity Palm Leaves (Jungle).
+- Cracked Coconut (food, SEC 5): eat for 8s Speed. Drinking/using it can make a Splash Speed
+  Potion for PvP escapes (warning: the attacker caught in the splash also gets Speed — a
+  drunk Speed Potion is safer). Coconut + Water Bottle → Speed Potion. 4 Coconut → Coconut Block.
+
+---------------------------------------------------------------------
+PARKOUR & MOVEMENT TECH (real in-game mechanics)
+---------------------------------------------------------------------
+- Base jump = up to 5 blocks. With Bunny Hopping: 6-block jump (7 with double/triple b-hop).
+- BUNNY HOP: sprint-jump the instant you land. Chaining gives more speed; triple b-hop = max
+  (quadruple+ = same as triple). Toggle "Disable Bunny Hopping" in Settings (SEC 4).
+- NEO JUMPS: jump around a pillar/wall — 4-neo normally, up to 6.5 with b-hop.
+- ICE: walking on ice boosts speed (+1.4) → 9-block ice jumps with b-hop.
+- WATER JUMPS: first contact with water lets you jump on top without sinking; 5-block
+  vertical water jump by placing water on a wall.
+- CHECKPOINTS: Bed / Checkpoint Block (spawn point), Homes (/sethome, /home, or B-menu, if
+  not disabled), Yellow Wool (Greenville), Block of Gold (Bloxd Hop).
+- LAUNCHING: Knockback/Splash potions, Fireballs, and Moonstone Explosives can launch you
+  for parkour/escapes.
+
+---------------------------------------------------------------------
+ACHIEVEMENTS / TASKS (important accuracy note)
+---------------------------------------------------------------------
+- Bloxd.io does NOT have an official game-wide achievement system. The big "achievements
+  list" that circulates is FAN-MADE (unofficial fan wiki) — do NOT present those as real.
+- REAL task systems are GAMEMODE-SPECIFIC: e.g. Bloxd Hop has Tasks (side objectives worth
+  10–50 gold, 3–5 active at a time, opened with M) + a Leaderboard. The onTaskClaimed code
+  callback (SEC 6) exists for scripted worlds to implement their own tasks.
+- If a user asks "what are the achievements in Bloxd," the honest answer: there's no official
+  global achievement system; only per-mode tasks and whatever scripted worlds add.
+
+---------------------------------------------------------------------
+BLOXDHUB (community platform — NOT the game)
+---------------------------------------------------------------------
+BloxdHub (bloxdhub.com) is a SEPARATE community/social website for Bloxd.io players — NOT
+part of the game and NOT run in-game. It's where players share and download MODS, TEXTURE
+PACKS, and SCHEMATICS, post to a community feed, use forums for coding help, and earn
+"Boosts." It also hosts community API documentation. 
+CRITICAL SEPARATION: BloxdHub's rules, features, and "Boosts" are DISTINCT from Bloxd.io
+(the game) rules and systems — never mix them. When a user asks about in-game things, answer
+about Bloxd.io; only reference BloxdHub if they specifically ask about the community platform,
+mods, texture-pack sharing, or that site.
+
+---------------------------------------------------------------------
+GAMEMODE ECONOMIES (quick reference; ties to SEC 8 currency)
+---------------------------------------------------------------------
+- Coins: most casual/PvP modes (Greenville, Cube Warfare, Evil Tower, Doodle Cube, Murder
+  Mystery, Bloxd Hop, etc.) — SEC 8.
+- Bedwars: Coal / Iron Bars / Diamonds / Moonstone (NOT coins) at shop villagers.
+- Bloxd Hop: Gold (buy boosts) + separate XP → upgrade points (permanent upgrades). Its
+  "XP" is NOT Aura XP.
+- Aura XP: the survival/open-world progression currency for enchanting (SEC 1B/8).
+
+[VERIFIED: Bloxd.io Fandom wiki — Bed, Doors and Trapdoors, Skins, Coconut, Parkour, Bloxd Hop;
+BloxdHub (bloxdhub.com). July 2026. Achievements confirmed FAN-MADE/unofficial — flagged as
+such so the AI never presents them as real.]
+

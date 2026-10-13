@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Editor</title>
+  <style>
+    :root {
+      --primary-1: #303a59;
+      --primary-2: #394980;
+      --primary-3: #22283b;
+      --purple-1: #9b39d5;
+      --purple-2: #ad50e3;
+      --purple-3: #6d2e91;
+      --red-1: #e34f4f;
+      --red-2: #fc6464;
+      --red-3: #cc1414;
+      --blue-3: #222a9f;
+      --blue-4: #2e80ee;
+      --blue-5: #4f94f1;
+      --green-1: #1dd06d;
+      --lime-1: #1dd06d;
+      --lime-2: #36e785;
+      --lime-3: #1dd06d;
+      --near-black: #0f0f0f;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Verdana", "Candara", "Roboto", "Oxygen", "Ubuntu", "Trebuchet MS", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif !important;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .HomePageBackgroundContainer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000;
+      z-index: 0;
+    }
+
+    .HomePageBackground {
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAIUlEQVR4nGOQUtX5r23pjBMzUEcBPsyArgPdRCooIOQGAAigZFnRRKyWAAAAAElFTkSuQmCC");
+      background-repeat: repeat;
+      background-position: 50%;
+      background-size: 8rem;
+      filter: brightness(.6);
+      height: 100%;
+      image-rendering: optimizeSpeed;
+      image-rendering: -o-crisp-edges;
+      image-rendering: pixelated;
+      image-rendering: optimize-contrast;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 1;
+    }
+
+    .GameBackgroundScreen {
+      align-items: center;
+      display: flex;
+      height: 100vh;
+      height: 100dvh;
+      justify-content: center;
+      left: 0;
+      pointer-events: auto;
+      position: fixed;
+      top: 0;
+      width: 100vw;
+      z-index: 5;
+      flex-direction: column;
+      gap:
+        0px;
+    }
+
+    .CodeEditMessage {
+      width: 65rem;
+      background-color: var(--primary-1);
+      text-align: center;
+      box-sizing: border-box;
+      border: 2px solid #303a59;
+      border-bottom: none;
+      box-shadow: 0 -1px 0 0 #394980, -1px 0 0 0 #394980, 1px 0 0 0 #394980;
+      color: #fff;
+      font-weight: bold;
+      padding: 10px 0;
+      display: block;
+    }
+
+    .CodeEditorContent {
+      height: 40rem;
+      width: 65rem;
+      position: relative;
+      border: 2px solid #1a1f2e;
+      box-shadow: 0 0 0 1px #394980, .4rem .5rem 0 #00000070;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #editor-row {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    #editor-container {
+      flex: 1;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .cm-editor {
+      height: 100%;
+      font-size: 13px;
+    }
+
+    .cm-scroller {
+      overflow: auto;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Verdana", "Candara", "Roboto", "Oxygen", "Ubuntu", "Trebuchet MS", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif !important;
+    }
+
+    .StatusBar {
+      background: #0f1320;
+      border-top: 1px solid #394980;
+      padding: 3px 12px;
+      display: flex;
+      gap: 18px;
+      font-size: 11px;
+      color: #6c7086;
+      font-family: monospace;
+      flex-shrink: 0;
+    }
+
+    #status-pos {
+      color: #1dd06d;
+    }
+
+    #status-lang {
+      color: #4f94f1;
+    }
+
+    #status-mode {
+      color: #ffff00;
+    }
+
+    #status-chars {
+      color: #fc6464;
+    }
+
+    .ButtonsRow {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      width: 65rem;
+      position: relative;
+      justify-content: flex-start;
+      min-height: 3rem;
+    }
+
+    .NewButton {
+      --buttonNormalColour: var(--blue-4);
+      --buttonTopColour: var(--blue-5);
+      --buttonBottomColour: var(--blue-3);
+      background-color: var(--buttonNormalColour);
+      border: 1px solid var(--near-black);
+      border-radius: 0;
+      box-shadow: .2rem .25rem 0 #00000052;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      text-align: center;
+      text-shadow:
+        -1px -1px 0 #303a59, -1px 0 0 #303a59, -1px 1px 0 #303a59,
+        0 -1px 0 #303a59, 0 1px 0 #303a59,
+        1px -1px 0 #303a59, 1px 0 0 #303a59, 1px 1px 0 #303a59;
+      transition: transform .12s, filter .12s;
+      will-change: transform;
+      z-index: 1;
+      padding: .6rem 1.5rem;
+      color: #fff;
+      font-size: .9rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+      min-width: 7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .NewButton:hover {
+      filter: brightness(1.18);
+      transform: translateY(-1px);
+    }
+
+    .NewButton:active {
+      transform: translateY(1px);
+      box-shadow: .05rem .08rem 0 #00000052;
+    }
+
+    .NewButton .ButtonBottomBorder {
+      background: var(--buttonBottomColour);
+      bottom: 0;
+      height: .21em;
+      left: 0;
+      position: absolute;
+      width: 100%;
+      z-index: 1;
+    }
+
+    .NewButton .ButtonTopBorder {
+      background: var(--buttonTopColour);
+      height: .21em;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 1;
+    }
+
+    .NewButton .ButtonBody {
+      gap: .4em;
+      min-width: 0;
+      overflow-x: hidden;
+      position: relative;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      z-index: 2;
+    }
+
+    .LimeButton {
+      --buttonNormalColour: var(--lime-1);
+      --buttonTopColour: var(--lime-2);
+      --buttonBottomColour: var(--lime-3);
+    }
+
+    .PurpleButton {
+      --buttonNormalColour: var(--purple-1);
+      --buttonTopColour: var(--purple-2);
+      --buttonBottomColour: var(--purple-3);
+    }
+
+    .BlueButton {
+      --buttonNormalColour: var(--blue-4);
+      --buttonTopColour: var(--blue-5);
+      --buttonBottomColour: var(--blue-3);
+    }
+
+    .GreenButton {
+      --buttonNormalColour: #18a856;
+      --buttonTopColour: var(--green-1);
+      --buttonBottomColour: #0d7a3c;
+    }
+
+    .RedButton {
+      --buttonNormalColour: var(--red-1);
+      --buttonTopColour: var(--red-2);
+      --buttonBottomColour: var(--red-3);
+    }
+
+    .LangSelectWrap {
+      display: inline-block;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .LangSelect {
+      appearance: none;
+      background-color: var(--primary-2);
+      border: 1px solid var(--near-black);
+      border-radius: 0;
+      box-shadow: .2rem .25rem 0 #00000052;
+      color: #fff;
+      cursor: pointer;
+      font-size: .9rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+      outline: none;
+      padding: .6rem 2.2rem .6rem 1.2rem;
+      text-shadow: -1px -1px 0 #303a59, 1px 1px 0 #303a59;
+      min-width: 8rem;
+    }
+
+    .LangSelectWrap::after {
+      content: '▾';
+      position: absolute;
+      right: .7rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      pointer-events: none;
+      font-size: .8rem;
+    }
+
+    ::-webkit-scrollbar {
+      width: 1.5vmin;
+      max-width: 12px;
+      background-color: #1a1f2e;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #555;
+      box-shadow: inset 0 0 6px #0000004d;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: #1a1f2e;
+      box-shadow: inset 0 0 6px #0000004d;
+    }
+
+    .EditorToast {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #1dd06d;
+      color: #0f1320;
+      font-weight: 700;
+      font-size: 13px;
+      text-align: center;
+      padding: 5px 12px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Verdana", "Candara", "Roboto", "Oxygen", "Ubuntu", "Trebuchet MS", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+      transform: translateY(100%);
+      opacity: 0;
+      transition: transform .18s, opacity .18s;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    .EditorToast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    #sig-popup {
+      display: none;
+      position: fixed;
+      z-index: 200;
+      background: #1b1f2e;
+      border: 1px solid #394980;
+      box-shadow: 0 4px 16px #00000080, .15rem .2rem 0 #00000040;
+      padding: .55rem .8rem .5rem;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      min-width: 260px;
+      max-width: 520px;
+      pointer-events: none;
+      white-space: pre;
+    }
+
+    #sig-popup .sig-method {
+      font-weight: 700;
+      color: #abb2bf;
+    }
+
+    #sig-popup .sig-paren {
+      color: #abb2bf;
+    }
+
+    #sig-popup .sig-param {
+      color: #e5c07b;
+    }
+
+    #sig-popup .sig-param.active {
+      color: #fff;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    #sig-popup .sig-type {
+      color: #61afef;
+    }
+
+    #sig-popup .sig-optional {
+      color: #5c6370;
+    }
+
+    #sig-popup .sig-returns {
+      color: #56b6c2;
+      font-weight: 700;
+    }
+
+    #sig-popup .sig-sep {
+      color: #5c6370;
+      margin: 0 .15em;
+    }
+
+    #sig-popup .sig-desc {
+      margin-top: .35rem;
+      padding-top: .35rem;
+      border-top: 1px solid #2a3050;
+      color: #7a8499;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Verdana", "Candara", "Roboto", "Oxygen", "Ubuntu", "Trebuchet MS", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+      font-size: 11.5px;
+      white-space: normal;
+      line-height: 1.5;
+    }
+
+    #sig-popup .sig-param-hint {
+      display: block;
+      color: #5c6370;
+      font-size: 11px;
+      margin-top: .1rem;
+    }
+
+    #sig-popup .sig-param-hint .sig-param-name {
+      color: #e5c07b;
+    }
+
+    #sig-popup .sig-param-hint .sig-param-desc {
+      color: #7a8499;
+    }
+
+    #sig-popup .sig-deprecated {
+      color: #e06c75;
+      font-size: 11px;
+      margin-bottom: .2rem;
+    }
+
+    .monaco-list-row,
+    .monaco-list-row .contents,
+    .monaco-list-row .main-line {
+      height: auto !important;
+      line-height: normal !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .monaco-list-row .monaco-highlighted-label {
+      white-space: pre-wrap !important;
+      display: inline-block !important;
+    }
+
+    .monaco-list-row .monaco-highlighted-label .signature {
+      display: block !important;
+      margin-top: 4px;
+      color: #888;
+    }
+
+    #editor-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1a1f2e;
+      z-index: 20;
+      pointer-events: none;
+      transition: opacity .3s;
+    }
+
+    #editor-loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-track {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 5px solid rgba(255, 255, 255, 0.25);
+      position: relative;
+    }
+
+    .loading-arc {
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      border: 5px solid transparent;
+      border-top-color: #4f94f1;
+      border-right-color: #4f94f1;
+      animation: editorSpin .75s linear infinite;
+    }
+
+    @keyframes editorSpin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #minimap-wrap {
+      width: 110px;
+      flex-shrink: 0;
+      position: relative;
+      background: #0d1119;
+      border-left: 1px solid #2a3050;
+      overflow: hidden;
+      cursor: pointer;
+      user-select: none;
+      transition: width .2s, border-color .2s;
+    }
+
+    #minimap-wrap.mm-hidden {
+      width: 0;
+      border-left: none;
+    }
+
+    #minimap-canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    #minimap-vbox {
+      position: absolute;
+      left: 0;
+      right: 0;
+      background: rgba(79, 148, 241, 0.13);
+      border-top: 1px solid rgba(79, 148, 241, 0.5);
+      border-bottom: 1px solid rgba(79, 148, 241, 0.5);
+      pointer-events: none;
+      transition: top .05s, height .05s;
+    }
+
+    #settings-btn {
+      cursor: pointer;
+      color: #6c7086;
+      font-size: 13px;
+      margin-left: auto;
+      line-height: 1;
+      padding: 1px 4px;
+      border-radius: 3px;
+      transition: color .15s;
+    }
+
+    #settings-btn:hover {
+      color: #4f94f1;
+    }
+
+    #settings-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .55);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #settings-overlay.open {
+      display: flex;
+    }
+
+    #settings-modal {
+      background: #1b1f2e;
+      border: 1px solid #394980;
+      box-shadow: 0 8px 32px #00000080, .3rem .4rem 0 #00000040;
+      padding: 0;
+      width: 320px;
+      min-width: 260px;
+      font-family: inherit;
+      color: #cdd6f4;
+    }
+
+    #settings-modal header {
+      background: #151a28;
+      border-bottom: 1px solid #2a3050;
+      padding: .5rem 1rem;
+      font-weight: 700;
+      font-size: .9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #settings-close {
+      cursor: pointer;
+      color: #6c7086;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    #settings-close:hover {
+      color: #fc6464;
+    }
+
+    .settings-section {
+      padding: .6rem 1rem;
+      border-bottom: 1px solid #2a3050;
+      font-size: .82rem;
+    }
+
+    .settings-section:last-child {
+      border-bottom: none;
+    }
+
+    .settings-section h3 {
+      color: #89b4fa;
+      font-size: .75rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: .45rem;
+      font-weight: 700;
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: .3rem;
+    }
+
+    .settings-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .settings-label {
+      color: #a6adc8;
+    }
+
+    .sw {
+      position: relative;
+      display: inline-block;
+      width: 34px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .sw input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .sw-track {
+      position: absolute;
+      inset: 0;
+      background: #313244;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .sw input:checked+.sw-track {
+      background: #4f94f1;
+    }
+
+    .sw-track::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: transform .2s;
+    }
+
+    .sw input:checked+.sw-track::after {
+      transform: translateX(16px);
+    }
+
+    .settings-file-row {
+      display: flex;
+      gap: .4rem;
+      margin-top: .4rem;
+    }
+
+    .settings-file-btn {
+      flex: 1;
+      background: #313244;
+      border: 1px solid #45475a;
+      color: #cdd6f4;
+      font-size: .78rem;
+      padding: .3rem .5rem;
+      cursor: pointer;
+      font-family: inherit;
+      text-align: center;
+      transition: background .15s;
+    }
+
+    .settings-file-btn:hover {
+      background: #45475a;
+    }
+
+    .version {
+      color: #888da0;
+      position: fixed;
+      right: 10px;
+      bottom: 10px;
+      z-index: 1000;
+      font-family: monospace;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="HomePageBackgroundContainer">
+    <div class="HomePageBackground"></div>
+  </div>
+
+  <div class="version">
+    ver. 1.2.3
+  </div>
+
+  <div class="GameBackgroundScreen">
+
+    <div class="CodeEditMessage" id="mode-msg">
+      Code Block
+    </div>
+    <div class="CodeEditorContent">
+      <div id="editor-row">
+        <div id="editor-container" style="position:relative">
+          <div id="editor-loading">
+            <div class="loading-track">
+              <div class="loading-arc"></div>
+            </div>
+          </div>
+        </div>
+        <div id="minimap-wrap">
+          <canvas id="minimap-canvas"></canvas>
+          <div id="minimap-vbox"></div>
+        </div>
+      </div>
+      <div class="StatusBar">
+        <span id="status-pos">行 1, 列 1</span>
+        <span id="status-lang">JavaScript</span>
+        <span id="status-mode">Code Block</span>
+        <span id="status-chars">0 文字</span>
+        <span id="settings-btn" title="設定">⚙</span>
+      </div>
+      <div class="EditorToast" id="editor-toast"></div>
+    </div>
+
+    <div class="ButtonsRow">
+      <div class="LangSelectWrap">
+        <select class="LangSelect" id="lang-select">
+          <option value="javascript">JavaScript</option>
+          <option value="typescript">TypeScript</option>
+          <option value="html">HTML</option>
+          <option value="css">CSS</option>
+          <option value="python">Python</option>
+          <option value="json">JSON</option>
+          <option value="markdown">Markdown</option>
+          <option value="sql">SQL</option>
+          <option value="cpp">C++</option>
+          <option value="java">Java</option>
+        </select>
+      </div>
+
+      <button class="NewButton LimeButton" id="btn-submit">
+        <div class="ButtonTopBorder"></div>
+        <span class="ButtonBody">Submit Code</span>
+        <div class="ButtonBottomBorder"></div>
+      </button>
+
+      <button class="NewButton PurpleButton" id="btn-more">
+        <div class="ButtonTopBorder"></div>
+        <span class="ButtonBody">Show Docs</span>
+        <div class="ButtonBottomBorder"></div>
+      </button>
+
+      <button class="NewButton BlueButton" id="btn-format">
+        <div class="ButtonTopBorder"></div>
+        <span class="ButtonBody">Format Code</span>
+        <div class="ButtonBottomBorder"></div>
+      </button>
+
+      <button class="NewButton BlueButton" id="btn-copy">
+        <div class="ButtonTopBorder"></div>
+        <span class="ButtonBody">Copy Code</span>
+        <div class="ButtonBottomBorder"></div>
+      </button>
+
+      <button class="NewButton BlueButton" id="btn-hidetool">
+        <div class="ButtonTopBorder"></div>
+        <span class="ButtonBody">Hide Tooltips</span>
+        <div class="ButtonBottomBorder"></div>
+      </button>
+      <!--
+    <button class="NewButton RedButton" id="btn-clear">
+      <div class="ButtonTopBorder"></div>
+      <span class="ButtonBody">Clear</span>
+      <div class="ButtonBottomBorder"></div>
+    </button>
+  -->
+
+      <button class="NewButton PurpleButton" id="btn-world">
+        <div class="ButtonTopBorder"></div>
+        <span class="ButtonBody">World Code</span>
+        <div class="ButtonBottomBorder"></div>
+      </button>
+    </div>
+
+  </div>
+
+  <div id="sig-popup"></div>
+
+  <div id="settings-overlay">
+    <div id="settings-modal">
+      <header>
+        <span>⚙ Settings</span>
+        <span id="settings-close">✕</span>
+      </header>
+
+      <div class="settings-section">
+        <h3>Editor</h3>
+        <div class="settings-row">
+          <span class="settings-label">Minimap</span>
+          <label class="sw"><input type="checkbox" id="sw-minimap"><span class="sw-track"></span></label>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>File</h3>
+        <div class="settings-file-row">
+          <button class="settings-file-btn" id="btn-save-file">💾 Save .txt</button>
+          <button class="settings-file-btn" id="btn-load-file">📂 Load .txt</button>
+          <input type="file" id="file-input" accept=".txt,.js,.ts" style="display:none">
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>Auto-save</h3>
+        <div class="settings-row">
+          <span class="settings-label" style="font-size:.78rem;color:#7a8499">タブを閉じても復元</span>
+          <label class="sw"><input type="checkbox" id="sw-autosave" checked><span class="sw-track"></span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <input type="file" id="file-input-hidden" accept=".txt,.js,.ts" style="display:none">
+
+  <script type="module">
+    import { EditorState, StateField, StateEffect } from 'https://esm.sh/@codemirror/state@6';
+    import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection, dropCursor, rectangularSelection, crosshairCursor } from 'https://esm.sh/@codemirror/view@6';
+    import { defaultKeymap, history, historyKeymap, indentWithTab } from 'https://esm.sh/@codemirror/commands@6';
+    import { searchKeymap, highlightSelectionMatches } from 'https://esm.sh/@codemirror/search@6';
+    import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from 'https://esm.sh/@codemirror/autocomplete@6';
+    import { foldGutter, indentOnInput, syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldKeymap } from 'https://esm.sh/@codemirror/language@6';
+    import { lintKeymap } from 'https://esm.sh/@codemirror/lint@6';
+    import { javascript } from 'https://esm.sh/@codemirror/lang-javascript@6';
+    import { html } from 'https://esm.sh/@codemirror/lang-html@6';
+    import { css } from 'https://esm.sh/@codemirror/lang-css@6';
+    import { python } from 'https://esm.sh/@codemirror/lang-python@6';
+    import { json } from 'https://esm.sh/@codemirror/lang-json@6';
+    import { markdown } from 'https://esm.sh/@codemirror/lang-markdown@6';
+    import { sql } from 'https://esm.sh/@codemirror/lang-sql@6';
+    import { cpp } from 'https://esm.sh/@codemirror/lang-cpp@6';
+    import { java } from 'https://esm.sh/@codemirror/lang-java@6';
+    import { oneDark } from 'https://esm.sh/@codemirror/theme-one-dark@6';
+    import prettier from 'https://esm.sh/prettier@3.0.3/standalone';
+    import estree from 'https://esm.sh/prettier@3.0.3/plugins/estree';
+    import babel from 'https://esm.sh/prettier@3.0.3/plugins/babel';
+    import htmlPlugin from 'https://esm.sh/prettier@3.0.3/plugins/html';
+    import cssPlugin from 'https://esm.sh/prettier@3.0.3/plugins/postcss';
+
+    const languageMap = {
+      javascript: () => javascript({ jsx: true, typescript: false }),
+      typescript: () => javascript({ jsx: true, typescript: true }),
+      html: () => html(), css: () => css(), python: () => python(),
+      json: () => json(), markdown: () => markdown(),
+      sql: () => sql(), cpp: () => cpp(), java: () => java(),
+    };
+    const languageLabels = {
+      javascript: 'JavaScript', typescript: 'TypeScript', html: 'HTML', css: 'CSS',
+      python: 'Python', json: 'JSON', markdown: 'Markdown', sql: 'SQL', cpp: 'C++', java: 'Java',
+    };
+
+    let currentLang = 'javascript';
+    let currentMode = 'codeblock';
+    let autosaveEnabled = true;
+    let codeBlockDoc = localStorage.getItem('bloxd_ce_codeblock') ?? `api.log("hello, world!")`;
+    let worldCodeDoc = localStorage.getItem('bloxd_ce_worldcode') ?? `/*
+	tick onClose onPlayerJoin onPlayerLeave onPlayerJump onRespawnRequest
+	playerCommand onPlayerChat onPlayerChangeBlock onPlayerDropItem
+	onPlayerPickedUpItem onPlayerSelectInventorySlot onBlockStand
+	onPlayerAttemptCraft onPlayerCraft onPlayerAttemptOpenChest
+	onPlayerOpenedChest onPlayerMoveItemOutOfInventory onPlayerMoveInvenItem
+	onPlayerMoveItemIntoIdxs onPlayerSwapInvenSlots onPlayerMoveInvenItemWithAmt
+	onPlayerAttemptAltAction onPlayerAltAction onPlayerClick
+	onClientOptionUpdated onMobSettingUpdated onInventoryUpdated onChestUpdated
+	onWorldChangeBlock onCreateBloxdMeshEntity onEntityCollision
+	onPlayerAttemptSpawnMob onWorldAttemptSpawnMob onPlayerSpawnMob
+	onWorldSpawnMob onWorldAttemptDespawnMob onMobDespawned onPlayerAttack
+	onPlayerDamagingOtherPlayer onPlayerDamagingMob onMobDamagingPlayer
+	onMobDamagingOtherMob onAttemptKillPlayer onPlayerKilledOtherPlayer
+	onMobKilledPlayer onPlayerKilledMob onMobKilledOtherMob onPlayerPotionEffect
+	onPlayerDamagingMeshEntity onPlayerBreakMeshEntity onPlayerUsedThrowable
+	onPlayerThrowableHitTerrain onTouchscreenActionButton onTaskClaimed
+	onChunkLoaded onPlayerRequestChunk onItemDropCreated
+	onPlayerStartChargingItem onPlayerFinishChargingItem onPlayerFinishQTE
+	onPlayerBoughtShopItem doPeriodicSave
+
+	To use a callback, just assign a function to it in the world code!
+	tick = () => {}			 or			 function tick() {}
+*/
+
+api.log("World code callbacks go here!")`;
+    let tooltipsEnabled = true;
+    let view;
+
+    const statusPos = document.getElementById('status-pos');
+    const statusLang = document.getElementById('status-lang');
+    const statusMode = document.getElementById('status-mode');
+    const statusChars = document.getElementById('status-chars');
+
+    function updateStatus(state) {
+      const cursor = state.selection.main.head;
+      const line = state.doc.lineAt(cursor);
+      const mode = document.getElementById('mode-msg');
+      statusMode.textContent = `${mode.textContent}`;
+      statusPos.textContent = `行 ${line.number}, 列 ${cursor - line.from + 1}`;
+      statusChars.textContent = `${state.doc.length} 文字`;
+    }
+
+    const deleteBracketPair = {
+      key: 'Backspace',
+      run: (view) => {
+        const { state } = view;
+        const sel = state.selection.main;
+        if (sel.from !== sel.to) return false;
+        const from = sel.from;
+        if (from === 0) return false;
+        const before = state.doc.sliceString(from - 1, from);
+        const after = state.doc.sliceString(from, from + 1);
+        const pairs = { '(': ')', '[': ']', '{': '}' };
+        if (pairs[before] === after) {
+          view.dispatch({ changes: { from: from - 1, to: from + 1 } });
+          return true;
+        }
+        return false;
+      }
+    };
+
+    function buildExtensions(lang) {
+      return [
+        lineNumbers(), highlightActiveLineGutter(), highlightActiveLine(),
+        highlightSelectionMatches(), foldGutter(), drawSelection(),
+        dropCursor(), rectangularSelection(), crosshairCursor(),
+        bracketMatching(), closeBrackets(), history(), indentOnInput(),
+        autocompletion({ override: [myCompletions] }),
+        syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+        oneDark,
+        keymap.of([
+          deleteBracketPair,
+          ...defaultKeymap, ...historyKeymap, ...searchKeymap,
+          ...completionKeymap, ...closeBracketsKeymap, ...foldKeymap,
+          ...lintKeymap, indentWithTab,
+        ]),
+        languageMap[lang](),
+        EditorView.updateListener.of(update => {
+          if (update.docChanged || update.selectionSet) {
+            updateStatus(update.state);
+            updateSignatureHelp(update.view);
+          }
+          if (update.docChanged) {
+            drawMinimap();
+            if (autosaveEnabled) saveCurrentToStorage();
+          } else if (update.selectionSet) {
+            updateMinimapViewport();
+          }
+        }),
+        EditorView.theme({
+          '&': { height: '100%', background: '#1a1f2e' },
+          '.cm-content': { padding: '6px 0' },
+          '.cm-line': { padding: '0 14px' },
+          '.cm-gutters': { background: '#151a28', borderRight: '1px solid #394980', paddingLeft: '6px' },
+          '.cm-activeLineGutter': { background: '#1e253a' },
+          '.cm-activeLine': { background: '#1e253a88' },
+        }),
+      ];
+    }
+
+    view = new EditorView({
+      state: EditorState.create({ doc: codeBlockDoc, extensions: buildExtensions(currentLang) }),
+      parent: document.getElementById('editor-container'),
+    });
+
+    requestAnimationFrame(() => {
+      const loader = document.getElementById('editor-loading');
+      loader.classList.add('hidden');
+      setTimeout(() => loader.remove(), 350);
+      initMinimap();
+    });
+
+    updateStatus(view.state);
+
+    window.addEventListener('beforeunload', () => {
+      if (!autosaveEnabled) return;
+      localStorage.setItem('bloxd_ce_codeblock', codeBlockDoc);
+      localStorage.setItem('bloxd_ce_worldcode', worldCodeDoc);
+      const key = currentMode === 'worldcode' ? 'bloxd_ce_worldcode' : 'bloxd_ce_codeblock';
+      localStorage.setItem(key, view.state.doc.toString());
+    });
+
+    const MM_W = 110;
+    const MM_LINE_H = 2;
+    const MM_CHAR_W = 1.4;
+    const MM_PAD = 4;
+
+    let mmDragging = false;
+    let mmEnabled = false;
+
+    function initMinimap() {
+      const wrap = document.getElementById('minimap-wrap');
+      const canvas = document.getElementById('minimap-canvas');
+      const toggle = document.getElementById('minimap-toggle-btn');
+
+      view.scrollDOM.addEventListener('scroll', () => {
+        syncMinimapScroll();
+        updateMinimapViewport();
+      });
+
+      wrap.addEventListener('mousedown', (e) => {
+        mmDragging = true;
+        minimapSeek(e.offsetY, wrap, canvas);
+        e.preventDefault();
+      });
+      document.addEventListener('mousemove', (e) => {
+        if (!mmDragging) return;
+        const rect = wrap.getBoundingClientRect();
+        minimapSeek(e.clientY - rect.top, wrap, canvas);
+      });
+      document.addEventListener('mouseup', () => { mmDragging = false; });
+
+      wrap.classList.add('mm-hidden');
+
+      drawMinimap();
+    }
+
+    function minimapSeek(offsetY, wrap, canvas) {
+      const totalLines = view.state.doc.lines;
+      const totalH = totalLines * MM_LINE_H;
+      const wrapH = wrap.clientHeight;
+      const canvasTop = parseFloat(canvas.style.top || '0');
+      const absoluteY = offsetY - canvasTop;
+      const fraction = Math.max(0, Math.min(1, absoluteY / totalH));
+      const maxScroll = view.scrollDOM.scrollHeight - view.scrollDOM.clientHeight;
+      view.scrollDOM.scrollTop = fraction * maxScroll;
+    }
+
+    function syncMinimapScroll() {
+      const canvas = document.getElementById('minimap-canvas');
+      const wrap = document.getElementById('minimap-wrap');
+      if (!canvas || !wrap) return;
+
+      const totalLines = view.state.doc.lines;
+      const totalH = totalLines * MM_LINE_H;
+      const wrapH = wrap.clientHeight;
+
+      if (totalH <= wrapH) {
+        canvas.style.top = '0px';
+        return;
+      }
+
+      const scrollDOM = view.scrollDOM;
+      const scrollFrac = scrollDOM.scrollTop / (scrollDOM.scrollHeight - scrollDOM.clientHeight || 1);
+      const lineH = view.defaultLineHeight || 16;
+      const visibleH = scrollDOM.clientHeight / lineH * MM_LINE_H;
+      const vpTop = scrollFrac * (totalH - visibleH);
+      const idealScroll = vpTop - (wrapH - visibleH) / 2;
+      const maxScroll = totalH - wrapH;
+      const cScroll = Math.max(0, Math.min(maxScroll, idealScroll));
+      canvas.style.top = `-${cScroll}px`;
+    }
+
+    function updateMinimapViewport() {
+      const vbox = document.getElementById('minimap-vbox');
+      const canvas = document.getElementById('minimap-canvas');
+      const wrap = document.getElementById('minimap-wrap');
+      if (!vbox || !canvas || !wrap) return;
+
+      const totalLines = view.state.doc.lines;
+      const totalH = totalLines * MM_LINE_H;
+      const scrollH = view.scrollDOM.scrollHeight || 1;
+      const clientH = view.scrollDOM.clientHeight;
+      const scrollT = view.scrollDOM.scrollTop;
+
+      const topFrac = scrollT / scrollH;
+      const hFrac = clientH / scrollH;
+      const cTop = parseFloat(canvas.style.top || '0');
+
+      vbox.style.top = `${topFrac * totalH + cTop}px`;
+      vbox.style.height = `${Math.max(4, hFrac * totalH)}px`;
+    }
+
+    function tokenizeForMinimap(text) {
+      const colors = new Array(text.length).fill('#5a6380');
+      const rules = [
+        [/\/\/.*$/g, '#4a6a4a'],
+        [/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, '#9a7a3a'],
+        [/\b(const|let|var|function|return|if|else|for|while|new|this|true|false|null|undefined|async|await|class|import|export|from|of|in|typeof|instanceof)\b/g, '#4466bb'],  // keyword
+        [/\b\d+\.?\d*\b/g, '#aa6633'],
+        [/\bapi\b/g, '#9966cc'],
+      ];
+      for (const [re, color] of rules) {
+        re.lastIndex = 0;
+        let m;
+        while ((m = re.exec(text)) !== null) {
+          for (let k = m.index; k < m.index + m[0].length; k++) colors[k] = color;
+        }
+      }
+      return colors;
+    }
+
+    function drawMinimap() {
+      if (!mmEnabled) return;
+      const canvas = document.getElementById('minimap-canvas');
+      const wrap = document.getElementById('minimap-wrap');
+      if (!canvas || !wrap) return;
+
+      const doc = view.state.doc;
+      const totalLines = doc.lines;
+      const h = totalLines * MM_LINE_H;
+      canvas.width = MM_W;
+      canvas.height = Math.max(h, 1);
+
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#0d1119';
+      ctx.fillRect(0, 0, MM_W, canvas.height);
+
+      for (let i = 1; i <= totalLines; i++) {
+        const line = doc.line(i);
+        const text = line.text;
+        const y = (i - 1) * MM_LINE_H;
+        const colors = tokenizeForMinimap(text);
+
+        for (let j = 0; j < text.length; j++) {
+          const x = MM_PAD + j * MM_CHAR_W;
+          if (x + MM_CHAR_W > MM_W) break;
+          const ch = text[j];
+          if (ch === ' ' || ch === '\t') continue;
+          ctx.fillStyle = colors[j];
+          ctx.fillRect(x, y, MM_CHAR_W, MM_LINE_H - 0.3);
+        }
+      }
+
+      syncMinimapScroll();
+      updateMinimapViewport();
+    }
+
+    const settingsOverlay = document.getElementById('settings-overlay');
+    const swMinimap = document.getElementById('sw-minimap');
+    const swAutosave = document.getElementById('sw-autosave');
+
+    document.getElementById('settings-btn').addEventListener('click', () => {
+      settingsOverlay.classList.add('open');
+    });
+    document.getElementById('settings-close').addEventListener('click', () => {
+      settingsOverlay.classList.remove('open');
+    });
+    settingsOverlay.addEventListener('click', (e) => {
+      if (e.target === settingsOverlay) settingsOverlay.classList.remove('open');
+    });
+
+    swMinimap.checked = mmEnabled;
+    swMinimap.addEventListener('change', () => {
+      mmEnabled = swMinimap.checked;
+      const wrap = document.getElementById('minimap-wrap');
+      wrap.classList.toggle('mm-hidden', !mmEnabled);
+      if (mmEnabled) drawMinimap();
+    });
+
+    swAutosave.addEventListener('change', () => {
+      autosaveEnabled = swAutosave.checked;
+      if (!autosaveEnabled) {
+        localStorage.removeItem('bloxd_ce_codeblock');
+        localStorage.removeItem('bloxd_ce_worldcode');
+        showEditorToast('Auto-save disabled', '#e34f4f', '#fff');
+      } else {
+        showEditorToast('Auto-save enabled');
+      }
+    });
+
+    document.getElementById('btn-save-file').addEventListener('click', () => {
+      const code = view.state.doc.toString();
+      const blob = new Blob([code], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = currentMode + '.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+      showEditorToast('💾 Saved!');
+    });
+
+    const fileInput = document.getElementById('file-input');
+    document.getElementById('btn-load-file').addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const text = ev.target.result;
+        view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: text } });
+        settingsOverlay.classList.remove('open');
+        showEditorToast('📂 Loaded: ' + file.name);
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    function showEditorToast(msg, bg = '#1dd06d', fg = '#0f1320') {
+      const t = document.getElementById('editor-toast');
+      t.textContent = msg;
+      t.style.background = bg;
+      t.style.color = fg;
+      t.classList.add('show');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+    }
+    function showToast(msg, color = '#1dd06d') {
+      const fg = color === '#e34f4f' ? '#fff' : '#0f1320';
+      showEditorToast(msg, color, fg);
+    }
+
+    document.getElementById('lang-select').addEventListener('change', (e) => {
+      saveCurrentToStorage();
+      currentLang = e.target.value;
+      statusLang.textContent = languageLabels[currentLang];
+      const doc = view.state.doc.toString();
+      view.setState(EditorState.create({ doc, extensions: buildExtensions(currentLang) }));
+    });
+
+    document.getElementById('btn-submit').addEventListener('click', () => {
+      const code = view.state.doc.toString();
+      const blob = new Blob([code], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const fileName = currentMode + ".txt";
+      const link = document.createElement("a");
+      link.download = fileName
+      link.href = url;
+
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('btn-more').addEventListener('click', () => {
+      window.open('https://github.com/bloxdy/code-api', '_blank');
+    });
+
+    document.getElementById('btn-format').addEventListener('click', async () => {
+      const code = view.state.doc.toString();
+
+      const prettierConfig = {
+        javascript: { parser: "babel", plugins: [babel, estree] },
+        typescript: { parser: "babel-ts", plugins: [babel, estree] },
+        json: { parser: "json", plugins: [babel, estree] },
+        html: { parser: "html", plugins: [htmlPlugin] },
+        css: { parser: "css", plugins: [cssPlugin] },
+      };
+
+      const config = prettierConfig[currentLang];
+
+      if (!config) {
+        showToast(`${currentLang} は未対応です`, '#e34f4f');
+        return;
+      }
+
+      try {
+        const formatted = await prettier.format(code, {
+          ...config,
+          semi: true,
+          singleQuote: false,
+          tabWidth: 2,
+        });
+
+        view.dispatch({
+          changes: { from: 0, to: view.state.doc.length, insert: formatted }
+        });
+        showToast('✓ Formatted!');
+      } catch (e) {
+        showToast('Format Error: ' + e.message, '#e34f4f');
+      }
+    });
+
+    document.getElementById('btn-copy').addEventListener('click', () => {
+      navigator.clipboard.writeText(view.state.doc.toString()).then(() => showToast('✓ Copied!'));
+    });
+
+    document.getElementById('btn-hidetool').addEventListener('click', (e) => {
+      tooltipsEnabled = !tooltipsEnabled;
+      const btnText = e.currentTarget.querySelector('.ButtonBody');
+      if (tooltipsEnabled) {
+        btnText.textContent = 'Hide Tooltips';
+        showToast('Tooltips enabled');
+      } else {
+        btnText.textContent = 'Show Tooltips';
+        sigPopup.style.display = 'none';
+        showToast('Tooltips hidden');
+      }
+    });
+
+    function saveCurrentToStorage() {
+      if (!autosaveEnabled) return;
+      const key = currentMode === 'worldcode' ? 'bloxd_ce_worldcode' : 'bloxd_ce_codeblock';
+      localStorage.setItem(key, view.state.doc.toString());
+    }
+
+    function setEditorMode(mode) {
+      const currentDoc = view.state.doc.toString();
+      if (currentMode === 'codeblock') {
+        codeBlockDoc = currentDoc;
+        if (autosaveEnabled) localStorage.setItem('bloxd_ce_codeblock', currentDoc);
+      } else {
+        worldCodeDoc = currentDoc;
+        if (autosaveEnabled) localStorage.setItem('bloxd_ce_worldcode', currentDoc);
+      }
+      currentMode = mode;
+      const header = document.querySelector('.CodeEditMessage');
+      const worldBtn = document.getElementById('btn-world').querySelector('.ButtonBody');
+      if (mode === 'worldcode') {
+        header.textContent = 'World Code';
+        header.style.backgroundColor = 'var(--primary-1)';
+        header.style.color = '#fff';
+        worldBtn.textContent = 'Code Block';
+      } else {
+        header.textContent = 'Code Block';
+        header.style.backgroundColor = 'var(--primary-1)';
+        header.style.color = '#fff';
+        worldBtn.textContent = 'World Code';
+      }
+      statusMode.textContent = `${header.textContent}`;
+      const doc = mode === 'worldcode' ? worldCodeDoc : codeBlockDoc;
+      view.setState(EditorState.create({ doc, extensions: buildExtensions(currentLang) }));
+      view.focus();
+    }
+
+    document.getElementById('btn-world').addEventListener('click', () => {
+      setEditorMode(currentMode === 'codeblock' ? 'worldcode' : 'codeblock');
+    });
+
+    const API_SIGNATURES = {
+      getPosition: { params: [{ "name": "entityId", "type": "EntityId", "optional": false, "desc": "" }], returns: "[number, number, number]", desc: "Get position of a player / entity", deprecated: false },
+      setPosition: { params: [{ "name": "entityId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "x", "type": "number | number[]", "optional": false, "desc": "Can also be an array, in which case y and z shouldn't be passed" }, { "name": "y", "type": "number", "optional": true, "desc": "" }, { "name": "z", "type": "number", "optional": true, "desc": "" }], returns: "void", desc: "Set position of a player / entity", deprecated: false },
+      getPlayerIds: { params: [], returns: "PlayerId[]", desc: "Get all the player ids", deprecated: false },
+      playerIsInGame: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "boolean", desc: "Whether a player is currently in the game", deprecated: false },
+      playerIsLoggedIn: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "boolean", desc: "", deprecated: false },
+      getPlayerPartyWhenJoined: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "PNull<{ partyCode: string; playerDbIds: PlayerDbId[]", desc: "Returns the party that the player was in when they joined the game. The returned object contains the playerDbIds, as well", deprecated: false },
+      getNumPlayers: { params: [], returns: "number", desc: "Get the number of players in the room", deprecated: false },
+      getBlockCoordinatesPlayerStandingOn: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "number[][]", desc: "Get the co-ordinates of the blocks the player is standing on as a list. For example, if the center of the player is at 0,0,0", deprecated: false },
+      getBlockTypesPlayerStandingOn: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "any[]", desc: "Get the types of block the player is standing on", deprecated: false },
+      getUnitCoordinatesLifeformWithin: { params: [{ "name": "lifeformId", "type": "LifeformId", "optional": false, "desc": "" }], returns: "number[][]", desc: "Get the up to 12 unit co-ordinates the lifeform is located within", deprecated: false },
+      showShopTutorial: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "void", desc: "Show the shop tutorial for a player. Will not be shown if they have ever seen the shop tutorial in your game before", deprecated: false },
+      getShieldAmount: { params: [{ "name": "entityId", "type": "EntityId", "optional": false, "desc": "" }], returns: "number", desc: "Get the current shield of an entity", deprecated: false },
+      setShieldAmount: { params: [{ "name": "lifeformId", "type": "LifeformId", "optional": false, "desc": "" }, { "name": "newShieldAmount", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Set the current shield of a lifeform", deprecated: false },
+      getHealth: { params: [{ "name": "entityId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "number", desc: "Get the current health of an entity", deprecated: false },
+      applyHealthChange: { params: [{ "name": "lifeformId", "type": "LifeformId", "optional": false, "desc": "" }, { "name": "changeAmount", "type": "number", "optional": false, "desc": "Must be an integer. A positive amount will increase the entity's health. A negative amount will decrease the entity's shield first, then their health" }, { "name": "broadcastLifeformHurt", "type": "boolean", "optional": true, "desc": "" }], returns: "boolean", desc: "", deprecated: false },
+      setHealth: { params: [{ "name": "entityId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "newHealth", "type": "PNull<number>", "optional": false, "desc": "Can be null to make the player not have health" }, { "name": "increaseMaxHealthIfNeeded", "type": "boolean", "optional": true, "desc": "Optional" }], returns: "boolean", desc: "Set the current health of an entity", deprecated: false },
+      applyMeleeHit: { params: [{ "name": "hittingEId", "type": "LifeformId", "optional": false, "desc": "" }, { "name": "hitEId", "type": "LifeformId", "optional": false, "desc": "" }, { "name": "dirFacing", "type": "number[]", "optional": false, "desc": "" }, { "name": "bodyPartHit", "type": "PNull<LifeformBodyPart>", "optional": true, "desc": "" }], returns: "boolean", desc: "Make it as if hittingEId hit hitEId", deprecated: false },
+      attemptApplyDamage: { params: [], returns: "boolean", desc: "Apply damage to a lifeform", deprecated: false },
+      forceRespawn: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "respawnPos", "type": "number[]", "optional": true, "desc": "" }], returns: "void", desc: "Force respawn a player", deprecated: false },
+      killLifeform: { params: [{ "name": "lifeformId", "type": "LifeformId", "optional": false, "desc": "" }], returns: "void", desc: "Kill a lifeform", deprecated: false },
+      getCurrentKillstreak: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "number", desc: "Gets the player's current killstreak", deprecated: false },
+      clearKillstreak: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "void", desc: "Clears the player's current killstreak", deprecated: false },
+      isAlive: { params: [{ "name": "lifeformId", "type": "LifeformId", "optional": false, "desc": "" }], returns: "boolean", desc: "Whether a lifeform is alive or dead (or on the respawn screen, in a player's case)", deprecated: false },
+      broadcastMessage: { params: [{ "name": "message", "type": "string | CustomTextStyling", "optional": false, "desc": "The text contained within the message. Can use `Custom Text Styling`" }], returns: "void", desc: "Send a message to everyone", deprecated: false },
+      sendMessage: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "Id of the player" }, { "name": "message", "type": "string | CustomTextStyling", "optional": false, "desc": "The text contained within the message. Can use `Custom Text Styling`" }], returns: "void", desc: "Send a message to a specific player", deprecated: false },
+      sendFlyingMiddleMessage: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "Id of the player" }, { "name": "message", "type": "string | CustomTextStyling", "optional": false, "desc": "The text contained within the message. Can be either a string or use `Custom Text Styling`" }, { "name": "distanceFromAction", "type": "number", "optional": false, "desc": "The distance from the action that has caused this message to be displayed," }, { "name": "lifetimeMs", "type": "number", "optional": true, "desc": "How long the message will be visible in milliseconds. Defaults to 1000ms" }], returns: "void", desc: "Send a flying middle message to a specific player", deprecated: false },
+      setClientOption: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "option", "type": "PassedOption", "optional": false, "desc": "The name of the option" }, { "name": "value", "type": "ClientOptions[PassedOption]", "optional": false, "desc": "The new value of the option" }], returns: "void", desc: "Modify a client option at runtime and send to the client if it changed", deprecated: false },
+      getClientOption: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "option", "type": "PassedOption", "optional": false, "desc": "" }], returns: "ClientOptions[PassedOption]", desc: "Returns the current value of a client option", deprecated: false },
+      createShopItem: { params: [{ "name": "categoryKey", "type": "ShopCategoryKey", "optional": false, "desc": "The key of the category to create the item in" }, { "name": "itemKey", "type": "ShopItemKey", "optional": false, "desc": "The unique key for the item" }, { "name": "item", "type": "ShopItem", "optional": false, "desc": "The shop item to create (will be mutated)" }], returns: "void", desc: "Create a new shop item under the given category", deprecated: false },
+      updateShopItem: { params: [{ "name": "categoryKey", "type": "ShopCategoryKey", "optional": false, "desc": "The key of the category containing the item" }, { "name": "itemKey", "type": "ShopItemKey", "optional": false, "desc": "The unique key for the item" }, { "name": "changes", "type": "Partial<ShopItem>", "optional": false, "desc": "Partial shop item properties to update" }], returns: "void", desc: "Update selected properties of an existing shop item", deprecated: false },
+      deleteShopItem: { params: [{ "name": "categoryKey", "type": "ShopCategoryKey", "optional": false, "desc": "The key of the category containing the item" }, { "name": "itemKey", "type": "ShopItemKey", "optional": false, "desc": "The unique key for the item" }], returns: "void", desc: "Delete an existing shop item", deprecated: false },
+      configureShopCategory: { params: [{ "name": "categoryKey", "type": "ShopCategoryKey", "optional": false, "desc": "The key of the category to configure" }, { "name": "config", "type": "ShopCategoryConfig", "optional": false, "desc": "Category configuration properties" }], returns: "void", desc: "Set properties of a shop category", deprecated: false },
+      createShopItemForPlayer: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "The player to create the item for" }, { "name": "categoryKey", "type": "ShopCategoryKey", "optional": false, "desc": "The key of the category to create the item in" }, { "name": "itemKey", "type": "ShopItemKey", "optional": false, "desc": "The unique key for the item" }, { "name": "item", "type": "ShopItem", "optional": false, "desc": "The shop item to create (will be mutated)" }], returns: "void", desc: "Create a new shop item for a specific player", deprecated: false },
+      updateShopItemForPlayer: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "The player to update the item for" }, { "name": "categoryKey", "type": "ShopCategoryKey", "optional": false, "desc": "The key of the category containing the item" }, { "name": "itemKey", "type": "ShopItemKey", "optional": false, "desc": "The unique key for the item" }, { "name": "changes", "type": "Partial<ShopItem>", "optional": false, "desc": "Partial shop item properties to update" }], returns: "void", desc: "Update selected properties of an existing shop item for a specific player", deprecated: false },
+      resetShopItemForPlayer: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "The player to reset the item for" }, { "name": "categoryKey", "type": "ShopCategoryKey", "optional": false, "desc": "The key of the category containing the item" }, { "name": "itemKey", "type": "ShopItemKey", "optional": false, "desc": "The unique key for the item" }], returns: "void", desc: "Delete a specific player's overrides for a shop item", deprecated: false },
+      configureShopCategoryForPlayer: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "The player to configure the category for" }, { "name": "categoryKey", "type": "ShopCategoryKey", "optional": false, "desc": "The key of the category to configure" }, { "name": "config", "type": "ShopCategoryConfig", "optional": false, "desc": "Category configuration properties" }], returns: "void", desc: "Configure a shop category for a specific player", deprecated: false },
+      setClientOptions: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "optionsObj", "type": "Partial<ClientOptions>", "optional": false, "desc": "An object which contains key value pairs of new settings. E.g {canChange: true, speedMultiplier: false}" }], returns: "void", desc: "Modify client options at runtime", deprecated: false },
+      setClientOptionToDefault: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "option", "type": "ClientOption", "optional": false, "desc": "" }], returns: "void", desc: "Sets a client option to its default value. This will be the value stored in your game's defaultClientOptions, otherwise Bloxd's default", deprecated: false },
+      setTargetedPlayerSettingForEveryone: { params: [{ "name": "targetedPlayerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "settingName", "type": "Setting", "optional": false, "desc": "" }, { "name": "settingValue", "type": "OtherEntitySettings[Setting]", "optional": false, "desc": "" }, { "name": "includeNewJoiners", "type": "boolean", "optional": true, "desc": "" }], returns: "void", desc: "Set every player's other-entity setting to a specific value for a particular player", deprecated: false },
+      setEveryoneSettingForPlayer: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "settingName", "type": "Setting", "optional": false, "desc": "" }, { "name": "settingValue", "type": "OtherEntitySettings[Setting]", "optional": false, "desc": "" }, { "name": "includeNewJoiners", "type": "boolean", "optional": true, "desc": "" }], returns: "void", desc: "Set a player's other-entity setting for every lifeform in the game", deprecated: false },
+      setOtherEntitySetting: { params: [{ "name": "relevantPlayerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "targetedEntityId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "settingName", "type": "Setting", "optional": false, "desc": "" }, { "name": "settingValue", "type": "OtherEntitySettings[Setting]", "optional": false, "desc": "" }], returns: "void", desc: "Set a player's other-entity setting for a specific entity", deprecated: false },
+      setOtherEntitySettings: { params: [{ "name": "relevantPlayerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "targetedEntityId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "settingsObject", "type": "Partial<OtherEntitySettings>", "optional": false, "desc": "" }], returns: "void", desc: "Set many of a player's other-entity settings for a specific entity", deprecated: false },
+      getOtherEntitySetting: { params: [{ "name": "relevantPlayerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "targetedEntityId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "settingName", "type": "Setting", "optional": false, "desc": "" }], returns: "OtherEntitySettings[Setting]", desc: "Get the value of a player's other-entity setting for a specific entity", deprecated: false },
+      playParticleEffect: { params: [{ "name": "opts", "type": "TempParticleSystemOpts | ParticlePresetOpts", "optional": false, "desc": "" }, { "name": "clientPredictedBy", "type": "PlayerId", "optional": true, "desc": "Play only on clients where client with playerId clientPredictedBy" }], returns: "void", desc: "Play particle effect on all clients, or only on some clients if clientPredictedBy is specified", deprecated: false },
+      animateEntity: { params: [{ "name": "entityId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "animationSchema", "type": "AnimationSchema | BlockbenchAnimationSchema", "optional": false, "desc": "" }, { "name": "initialTimeFraction", "type": "number", "optional": true, "desc": "" }, { "name": "animationSpeed", "type": "number", "optional": true, "desc": "" }], returns: "void", desc: "Animates the given entity", deprecated: false },
+      getEntityName: { params: [{ "name": "entityId", "type": "EntityId", "optional": false, "desc": "" }], returns: "string", desc: "Get the in game name of an entity", deprecated: false },
+      getPlayerId: { params: [{ "name": "playerName", "type": "string", "optional": false, "desc": "" }], returns: "PNull<PlayerId>", desc: "Given the name of a player, get their id", deprecated: false },
+      getPlayerDbId: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "PlayerDbId", desc: "Given a player, get their permanent identifier that doesn't change when leaving and re-entering", deprecated: false },
+      getPlayerIdFromDbId: { params: [{ "name": "dbId", "type": "PlayerDbId", "optional": false, "desc": "" }], returns: "PNull<PlayerId>", desc: "Returns null if player not in lobby", deprecated: false },
+      kickPlayer: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "reason", "type": "string", "optional": false, "desc": "" }], returns: "void", desc: "", deprecated: false },
+      isBlockInLoadedChunk: { params: [{ "name": "x", "type": "number", "optional": false, "desc": "" }, { "name": "y", "type": "number", "optional": false, "desc": "" }, { "name": "z", "type": "number", "optional": false, "desc": "" }], returns: "boolean", desc: "Check if the block at a specific position is in a loaded chunk", deprecated: false },
+      getBlock: { params: [{ "name": "x", "type": "number | number[]", "optional": false, "desc": "could be an array [x, y, z]. If so, the other params shouldn't be passed" }, { "name": "y", "type": "number", "optional": true, "desc": "" }, { "name": "z", "type": "number", "optional": true, "desc": "" }], returns: "BlockName", desc: "Get the name of a block", deprecated: false },
+      getBlockId: { params: [{ "name": "x", "type": "number", "optional": false, "desc": "" }, { "name": "y", "type": "number", "optional": false, "desc": "" }, { "name": "z", "type": "number", "optional": false, "desc": "" }], returns: "BlockId", desc: "Used to get the block id at a specific position", deprecated: false },
+      setBlock: { params: [{ "name": "x", "type": "number | number[]", "optional": false, "desc": "Can be an array" }, { "name": "y", "type": "number | BlockName", "optional": false, "desc": "Should be blockname if first param is array" }, { "name": "z", "type": "number", "optional": true, "desc": "" }, { "name": "blockName", "type": "BlockName", "optional": true, "desc": "" }], returns: "void", desc: "Set a block. Valid names are those either contained in blockMetadata.ts or are 'Air'", deprecated: false },
+      attemptWorldChangeBlock: { params: [{ "name": "initiatorDbId", "type": "PNull<PlayerDbId>", "optional": false, "desc": "" }, { "name": "x", "type": "number", "optional": false, "desc": "" }, { "name": "y", "type": "number", "optional": false, "desc": "" }, { "name": "z", "type": "number", "optional": false, "desc": "" }, { "name": "blockName", "type": "BlockName", "optional": false, "desc": "" }, { "name": "extraInfo", "type": "WorldBlockChangedInfo", "optional": true, "desc": "" }], returns: "\"preventChange\" | \"preventDrop\" | void", desc: "Initiate a block change \"by the world\"", deprecated: false },
+      getBlockSolidity: { params: [{ "name": "x", "type": "number | number[]", "optional": false, "desc": "" }, { "name": "y", "type": "number", "optional": true, "desc": "" }, { "name": "z", "type": "number", "optional": true, "desc": "" }], returns: "boolean", desc: "Returns whether a block is solid or not", deprecated: false },
+      setBlockRect: { params: [{ "name": "pos1", "type": "number[]", "optional": false, "desc": "array [x, y, z]" }, { "name": "pos2", "type": "number[]", "optional": false, "desc": "array [x, y, z]" }, { "name": "blockName", "type": "BlockName", "optional": false, "desc": "" }], returns: "void", desc: "Helper function that sets all blocks in a rectangle to a specific block", deprecated: false },
+      setBlockWalls: { params: [{ "name": "pos1", "type": "number[]", "optional": false, "desc": "array [x, y, z]" }, { "name": "pos2", "type": "number[]", "optional": false, "desc": "array [x, y, z]" }, { "name": "blockName", "type": "BlockName", "optional": false, "desc": "" }, { "name": "hasFloor", "type": "boolean", "optional": true, "desc": "" }, { "name": "hasCeiling", "type": "boolean", "optional": true, "desc": "" }], returns: "void", desc: "Create walls by providing two opposite corners of the cuboid", deprecated: false },
+      getChunk: { params: [{ "name": "pos", "type": "number[]", "optional": false, "desc": "The returned chunk contains pos" }], returns: "PNull<GameChunk>", desc: "Only use this instead of getBlock if you REALLY need the performance (i.e. you are iterating over tens of thousands of blocks)", deprecated: false },
+      getEmptyChunk: { params: [], returns: "GameChunk", desc: "Only use chunk helpers if you REALLY need the performance (i.e. you are iterating over tens of thousands of blocks)", deprecated: false },
+      getMetaInfo: { params: [{ "name": "blockName", "type": "BlockName | null | undefined", "optional": false, "desc": "" }], returns: "ItemMetaInfo", desc: "Splits the block name by '|'. If no meta info, metaInfo is ''", deprecated: false },
+      blockNameToBlockId: { params: [{ "name": "blockName", "type": "BlockName", "optional": false, "desc": "" }, { "name": "allowInvalidBlock", "type": "boolean", "optional": true, "desc": "Don't throw an error if the block name is invalid" }], returns: "PNull<number>", desc: "Get the numeric id of a block used in the ndarrays returned from getChunk", deprecated: false },
+      blockIdToBlockName: { params: [{ "name": "blockId", "type": "BlockId", "optional": false, "desc": "" }], returns: "BlockName", desc: "Goes from block id to block name. The reverse of blockNameToBlockId", deprecated: false },
+      blockCoordToChunkId: { params: [{ "name": "pos", "type": "number[]", "optional": false, "desc": "" }], returns: "string", desc: "Get the unique id of the chunk containing pos in the current map", deprecated: false },
+      chunkIdToBotLeftCoord: { params: [{ "name": "chunkId", "type": "string", "optional": false, "desc": "" }], returns: "[number, number, number]", desc: "Get the co-ordinates of the block in the chunk with the lowest x, y, and z co-ordinates", deprecated: false },
+      sendTopRightHelper: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "icon", "type": "string", "optional": false, "desc": "Can be any icon from font-awesome" }, { "name": "text", "type": "string", "optional": false, "desc": "The text to send" }], returns: "void", desc: "(this UI element hasn't been properly thought through in combination with other elements like killfeed, uirequests, etc)", deprecated: true },
+      isMobile: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "boolean", desc: "Whether the player is on a mobile device or a computer", deprecated: false },
+      createItemDrop: { params: [{ "name": "x", "type": "number", "optional": false, "desc": "" }, { "name": "y", "type": "number", "optional": false, "desc": "" }, { "name": "z", "type": "number", "optional": false, "desc": "" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "Name of the item. Valid names can be found in blockMetadata.ts and itemMetadata.ts" }, { "name": "amount", "type": "PNull<number>", "optional": true, "desc": "The amount of the item to include in the drop - so when the player picks up the item drop, they get this many of the item" }, { "name": "mergeItems", "type": "boolean", "optional": true, "desc": "Whether to merge the item into a nearby item of same type, if one exists. Defaults to false" }, { "name": "attributes", "type": "ItemAttributes", "optional": true, "desc": "Attributes of the item being dropped" }, { "name": "timeTillDespawn", "type": "number", "optional": true, "desc": "Time till the item automatically despawns in milliseconds. Max of 5 mins" }, { "name": "dropperId", "type": "PNull<LifeformId>", "optional": true, "desc": "Who dropped the item" }, { "name": "options", "type": "ItemDropOptions", "optional": true, "desc": "Additional options, such as doPhysics and size" }], returns: "PNull<EntityId>", desc: "Create a dropped item", deprecated: false },
+      setCantPickUpItem: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "itemId", "type": "EntityId", "optional": false, "desc": "" }], returns: "void", desc: "Prevent a player from picking up an item. itemId returned by createItemDrop", deprecated: false },
+      deleteItemDrop: { params: [{ "name": "itemId", "type": "EntityId", "optional": false, "desc": "" }], returns: "void", desc: "Delete an item drop by item drop entity ID", deprecated: false },
+      getInitialItemMetadata: { params: [{ "name": "itemName", "type": "string", "optional": false, "desc": "" }], returns: "Partial<BlockMetadataItem & NonBlockMetadataItem>", desc: "Get the metadata about a block or item before stats have been modified by any client options", deprecated: false },
+      getItemStat: { params: [{ "name": "lifeformId", "type": "PNull<LifeformId>", "optional": false, "desc": "" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "" }, { "name": "stat", "type": "K", "optional": false, "desc": "" }], returns: "AnyMetadataItem[K]", desc: "Get stat info about a block or item", deprecated: false },
+      setItemStat: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "" }, { "name": "stat", "type": "K", "optional": false, "desc": "" }, { "name": "value", "type": "AnyMetadataItem[K]", desc: "" }], returns: "void", desc: "Set a stat attribute for a block or item", deprecated: false },
+      setCameraDirection: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "direction", "type": "number[]", "optional": false, "desc": "a vector of the direction to look, format [x, y, z]" }], returns: "void", desc: "Set the direction the player is looking", deprecated: false },
+      setPlayerOpacity: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "opacity", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Set a player's opacity", deprecated: false },
+      setPlayerOpacityForOnePlayer: { params: [{ "name": "playerIdWhoViewsOpacityPlayer", "type": "PlayerId", "optional": false, "desc": "The player who sees that with opacity" }, { "name": "playerIdOfOpacityPlayer", "type": "PlayerId", "optional": false, "desc": "The player/player model who is given opacity" }, { "name": "opacity", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Set the level of viewable opacity by one player on another player", deprecated: false },
+      now: { params: [], returns: "number", desc: "Obtain Date.now() value saved at start of current game tick", deprecated: false },
+      checkValid: { params: [{ "name": "entityId", "type": "PNull<EntityId>", "optional": true, "desc": "" }], returns: "boolean", desc: "Check your game (and, optionally, a entity) is still valid and executing", deprecated: false },
+      setCanChangeBlock: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "x", "type": "number", "optional": false, "desc": "" }, { "name": "y", "type": "number", "optional": false, "desc": "" }, { "name": "z", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Let a player change a block at a specific co-ordinate. Useful when client option canChange is false", deprecated: false },
+      setCantChangeBlock: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "x", "type": "number", "optional": false, "desc": "" }, { "name": "y", "type": "number", "optional": false, "desc": "" }, { "name": "z", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Prevents a player from changing a block at a specific co-ordinate. Useful when client option canChange is true", deprecated: false },
+      setCanChangeBlockType: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "blockName", "type": "BlockName", "optional": false, "desc": "" }], returns: "void", desc: "Lets a player Change a block type. Valid names are those contained within blockMetadata.ts and 'Air'", deprecated: false },
+      setCantChangeBlockType: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "blockName", "type": "BlockName", "optional": false, "desc": "" }], returns: "void", desc: "Stops a player from changing a block type. Valid names are those contained within blockMetadata.ts and 'Air'", deprecated: false },
+      resetCanChangeBlockType: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "blockName", "type": "BlockName", "optional": false, "desc": "" }], returns: "void", desc: "Remove any previous can/cant change block type settings for a player", deprecated: false },
+      setCanChangeBlockRect: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "pos1", "type": "number[]", "optional": false, "desc": "Arg as [x, y, z]" }, { "name": "pos2", "type": "number[]", "optional": false, "desc": "Arg as [x, y, z]" }], returns: "void", desc: "Make it so a player can Change blocks within two points. Coordinates are inclusive. E.g. if [0, 0, 0] is pos1", deprecated: false },
+      setCantChangeBlockRect: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "pos1", "type": "number[]", "optional": false, "desc": "Arg as [x, y, z]" }, { "name": "pos2", "type": "number[]", "optional": false, "desc": "Arg as [x, y, z]" }], returns: "void", desc: "Make it so a player cant Change blocks within two points. Coordinates are inclusive. E.g. if [0, 0, 0] is pos1", deprecated: false },
+      resetCanChangeBlockRect: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "pos1", "type": "number[]", "optional": false, "desc": "" }, { "name": "pos2", "type": "number[]", "optional": false, "desc": "" }], returns: "void", desc: "Remove any previous can/cant change block rect settings for a player", deprecated: false },
+      setWalkThroughType: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "blockName", "type": "BlockName", "optional": false, "desc": "" }, { "name": "disable", "type": "boolean", "optional": true, "desc": "If you've enabled a player to walk through a block and want to make the block solid for them again, pass this with true. Otherwise you only need to pass playerId and blockName" }], returns: "void", desc: "Allow a player to walk through a type of block. For blocks that are normally solid and not seethrough, the player will experience slight visual glitches while inside the block", deprecated: false },
+      setWalkThroughRect: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "pos1", "type": "number[]", "optional": false, "desc": "The one corner of the cuboid. Format [x, y, z]" }, { "name": "pos2", "type": "number[]", "optional": false, "desc": "The top right corner of the cuboid. Format [x, y, z]" }, { "name": "updateType", "type": "WalkThroughType", "optional": false, "desc": "The type of update. Whether to make a rect solid, or able to be walked through" }], returns: "void", desc: "Allow a player to walk through (or not walk through) voxels that are located within a given rectangle", deprecated: false },
+      giveItem: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "" }, { "name": "itemAmount", "type": "number", "optional": true, "desc": "" }, { "name": "attributes", "type": "ItemAttributes", "optional": true, "desc": "An optional object for certain types of item. For guns this can contain the shotsLeft field which is the amount of ammo the gun currently has" }], returns: "number", desc: "Give a player an item and a certain amount of that item", deprecated: false },
+      inventoryIsFull: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "boolean", desc: "Whether the player has space in their inventory to get new blocks", deprecated: false },
+      setItemSlot: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "itemSlotIndex", "type": "number", "optional": false, "desc": "0-indexed" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "Can be 'Air', in which case itemAmount will be ignored and the slot will be cleared" }, { "name": "itemAmount", "type": "PNull<number>", "optional": true, "desc": "-1 for infinity. Should not be set, or null, for items that are not stackable" }, { "name": "attributes", "type": "ItemAttributes", "optional": true, "desc": "An optional object for certain types of item. For guns this can contain the shotsLeft field which is the amount of ammo the gun currently has" }, { "name": "tellClient", "type": "boolean", "optional": true, "desc": "whether to tell client about it - results in desync between client and server if client doesnt locally perform the same action" }], returns: "void", desc: "Put an item in a specific index. Default hotbar is indexes 0-9", deprecated: false },
+      removeItemName: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "" }, { "name": "amount", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Remove an amount of item from a player's inventory", deprecated: false },
+      getItemSlot: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "itemSlotIndex", "type": "number", "optional": false, "desc": "" }], returns: "PNull<InvenItem>", desc: "Get the item at a specific index", deprecated: false },
+      hasItem: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "" }], returns: "boolean", desc: "Whether a player has an item", deprecated: false },
+      getInventoryItemAmount: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "" }], returns: "number", desc: "The amount of an itemName a player has", deprecated: false },
+      clearInventory: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "void", desc: "Clear the players inventory", deprecated: false },
+      setSelectedInventorySlotI: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "newI", "type": "number", "optional": false, "desc": "integer from 0-9" }], returns: "void", desc: "Force the player to have the ith inventory slot selected. E.g. newI 0 makes the player have the 0th inventory slot selected", deprecated: false },
+      getSelectedInventorySlotI: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "number", desc: "Get a player's currently selected inventory slot", deprecated: false },
+      getHeldItem: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "PNull<InvenItem>", desc: "Get the currently held item of a player", deprecated: false },
+      getInventoryFreeSlotCount: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "number", desc: "Get the amount of free slots in a player's inventory", deprecated: false },
+      canOpenStandardChest: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "chestX", "type": "number", "optional": false, "desc": "" }, { "name": "chestY", "type": "number", "optional": false, "desc": "" }, { "name": "chestZ", "type": "number", "optional": false, "desc": "" }], returns: "PNull<boolean>", desc: "Checks if a player is able to open a chest at a given location,", deprecated: false },
+      openChestForPlayer: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "x", "type": "number", "optional": false, "desc": "" }, { "name": "y", "type": "number", "optional": false, "desc": "" }, { "name": "z", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Open a chest for a player", deprecated: false },
+      closeChestForPlayer: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "void", desc: "Close a chest for a player", deprecated: false },
+      giveStandardChestItem: { params: [{ "name": "chestPos", "type": "number[]", "optional": false, "desc": "" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "" }, { "name": "itemAmount", "type": "number", "optional": true, "desc": "" }, { "name": "playerId", "type": "PlayerId", "optional": true, "desc": "The player who is interacting with the chest" }, { "name": "attributes", "type": "ItemAttributes", "optional": true, "desc": "An optional object for certain types of item. For guns this can contain the shotsLeft field which is the amount of ammo the gun currently has" }], returns: "number", desc: "Give a standard chest an item and a certain amount of that item", deprecated: false },
+      getStandardChestFreeSlotCount: { params: [{ "name": "chestPos", "type": "number[]", "optional": false, "desc": "" }], returns: "PNull<number>", desc: "Get the amount of free slots in a standard chest", deprecated: false },
+      getStandardChestItemAmount: { params: [{ "name": "chestPos", "type": "number[]", "optional": false, "desc": "" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "" }], returns: "number", desc: "The amount of an itemName a standard chest has", deprecated: false },
+      getStandardChestItemSlot: { params: [{ "name": "chestPos", "type": "number[]", "optional": false, "desc": "" }, { "name": "idx", "type": "number", "optional": false, "desc": "" }], returns: "PNull<InvenItem>", desc: "Get the item at a chest slot. Null if empty otherwise format {name: itemName, amount: amountOfItem}", deprecated: false },
+      getStandardChestItems: { params: [{ "name": "chestPos", "type": "number[]", "optional": false, "desc": "" }], returns: "PNull<InvenItem>[]", desc: "Get all the items from a standard chest in order. Use this instead of repetitive calls to getStandardChestItemSlot", deprecated: false },
+      setStandardChestItemSlot: { params: [{ "name": "chestPos", "type": "number[]", "optional": false, "desc": "" }, { "name": "idx", "type": "number", "optional": false, "desc": "0-indexed" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "Can be 'Air', in which case itemAmount will be ignored and the slot will be cleared" }, { "name": "itemAmount", "type": "number", "optional": true, "desc": "-1 for infinity. Should not be set, or null, for items that are not stackable" }, { "name": "playerId", "type": "PlayerId", "optional": true, "desc": "The player who is interacting with the chest" }, { "name": "attributes", "type": "ItemAttributes", "optional": true, "desc": "An optional object for certain types of item. For guns this can contain the shotsLeft field which is the amount of ammo the gun currently has" }], returns: "void", desc: "", deprecated: false },
+      getMoonstoneChestItemSlot: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "idx", "type": "number", "optional": false, "desc": "" }], returns: "PNull<InvenItem>", desc: "Get the item in a player's moonstone chest slot. Null if empty", deprecated: false },
+      getMoonstoneChestItems: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "PNull<InvenItem>[]", desc: "Get all the items from a moonstone chest in order. Use this instead of repetitive calls to getMoonstoneChestItemSlot", deprecated: false },
+      setMoonstoneChestItemSlot: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "idx", "type": "number", "optional": false, "desc": "0-indexed" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "Can be 'Air', in which case itemAmount will be ignored and the slot will be cleared" }, { "name": "itemAmount", "type": "number", "optional": true, "desc": "-1 for infinity. Should not be set, or null, for items that are not stackable" }, { "name": "metadata", "type": "ItemAttributes", "optional": true, "desc": "An optional object for certain types of item. For guns this can contain the shotsLeft field which is the amount of ammo the gun currently has" }], returns: "void", desc: "Moonstone chests are a type of chest where a player accesses the same contents no matter the location of the moonstone chest", deprecated: false },
+      setBlockData: { params: [{ "name": "x", "type": "number", "optional": false, "desc": "" }, { "name": "y", "type": "number", "optional": false, "desc": "" }, { "name": "z", "type": "number", "optional": false, "desc": "" }, { "name": "data", "type": "object", "optional": false, "desc": "" }], returns: "void", desc: "Store data about a block in a performant manner. Data is cleared when block changes", deprecated: false },
+      getBlockData: { params: [{ "name": "x", "type": "number", "optional": false, "desc": "" }, { "name": "y", "type": "number", "optional": false, "desc": "" }, { "name": "z", "type": "number", "optional": false, "desc": "" }], returns: "any", desc: "Get stored data about a block in a performant manner. Data is cleared when block changes", deprecated: false },
+      getLobbyName: { params: [], returns: "string", desc: "Get the name of the lobby this game is running in", deprecated: false },
+      isPublicLobby: { params: [], returns: "boolean", desc: "Integer lobby names are public", deprecated: false },
+      getLobbyType: { params: [], returns: "LobbyType", desc: "Returns if the current lobby the game is running in is special - e.g. a discord guild or dm, or simply a standard lobby", deprecated: false },
+      progressBarUpdate: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "toFraction", "type": "number", "optional": false, "desc": "The fraction of the progress bar you want to be filled up" }, { "name": "toDuration", "type": "number", "optional": true, "desc": "The time it takes for the bar to reach the given toFraction in ms" }], returns: "void", desc: "Update the progress bar in the bottom right corner", deprecated: false },
+      initiateMiddleScreenBar: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "duration", "type": "number", "optional": false, "desc": "ms over which the MiddleScreenBar fills up" }, { "name": "chargeExpiresAutomatically", "type": "boolean", "optional": true, "desc": "Defaults to true. If true, the bar will disappear upon reaching full. If false, the bar will remain at full until hidden with removeMiddleScreenBar" }, { "name": "horizontalBarRemOffset", "type": "number", "optional": true, "desc": "Offset the bar left or right (in css unit - rem)" }], returns: "void", desc: "This will initiate the MiddleScreenBar, starting at empty and filling up to full over the given duration", deprecated: false },
+      removeMiddleScreenBar: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "void", desc: "If there is any current middle screen bar running, this will hide it", deprecated: false },
+      sendHitmarker: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "The player to show the hitmarker to" }, { "name": "isCrit", "type": "boolean", "optional": true, "desc": "If true, shows an enhanced critical-hit hitmarker with a longer, more dramatic animation" }, { "name": "directionVector", "type": "PNull<number[]>", "optional": true, "desc": "Optional [x, y, z] direction vector. When provided, the hitmarker appears" }], returns: "void", desc: "Show a hitmarker on the player's screen (the X-shaped crosshair flash indicating a successful hit)", deprecated: false },
+      setDirectionArrow: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "The player to show the arrow to" }, { "name": "id", "type": "string", "optional": false, "desc": "Unique identifier for this arrow (allows multiple concurrent arrows)" }, { "name": "position", "type": "number[]", "optional": false, "desc": "[x, y, z] world position the arrow should point toward" }, { "name": "text", "type": "PNull<string | CustomTextStyling>", "optional": true, "desc": "Optional label rendered below the indicator. Supports CustomTextStyling for rich text with icons/colours" }, { "name": "showDistance", "type": "boolean", "optional": true, "desc": "If true, displays the distance (in blocks) from the player to the arrow position" }, { "name": "style", "type": "PNull<TextStyle>", "optional": true, "desc": "Optional style object (same format as CustomTextStyling's StyledText `style`). Controls chevron/marker colour, label typography, and opacity" }], returns: "void", desc: "Show a directional arrow indicator on the player's screen pointing toward a world position", deprecated: false },
+      clearDirectionArrow: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "The player to clear the arrow for" }, { "name": "id", "type": "PNull<string>", "optional": true, "desc": "The arrow identifier to clear. If null, clears all arrows for this player" }], returns: "void", desc: "Clear a directional arrow from the player's screen", deprecated: false },
+      editItemCraftingRecipes: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "itemName", "type": "ItemName", "optional": false, "desc": "" }, { "name": "recipesForItem", "type": "RecipesForItem", "optional": false, "desc": "" }], returns: "void", desc: "Edit the crafting recipes for a player", deprecated: false },
+      resetItemCraftingRecipes: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "itemName", "type": "PNull<string>", "optional": false, "desc": "Resets all crafting recipes for the given player if null, otherwise resets the crafting recipes for the given item" }], returns: "void", desc: "Reset the crafting recipes for a given back to its original bloxd state", deprecated: false },
+      removeItemCraftingRecipes: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "itemName", "type": "PNull<string>", "optional": false, "desc": "Removes all crafting recipes for the given player if null, otherwise removes the crafting recipes for the given item" }], returns: "void", desc: "Removes crafting recipes", deprecated: false },
+      isInsideRect: { params: [{ "name": "coordsToCheck", "type": "number[]", "optional": false, "desc": "" }, { "name": "pos1", "type": "number[]", "optional": false, "desc": "position of one corner" }, { "name": "pos2", "type": "number[]", "optional": false, "desc": "position of opposite corner" }, { "name": "addOneToMax", "type": "boolean", "optional": true, "desc": "" }], returns: "boolean", desc: "Check if a position is within a cubic rectangle", deprecated: false },
+      getEntitiesInRect: { params: [{ "name": "minCoords", "type": "number[]", "optional": false, "desc": "" }, { "name": "maxCoords", "type": "number[]", "optional": false, "desc": "" }], returns: "EntityId[]", desc: "Get the entities in the rect between [minX, minY, minZ] and [maxX, maxY, maxZ]", deprecated: false },
+      getEntityType: { params: [{ "name": "entityId", "type": "EntityId", "optional": false, "desc": "" }], returns: "EntityType", desc: "", deprecated: false },
+      createMobHerd: { params: [], returns: "MobHerdId", desc: "Create a mob herd. A mob herd represents a collection of mobs that move together", deprecated: false },
+      attemptSpawnMob: { params: [{ "name": "mobType", "type": "TMobType", "optional": false, "desc": "" }, { "name": "x", "type": "number", "optional": false, "desc": "" }, { "name": "y", "type": "number", "optional": false, "desc": "" }, { "name": "z", "type": "number", "optional": false, "desc": "" }, { "name": "opts", "type": "MobSpawnOpts<TMobType>", "optional": true, "desc": "Includes:" }], returns: "PNull<MobId>", desc: "Try to spawn a mob into the world at a given position. Returns null on failure", deprecated: false },
+      despawnMob: { params: [{ "name": "mobId", "type": "MobId", "optional": false, "desc": "" }], returns: "void", desc: "Dispose of a mob's state and remove them from the world without triggering \"on death\" flows", deprecated: false },
+      getDefaultMobSetting: { params: [{ "name": "mobType", "type": "TMobType", "optional": false, "desc": "" }, { "name": "setting", "type": "TMobSetting", "optional": false, "desc": "" }], returns: "MobSettings<TMobType>[TMobSetting]", desc: "Returns the current default value for a mob setting", deprecated: false },
+      setDefaultMobSetting: { params: [{ "name": "mobType", "type": "TMobType", "optional": false, "desc": "" }, { "name": "setting", "type": "TMobSetting", "optional": false, "desc": "" }, { "name": "value", "type": "MobSettings<TMobType>[TMobSetting]", "optional": false, "desc": "" }], returns: "void", desc: "Set the default value for a mob setting", deprecated: false },
+      getMobSetting: { params: [{ "name": "mobId", "type": "MobId", "optional": false, "desc": "" }, { "name": "setting", "type": "TMobSetting", "optional": false, "desc": "" }, { "name": "returnDefaultIfNotOverridden", "type": "boolean", "optional": true, "desc": "If true, return the default setting if not overridden" }], returns: "MobSettings<MobType>[TMobSetting]", desc: "Get the current value of a mob setting for a specific mob", deprecated: false },
+      setMobSetting: { params: [{ "name": "mobId", "type": "MobId", "optional": false, "desc": "" }, { "name": "setting", "type": "TMobSetting", "optional": false, "desc": "" }, { "name": "value", "type": "MobSettings<MobType>[TMobSetting]", "optional": false, "desc": "" }], returns: "void", desc: "Set the current value of a mob setting for a specific mob", deprecated: false },
+      getNumMobs: { params: [], returns: "number", desc: "Get the number of mobs in the world", deprecated: false },
+      getMobIds: { params: [], returns: "MobId[]", desc: "Get the mob IDs of all mobs in the world", deprecated: false },
+      getMobAiState: { params: [{ "name": "mobId", "type": "MobId", "optional": false, "desc": "" }], returns: "{ state: MobAiState; params: MobAiStateParams<MobAiState>", desc: "Gets the current AI state for the given mob", deprecated: false },
+      setMobAiState: { params: [{ "name": "mobId", "type": "MobId", "optional": false, "desc": "" }, { "name": "state", "type": "TState", "optional": false, "desc": "" }, { "name": "params", "type": "MobAiStateParams<TState>", "optional": false, "desc": "" }], returns: "void", desc: "Sets the current AI state for the given mob", deprecated: false },
+      attemptCreateThrowable: { params: [{ "name": "throwerEId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "itemName", "type": "ThrowableItem", "optional": false, "desc": "Must be an Item that is usually throwable in-engine" }, { "name": "position", "type": "[number, number, number]", "optional": false, "desc": "Starting position" }, { "name": "direction", "type": "[number, number, number]", "optional": false, "desc": "" }, { "name": "velocityMult", "type": "number", "optional": true, "desc": "Multiplier for the default velocity of the throwable item" }, { "name": "damageMult", "type": "number", "optional": true, "desc": "Multiplier for the default damage of the throwable item" }, { "name": "gravityMult", "type": "number", "optional": true, "desc": "Multiplier for the default gravity of the throwable item" }, { "name": "attributes", "type": "ItemAttributes", "optional": true, "desc": "item attributes (currently used only for the \"Boomerag\" item)" }], returns: "string", desc: "Try to create a throwable entity", deprecated: false },
+      deleteThrowable: { params: [{ "name": "eId", "type": "EntityId", "optional": false, "desc": "" }], returns: "boolean", desc: "Delete a throwable entity before it automatically removes itself", deprecated: false },
+      attemptCreateMeshEntity: { params: [{ "name": "type", "type": "MeshType", "optional": false, "desc": "" }, { "name": "opts", "type": "MeshEntityOpts[MeshType]", "optional": false, "desc": "" }, { "name": "name", "type": "string", "optional": true, "desc": "The default name for the nametag" }, { "name": "physicsOptions", "type": "MeshEntityPhysicsOpts", "optional": true, "desc": "Physics Options" }, { "name": "initiatorId", "type": "EntityId", "optional": true, "desc": "The entity that initiated the creation of the mesh entity" }], returns: "EntityId | null", desc: "Try to create a mesh entity. This creates an entity whose mesh position is synced with clients", deprecated: false },
+      updateMeshEntity: { params: [{ "name": "eId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "type", "type": "MeshType", "optional": false, "desc": "" }, { "name": "opts", "type": "MeshEntityOpts[MeshType]", "optional": false, "desc": "" }], returns: "void", desc: "Update a mesh entity. If used on a non-mesh entity, will do nothing", deprecated: false },
+      deleteMeshEntity: { params: [{ "name": "eId", "type": "EntityId", "optional": false, "desc": "" }], returns: "boolean", desc: "Delete a mesh entity", deprecated: false },
+      applyImpulse: { params: [{ "name": "eId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "xImpulse", "type": "number", "optional": false, "desc": "" }, { "name": "yImpulse", "type": "number", "optional": false, "desc": "" }, { "name": "zImpulse", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Apply an impulse to an entity", deprecated: false },
+      getVelocity: { params: [{ "name": "eId", "type": "EntityId", "optional": false, "desc": "" }], returns: "[number, number, number]", desc: "Get the velocity of an entity", deprecated: false },
+      setVelocity: { params: [{ "name": "eId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "x", "type": "number", "optional": false, "desc": "" }, { "name": "y", "type": "number", "optional": false, "desc": "" }, { "name": "z", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Set the velocity of an entity", deprecated: false },
+      setEntityHeading: { params: [{ "name": "entityId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "newHeading", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Set the heading for a server-auth entity", deprecated: true },
+      getEntityHeading: { params: [{ "name": "entityId", "type": "EntityId", "optional": false, "desc": "" }], returns: "number", desc: "Get the heading for a server-auth entity", deprecated: true },
+      getEntityRotation: { params: [{ "name": "entityId", "type": "EntityId", "optional": false, "desc": "" }], returns: "[number, number, number]", desc: "Get the rotation for a server-auth entity", deprecated: false },
+      setEntityRotation: { params: [{ "name": "entityId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "xRotation", "type": "number", "optional": false, "desc": "" }, { "name": "yRotation", "type": "number", "optional": false, "desc": "" }, { "name": "zRotation", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Set the rotation for a server-auth entity", deprecated: false },
+      setItemAmount: { params: [{ "name": "itemId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "newAmount", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Set the amount of an item in an item entity", deprecated: false },
+      setMaxPlayers: { params: [{ "name": "softMaxPlayers", "type": "number", "optional": false, "desc": "" }, { "name": "maxPlayers", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Update the max players and soft max players matchmaking will use", deprecated: false },
+      addQTE: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "qteParameters", "type": "QTEClientParameters<T>", "optional": false, "desc": "includes type and parameters" }], returns: "QTERequestId", desc: "Create and register the UI for the requested quicktime event (QTE) to the screen", deprecated: false },
+      deleteQTE: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "id", "type": "QTERequestId", "optional": false, "desc": "Returned from the addQTE request you want to cancel" }], returns: "void", desc: "Delete a quicktime event from the screen", deprecated: false },
+      hasActiveQTE: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "boolean", desc: "Returns whether the player has any qteRequests", deprecated: false },
+      sendOverShopInfo: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "info", "type": "string | CustomTextStyling", "optional": false, "desc": "" }], returns: "void", desc: "Show a message over the shop in the same place that a shop item's onBoughtMessage is shown", deprecated: false },
+      openShop: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "toggle", "type": "boolean", "optional": true, "desc": "Whether to close the shop if it's already open" }, { "name": "forceCategoryKey", "type": "PNull<ShopCategoryKey>", "optional": true, "desc": "If set, will change the shop to this category" }, { "name": "onlyIfNonEmpty", "type": "boolean", "optional": true, "desc": "If true, will only open the shop if the category (or shop, if no category is provided) is non-empty" }], returns: "void", desc: "Open the shop UI for a player", deprecated: false },
+      applyEffect: { params: [{ "name": "lifeformId", "type": "LifeformId", "optional": false, "desc": "" }, { "name": "effectName", "type": "string", "optional": false, "desc": "" }, { "name": "duration", "type": "number | null", "optional": false, "desc": "" }], returns: "void", desc: "Apply an effect to a lifeform", deprecated: false },
+      getEffects: { params: [{ "name": "lifeformId", "type": "LifeformId", "optional": false, "desc": "" }], returns: "string[]", desc: "Get all the effects currently applied to a lifeform", deprecated: false },
+      removeEffect: { params: [{ "name": "lifeformId", "type": "LifeformId", "optional": false, "desc": "" }, { "name": "name", "type": "string", "optional": false, "desc": "" }], returns: "void", desc: "Remove an effect from a lifeform", deprecated: false },
+      changePlayerIntoSkin: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "Player to change" }, { "name": "cosmeticType", "type": "CosmeticType", "optional": false, "desc": "Type of cosmetic" }, { "name": "cosmeticName", "type": "CosmeticName", "optional": false, "desc": "Chosen cosmetic, will be made lowercase automatically" }], returns: "void", desc: "Change a part of a player's skin", deprecated: false },
+      removeAppliedSkin: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "void", desc: "Remove gamemode-applied skin from a player", deprecated: false },
+      getPlayerCosmetic: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "cosmeticType", "type": "CosmeticType", "optional": false, "desc": "Type of cosmetic" }], returns: "CosmeticName", desc: "Get a single equipped cosmetic for a player", deprecated: false },
+      scalePlayerMeshNodes: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "nodeScales", "type": "EntityMeshScalingMap", "optional": false, "desc": "" }], returns: "void", desc: "Scale node of a player's mesh by 3d vector", deprecated: false },
+      updateEntityNodeMeshAttachment: { params: [{ "name": "eId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "node", "type": "EntityNamedNode", "optional": false, "desc": "node to attach to" }, { "name": "type", "type": "PNull<MeshType>", "optional": false, "desc": "if null, detaches mesh from this node" }, { "name": "opts", "type": "MeshEntityOpts[MeshType]", "optional": true, "desc": "" }, { "name": "offset", "type": "[number, number, number]", "optional": true, "desc": "" }, { "name": "rotation", "type": "[number, number, number]", "optional": true, "desc": "" }], returns: "void", desc: "Attach/detach mesh instances to/from an entity", deprecated: false },
+      setPlayerPose: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "pose", "type": "PlayerPose", "optional": false, "desc": "" }, { "name": "poseOffset", "type": "[number, number, number]", "optional": true, "desc": "" }], returns: "void", desc: "Set the pose of the player", deprecated: false },
+      setPlayerPhysicsState: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "physicsState", "type": "PlayerPhysicsStateData", "optional": false, "desc": "" }, { "name": "positionOffset", "type": "[number, number, number]", "optional": true, "desc": "Optional offset to adjust the player's collision box" }], returns: "void", desc: "Set physics state of player (vehicle type and tier)", deprecated: false },
+      getPlayerPhysicsState: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "PlayerPhysicsStateData", desc: "Get physics state for player", deprecated: false },
+      addFollowingEntityToPlayer: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "eId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "offset", "type": "number[]", "optional": true, "desc": "" }, { "name": "followsPlayerRotation", "type": "boolean", "optional": true, "desc": "" }], returns: "void", desc: "Add following entity to player", deprecated: false },
+      removeFollowingEntityFromPlayer: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "entityEId", "type": "EntityId", "optional": false, "desc": "" }], returns: "void", desc: "Remove following entity from player", deprecated: false },
+      setCameraZoom: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "zoom", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Set camera zoom for a player", deprecated: false },
+      playSound: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "hears the sound" }, { "name": "soundName", "type": "string", "optional": false, "desc": "Can also be a prefix. If so, a random sound with that prefix will be played" }, { "name": "volume", "type": "number", "optional": false, "desc": "0-1. If it's too quiet and volume is 1, normalise your sound in audacity" }, { "name": "rate", "type": "number", "optional": false, "desc": "The speed of playback. Also affects pitch. 0.5-4. Lower playback = lower pitch" }], returns: "void", desc: "Good for varying the sound. E.g. item pickup sound has a random rate between 1 and 1.5", deprecated: false },
+      broadcastSound: { params: [{ "name": "soundName", "type": "string", "optional": false, "desc": "" }, { "name": "volume", "type": "number", "optional": false, "desc": "" }, { "name": "rate", "type": "number", "optional": false, "desc": "" }, { "name": "exceptPlayerId", "type": "PlayerId", "optional": true, "desc": "" }], returns: "void", desc: "See documentation for api.playSound", deprecated: false },
+      playClientPredictedSound: { params: [{ "name": "soundName", "type": "string", "optional": false, "desc": "" }, { "name": "volume", "type": "number", "optional": false, "desc": "" }, { "name": "rate", "type": "number", "optional": false, "desc": "" }, { "name": "predictedBy", "type": "PlayerId", "optional": true, "desc": "" }], returns: "void", desc: "See documentation for api.playSound", deprecated: false },
+      calcExplosionForce: { params: [{ "name": "eId", "type": "EntityId", "optional": false, "desc": "" }, { "name": "explosionType", "type": "ExplosionType", "optional": false, "desc": "" }, { "name": "knockbackFactor", "type": "number", "optional": false, "desc": "" }, { "name": "explosionRadius", "type": "number", "optional": false, "desc": "" }, { "name": "explosionPos", "type": "number[]", "optional": false, "desc": "" }, { "name": "ignoreProjectiles", "type": "boolean", "optional": false, "desc": "" }], returns: "{ force: [number, number, number]; forceFrac: number;", desc: "", deprecated: false },
+      getPlayerTargetInfo: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "{ position: [number, number, number]; normal: [number, number, number]; adjacent: [number, number, number]", desc: "Get the position of a player's target block and the block adjacent to it (e.g. where a block would be placed)", deprecated: false },
+      getPlayerFacingInfo: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "{ camPos: [number, number, number]; dir: [number, number, number]; angleDir: AngleDir; moveHeading: number", desc: "Get the position of a player's camera and the direction (both in Euclidean and spherical coordinates) they are attempting to use an item", deprecated: false },
+      raycastForBlock: { params: [{ "name": "fromPos", "type": "number[]", "optional": false, "desc": "" }, { "name": "dirVec", "type": "number[]", "optional": false, "desc": "" }], returns: "BlockRaycastResult", desc: "Raycast for a block in the world", deprecated: false },
+      isPlayerCrouching: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "boolean", desc: "Check whether a player is crouching", deprecated: false },
+      getAuraInfo: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }], returns: "{ level: number; totalAura: number; auraPerLevel: number", desc: "Get the aura info for a player", deprecated: false },
+      setTotalAura: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "totalAura", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Sets the total aura for a player. Will not go over max level or under 0", deprecated: false },
+      setAuraLevel: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "level", "type": "number", "optional": false, "desc": "" }], returns: "void", desc: "Set the aura level for a player - shortcut for setTotalAura(level * auraPerLevel)", deprecated: false },
+      applyAuraChange: { params: [{ "name": "playerId", "type": "PlayerId", "optional": false, "desc": "" }, { "name": "auraDiff", "type": "number", "optional": false, "desc": "" }], returns: "number", desc: "Add (or remove if negative) aura to a player. Will not go over max level or under 0", deprecated: false },
+      setCallbackValueFallback: { params: [{ "name": "callbackName", "type": "string", "optional": false, "desc": "" }, { "name": "defaultValue", "type": "any", "optional": false, "desc": "" }], returns: "void", desc: "Set a default value to be returned by your callback code if it throws an error", deprecated: false },
+    };
+    const sigPopup = document.getElementById('sig-popup');
+
+    function getSignatureContext(view) {
+      const state = view.state;
+      const cursor = state.selection.main.head;
+      const text = state.doc.sliceString(0, cursor);
+      let depth = 0, parenPos = -1;
+      for (let i = cursor - 1; i >= Math.max(0, cursor - 2000); i--) {
+        const ch = text[i];
+        if (ch === ')') depth++;
+        else if (ch === '(') {
+          if (depth === 0) { parenPos = i; break; }
+          depth--;
+        }
+      }
+      if (parenPos === -1) return null;
+      const before = text.slice(0, parenPos);
+      const match = before.match(/api\.(\w+)$/);
+      if (!match) return null;
+      const methodName = match[1];
+      const sig = API_SIGNATURES[methodName];
+      if (!sig) return null;
+      let paramIdx = 0, d = 0;
+      for (let i = parenPos + 1; i < cursor; i++) {
+        const ch = text[i];
+        if ('([{'.includes(ch)) d++;
+        else if (')]}'.includes(ch)) d--;
+        else if (ch === ',' && d === 0) paramIdx++;
+      }
+      return { methodName, sig, paramIdx };
+    }
+
+    function renderSigPopup(view) {
+      const ctx = getSignatureContext(view);
+      if (!ctx) { sigPopup.style.display = 'none'; return; }
+      const { methodName, sig, paramIdx } = ctx;
+
+      let html = '';
+      if (sig.deprecated) {
+        html += `<div class="sig-deprecated" style="white-space:normal">⚠ deprecated</div>`;
+      }
+
+      if (sig.params.length === 0) {
+        html +=
+          `<span class="sig-method">${methodName}</span>` +
+          `<span class="sig-paren">()</span>` +
+          `<span class="sig-sep">: </span>` +
+          `<span class="sig-returns">${sig.returns}</span>`;
+      } else {
+        const indent = '  ';
+        const lastIdx = sig.params.length - 1;
+        html += `<span class="sig-method">${methodName}</span><span class="sig-paren">(</span>\n`;
+        sig.params.forEach((p, i) => {
+          const isActive = i === paramIdx;
+          const optMark = p.optional ? `<span class="sig-optional">?</span>` : '';
+          const comma = i < lastIdx ? `<span class="sig-sep">,</span>` : '';
+          html += indent +
+            `<span class="sig-param${isActive ? ' active' : ''}">${p.name}</span>${optMark}` +
+            `<span class="sig-sep">: </span>` +
+            `<span class="sig-type">${p.type}</span>` +
+            comma + '\n';
+        });
+        html +=
+          `<span class="sig-paren">)</span>` +
+          `<span class="sig-sep">: </span>` +
+          `<span class="sig-returns">${sig.returns}</span>`;
+      }
+
+      const activeParam = sig.params[paramIdx];
+      if (activeParam && activeParam.desc) {
+        html += `\n<span class="sig-param-hint" style="white-space:normal;display:block;margin-top:4px;">` +
+          `<span class="sig-param-name">${activeParam.name}</span>` +
+          ` — <span class="sig-param-desc">${activeParam.desc}</span></span>`;
+      }
+      if (sig.desc) html += `<div class="sig-desc" style="white-space:normal">${sig.desc}</div>`;
+
+      sigPopup.innerHTML = html;
+
+      const cursor = view.state.selection.main.head;
+      const coords = view.coordsAtPos(cursor);
+      if (!coords) { sigPopup.style.display = 'none'; return; }
+
+      const popH = sigPopup.offsetHeight || 100;
+      let left = coords.left;
+      let top = coords.top - popH - 8;
+      if (top < 0) top = coords.bottom + 8;
+      if (left + 480 > window.innerWidth - 8) left = window.innerWidth - 480 - 8;
+      if (left < 8) left = 8;
+
+      sigPopup.style.left = `${left}px`;
+      sigPopup.style.top = `${top}px`;
+      sigPopup.style.display = 'block';
+    }
+
+    function updateSignatureHelp(view) {
+      if (!tooltipsEnabled) { sigPopup.style.display = 'none'; return; }
+      renderSigPopup(view);
+    }
+
+    function buildApiInfoDom(name, sig) {
+      const el = document.createElement('div');
+      el.style.cssText = [
+        'font-family:"JetBrains Mono","Fira Code",Consolas,monospace',
+        'font-size:12px',
+        'line-height:1.75',
+        'padding:5px 2px',
+        'white-space:pre',
+      ].join(';');
+
+      if (sig.deprecated) {
+        const dep = document.createElement('div');
+        dep.style.cssText = 'color:#e06c75;margin-bottom:4px;font-size:11px;white-space:normal;';
+        dep.textContent = '⚠ deprecated';
+        el.appendChild(dep);
+      }
+
+      const sig_line = document.createElement('div');
+
+      if (sig.params.length === 0) {
+        sig_line.innerHTML =
+          `<span style="color:#abb2bf;font-weight:700">${name}</span>` +
+          `<span style="color:#abb2bf">()</span>` +
+          `<span style="color:#5c6370">: </span>` +
+          `<span style="color:#56b6c2;font-weight:700">${sig.returns}</span>`;
+      } else {
+        const indent = '  ';
+        const lastIdx = sig.params.length - 1;
+
+        let html =
+          `<span style="color:#abb2bf;font-weight:700">${name}</span>` +
+          `<span style="color:#abb2bf">(</span>\n`;
+
+        sig.params.forEach((p, i) => {
+          const opt = p.optional ? `<span style="color:#5c6370">?</span>` : '';
+          const comma = i < lastIdx ? `<span style="color:#5c6370">,</span>` : '';
+          const desc = p.desc
+            ? `  <span style="color:#4a5370;font-size:11px">// ${p.desc}</span>`
+            : '';
+          html +=
+            `${indent}` +
+            `<span style="color:#e5c07b">${p.name}</span>${opt}` +
+            `<span style="color:#5c6370">: </span>` +
+            `<span style="color:#61afef">${p.type}</span>` +
+            comma + desc + `\n`;
+        });
+
+        html +=
+          `<span style="color:#abb2bf">)</span>` +
+          `<span style="color:#5c6370">: </span>` +
+          `<span style="color:#56b6c2;font-weight:700">${sig.returns}</span>`;
+
+        sig_line.innerHTML = html;
+      }
+
+      el.appendChild(sig_line);
+
+      if (sig.desc) {
+        const desc = document.createElement('div');
+        desc.style.cssText = [
+          'color:#7a8499',
+          'font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", "Verdana", "Candara", "Roboto", "Oxygen", "Ubuntu", "Trebuchet MS", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
+          'font-size:11.5px',
+          'margin-top:6px',
+          'border-top:1px solid #2a3050',
+          'padding-top:5px',
+          'white-space:normal',
+          'line-height:1.5',
+        ].join(';');
+        desc.textContent = sig.desc;
+        el.appendChild(desc);
+      }
+
+      return el;
+    }
+
+    const API_METHODS = Object.entries(API_SIGNATURES).map(([name, sig]) => {
+      const paramStr = sig.params.map(p => p.optional ? p.name + '?' : p.name).join(', ');
+      return { name, params: paramStr, returns: sig.returns, desc: sig.desc, deprecated: sig.deprecated };
+    });
+
+    const GLOBAL_VARS = [
+      { label: "api", type: "variable", detail: "const api: GameApi", info: "The Bloxd.io Game API object. Use api. to access all methods." },
+      { label: "myId", type: "variable", detail: "const myId: PlayerId", info: "The player ID of who is running the code." },
+      { label: "playerId", type: "variable", detail: "const playerId: PlayerId", info: "The player ID of who is running the code (same as myId)." },
+      { label: "thisPos", type: "variable", detail: "const thisPos: [number, number, number]", info: "The position [x, y, z] of the currently executing code block or board." },
+      { label: "ownerDbId", type: "variable", detail: "const ownerDbId: PlayerDbId", info: "The permanent database ID of the world owner." },
+    ];
+
+    const CALLBACKS = [
+      { label: "tick", detail: "= (ms: number) => void", info: "Called every tick, 20 times per second." },
+      { label: "onClose", detail: "= (serverIsShuttingDown: boolean) => void", info: "Called when the lobby is shutting down." },
+      { label: "onPlayerJoin", detail: "= (playerId: string, fromGameReset: boolean) => void", info: "Called when a player joins the lobby." },
+      { label: "onPlayerLeave", detail: "= (playerId: string, serverIsShuttingDown: boolean) => void", info: "Called when a player leaves the lobby." },
+      { label: "onPlayerJump", detail: "= (playerId: string) => void", info: "Called when a player jumps." },
+      { label: "onRespawnRequest", detail: "= (playerId: string) => void", info: "Called when a player requests to respawn." },
+      { label: "playerCommand", detail: "= (playerId: string, command: string) => boolean", info: "Called when a player sends a command." },
+      { label: "onPlayerChat", detail: "= (playerId: string, chatMessage: string, channelName?: string) => void", info: "Called when a player sends a chat message." },
+      { label: "onPlayerChangeBlock", detail: "= (playerId: string, ...) => void", info: "Called when a player changes a block." },
+      { label: "onPlayerDropItem", detail: "= (playerId: string, ...) => void", info: "Called when a player drops an item." },
+      { label: "onPlayerPickedUpItem", detail: "= (playerId: string, ...) => void", info: "Called when a player picks up an item." },
+      { label: "onPlayerSelectInventorySlot", detail: "= (playerId: string, ...) => void", info: "Called when a player selects an inventory slot." },
+      { label: "onBlockStand", detail: "= (playerId: string, ...) => void", info: "Called when a player stands on a block." },
+      { label: "onPlayerAttemptCraft", detail: "= (playerId: string, ...) => void", info: "Called when a player attempts to craft." },
+      { label: "onPlayerCraft", detail: "= (playerId: string, ...) => void", info: "Called when a player crafts." },
+      { label: "onPlayerAttemptOpenChest", detail: "= (playerId: string, ...) => void", info: "Called when a player attempts to open a chest." },
+      { label: "onPlayerOpenedChest", detail: "= (playerId: string, ...) => void", info: "Called when a player opens a chest." },
+      { label: "onWorldChangeBlock", detail: "= (...) => void", info: "Called when the world changes a block." },
+      { label: "onPlayerAttack", detail: "= (playerId: string, ...) => void", info: "Called when a player attacks." },
+      { label: "onPlayerDamagingOtherPlayer", detail: "= (playerId: string, ...) => void", info: "Called when a player damages another player." },
+      { label: "onPlayerDamagingMob", detail: "= (playerId: string, mobId: string, ...) => void", info: "Called when a player damages a mob." },
+      { label: "onMobDamagingPlayer", detail: "= (mobId: string, playerId: string, ...) => void", info: "Called when a mob damages a player." },
+      { label: "onAttemptKillPlayer", detail: "= (playerId: string, ...) => void", info: "Called when a player is about to be killed." },
+      { label: "onPlayerKilledOtherPlayer", detail: "= (killerId: string, killedId: string) => void", info: "Called when a player kills another player." },
+      { label: "onMobKilledPlayer", detail: "= (mobId: string, playerId: string) => void", info: "Called when a mob kills a player." },
+      { label: "onPlayerKilledMob", detail: "= (playerId: string, mobId: string) => void", info: "Called when a player kills a mob." },
+      { label: "onPlayerFinishQTE", detail: "= (playerId: string, id: QTERequestId, result: any) => void", info: "Called when a player finishes a QTE." },
+      { label: "onPlayerBoughtShopItem", detail: "= (playerId: string, ...) => void", info: "Called when a player buys a shop item." },
+      { label: "onChunkLoaded", detail: "= (chunkId: string) => void", info: "Called when a chunk is loaded." },
+      { label: "onItemDropCreated", detail: "= (itemId: EntityId, ...) => void", info: "Called when an item drop is created." },
+      { label: "doPeriodicSave", detail: "= () => void", info: "Called periodically to save game data." },
+    ];
+
+    function myCompletions(context) {
+      if (!tooltipsEnabled) return null;
+
+      let apiNode = context.matchBefore(/api\.\w*/);
+      if (apiNode) {
+        return {
+          from: apiNode.from + 4,
+          validFor: /^\w*$/,
+          options: API_METHODS.map(m => ({
+            label: m.name,
+            type: m.deprecated ? "property" : "method",
+            detail: `(${m.returns})`,
+            info: () => buildApiInfoDom(m.name, API_SIGNATURES[m.name] || { params: [], returns: m.returns, desc: m.desc, deprecated: m.deprecated }),
+            boost: m.deprecated ? -5 : 0,
+          }))
+        };
+      }
+
+      let word = context.matchBefore(/\w+/);
+      if (!word || (word.from === word.to && !context.explicit)) return null;
+
+      const prefix = word.text.toLowerCase();
+
+      const varOptions = GLOBAL_VARS
+        .filter(v => v.label.toLowerCase().startsWith(prefix))
+        .map(v => ({ ...v, boost: 10 }));
+
+      const cbOptions = (currentMode === 'worldcode' ? CALLBACKS : [])
+        .filter(c => c.label.toLowerCase().startsWith(prefix))
+        .map(c => ({ ...c, type: "function", boost: 5 }));
+
+      const keywords = ["as", "asserts", "async", "await", "break", "case", "catch", "class",
+        "const", "continue", "debugger", "default", "delete", "do", "else", "enum", "export",
+        "extends", "false", "finally", "for", "from", "function", "if", "import", "in",
+        "instanceof", "let", "new", "null", "of", "return", "static", "switch", "this",
+        "throw", "true", "try", "typeof", "undefined", "var", "void", "while", "with", "yield"];
+      const kwOptions = keywords
+        .filter(k => k.startsWith(prefix))
+        .map(k => ({ label: k, type: "keyword" }));
+
+      return {
+        from: word.from,
+        validFor: /^\w*$/,
+        options: [...varOptions, ...cbOptions, ...kwOptions],
+      };
+    }
+  </script>
+</body>
+
+</html>

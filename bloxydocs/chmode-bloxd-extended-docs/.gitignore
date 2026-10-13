@@ -1,0 +1,4 @@
+# Ignore all files ending with .Identifier
+*.Identifier
+node_modules
+package-lock.json

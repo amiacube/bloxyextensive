@@ -1,0 +1,58 @@
+/*
+* Transcribed to GitHub by M1DNIGHT_SV
+*/
+
+//Custom blocks as parts of player character
+
+api.updateEntityNodeMeshAttachment(myId, "ArmRightMesh", "BloxdBlock",
+{blockName:"Tribe Protector",size:.3,
+meshOffset:[0,0,0]},[-0.08,-0.57,0],[0,0,0])
+
+api.updateEntityNodeMeshAttachment(myId, "ArmLeftMesh", "BloxdBlock",
+{blockName:"Protector",size:.3,
+meshOffset:[0,0,0]},[0.08,-0.57,0],[0,0,0])
+
+api.updateEntityNodeMeshAttachment(myId, "HeadMesh", "BloxdBlock",
+{blockName:"Code Block",size:.67,
+meshOffset:[0,0,0]},[0,0.33,0],[0,0,0])
+
+api.scalePlayerMeshNodes(myId, {
+"TorsoNode": [1,1,1], 
+"HeadMesh": [1,1,1],
+"ArmRightMesh": [1,1,1], 
+"ArmLeftMesh": [1,1,1], 
+"LegLeftMesh": [1,1,1],
+"LegRightMesh": [1,1,1],
+});
+
+
+// Available skins: IronMelon, Wizard, FireWizard, Zombie, TraderOne, TraderTwo, TraderThree.
+
+//**Only paste one and not the whole code lol**
+api.changePlayerIntoSkin(myId, "body", "IronMelon")
+api.changePlayerIntoSkin(myId, "legs", "IronMelon")
+api.changePlayerIntoSkin(myId, "head", "IronMelon")
+
+api.changePlayerIntoSkin(myId, "body", "Wizard")
+api.changePlayerIntoSkin(myId, "legs", "Wizard")
+api.changePlayerIntoSkin(myId, "head", "Wizard")
+
+api.changePlayerIntoSkin(myId, "body", "FireWizard")
+api.changePlayerIntoSkin(myId, "legs", "FireWizard")
+api.changePlayerIntoSkin(myId, "head", "FireWizard")
+
+api.changePlayerIntoSkin(myId, "body", "Zombie")
+api.changePlayerIntoSkin(myId, "legs", "Zombie")
+api.changePlayerIntoSkin(myId, "head", "Zombie")
+
+api.changePlayerIntoSkin(myId, "body", "TraderOne")
+api.changePlayerIntoSkin(myId, "legs", "TraderOne")
+api.changePlayerIntoSkin(myId, "head", "TraderOne")
+
+api.changePlayerIntoSkin(myId, "body", "TraderTwo")
+api.changePlayerIntoSkin(myId, "legs", "TraderTwo")
+api.changePlayerIntoSkin(myId, "head", "TraderTwo")
+
+api.changePlayerIntoSkin(myId, "body", "TraderThree")
+api.changePlayerIntoSkin(myId, "legs", "TraderThree")
+api.changePlayerIntoSkin(myId, "head", "TraderThree")

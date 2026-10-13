@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon.png?v=5">
+    <title>BloxdWorldCode - Terms, Privacy & Rules</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Press Start 2P', monospace; image-rendering: pixelated; }
+        body { background: linear-gradient(135deg, #040c06, #0b1f10, #040c06); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; position: relative; padding: 40px 20px; }
+        @keyframes gradientBG { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .bg-animation { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .square { position: absolute; background: transparent; animation: fall linear infinite; bottom: 100%; }
+        .square:nth-child(1) { left: 6%; width: 40px; height: 40px; border: 4px solid #39ff14; box-shadow: 0 0 15px #39ff14; animation-duration: 8s; }
+        .square:nth-child(2) { left: 20%; width: 20px; height: 20px; border: 4px solid #00ffff; box-shadow: 0 0 10px #00ffff; animation-duration: 5s; animation-delay: 2s; }
+        .square:nth-child(3) { left: 80%; width: 50px; height: 50px; border: 5px solid #39ff14; box-shadow: 0 0 18px #39ff14; animation-duration: 10s; animation-delay: 3s; }
+        .square:nth-child(4) { left: 92%; width: 25px; height: 25px; border: 4px solid #00ffff; box-shadow: 0 0 10px #00ffff; animation-duration: 6s; animation-delay: 0.5s; }
+        @keyframes fall { 0% { transform: translateY(-10%) rotate(0deg); opacity: 0; } 10%, 90% { opacity: 0.35; } 100% { transform: translateY(115vh) rotate(360deg); opacity: 0; } }
+        .nav-container { position: absolute; top: 30px; left: 30px; z-index: 10; }
+        .dropdown { position: relative; display: inline-block; padding-bottom: 25px; }
+        .dropbtn { background-color: #0b1f10; color: #39ff14; border: 4px solid #39ff14; padding: 14px 20px; font-size: 0.8rem; cursor: pointer; box-shadow: 4px 4px 0px #000; transition: transform 0.1s, box-shadow 0.1s; }
+        .dropdown:hover .dropbtn { background-color: #39ff14; color: #000; box-shadow: 2px 2px 0px #000; transform: translate(2px, 2px); }
+        .dropdown-content { display: none; position: absolute; top: 55px; left: 0; background-color: rgba(4, 12, 6, 0.98); min-width: 320px; border: 6px solid #10b981; box-shadow: 0 0 25px #10b981, 6px 6px 0px #000; outline: 6px solid #4ade80; padding: 10px; z-index: 99999; }
+        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-content a { color: #00ffff; padding: 14px; text-decoration: none; display: block; font-size: 0.75rem; border-bottom: 4px dashed #10b981; text-align: left; }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background-color: #00ffff; color: #000; }
+        .header-section { text-align: center; margin-bottom: 30px; z-index: 2; max-width: 1050px; margin-top: 60px; }
+        h1 { font-size: 2.2rem; color: #a6ff00; text-shadow: 0 0 20px #39ff14; margin-bottom: 15px; letter-spacing: -1px; line-height: 1.4; }
+        .subtitle { font-size: 0.75rem; color: #00ffff; text-shadow: 0 0 8px #00ffff; line-height: 1.8; }
+        .main-container { width: 100%; max-width: 1050px; background: rgba(4, 12, 6, 0.92); border: 8px solid #10b981; box-shadow: 0 0 30px #10b981, inset 0 0 20px rgba(57, 255, 20, 0.2); outline: 8px solid #4ade80; z-index: 2; padding: 20px 30px; margin-bottom: 40px; }
+        .policy-section { border-bottom: 8px dashed #10b981; padding: 20px 0; }
+        .policy-section:last-of-type { border-bottom: none; }
+        h2 { font-size: 1.1rem; color: #ffff00; text-shadow: 0 0 8px rgba(255, 255, 0, 0.4); margin-bottom: 10px; }
+        p { font-size: 0.8rem; color: #39ff14; line-height: 1.8; margin-bottom: 10px; }
+        .sub-heading { color: #00ffff; font-size: 0.85rem; margin-top: 15px; margin-bottom: 5px; display: block; text-shadow: 0 0 4px #00ffff; }
+        ul { list-style: none; padding-left: 10px; }
+        li { font-size: 0.75rem; color: #fff; line-height: 1.8; margin-bottom: 10px; position: relative; padding-left: 25px; }
+        li::before { content: '■'; position: absolute; left: 0; color: #ff007f; text-shadow: 0 0 5px #ff007f; font-size: 0.7rem; }
+        .footer-copyright { color: rgba(21, 255, 0, 0.6); font-family: monospace; font-size: 10px; text-align: center; z-index: 2; letter-spacing: 1px; border-top: 2px dashed rgba(16, 185, 129, 0.3); width: 100%; max-width: 1050px; padding-top: 25px; margin-top: auto; }
+        @media (max-width: 900px) { h1 { font-size: 1.6rem; } .main-container { padding: 15px; } }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="square"></div><div class="square"></div><div class="square"></div><div class="square"></div>
+    </div>
+    <nav class="nav-container">
+        <div class="dropdown">
+            <button class="dropbtn">MENU ▼</button>
+            <div class="dropdown-content">
+                <a href="index.html">Home</a><a href="main.html">Commands</a><a href="code.html">World Code List</a><a href="api.html">Bloxd.io API's</a><a href="bloxd.html">Play Bloxd.io</a><a href="comment.html">AI Chat</a><a href="chat.html">Community Chat</a><a href="post.html">Community Posts</a>
+            </div>
+        </div>
+    </nav>
+    <div class="header-section">
+        <h1>TERMS & PRIVACY</h1>
+        <p class="subtitle">Official documentation regarding data usage, rules, and community conditions</p>
+    </div>
+    <div class="main-container">
+        <div class="policy-section">
+            <h2>1. PRIVACY POLICY</h2>
+            <p>We respect your privacy. Just like BloxdHub, we are 100% transparent about your data across our tools, boxes, and profile parameters.</p>
+            <span class="sub-heading">A. Accounts and Supabase Storage</span>
+            <ul>
+                <li>When you register a profile on our platform, your username and tokens are stored securely inside our database infrastructure on Supabase.</li>
+                <li>This storage exists solely to keep track of profile parameters and save chat preferences. We do not inspect, share, or sell this text information.</li>
+            </ul>
+            <span class="sub-heading">B. Code Submissions and Email Logs</span>
+            <ul>
+                <li>If you use our script forms to submit custom commands, the text data is routed safely straight to our email servers at BloxdWorldCode@proton.me.</li>
+                <li>All text info is completely private and secured under zero-access encryption layers, checked only by staff to review code logs.</li>
+            </ul>
+        </div>
+        <div class="policy-section">
+            <h2>2. TERMS AND CONDITIONS</h2>
+            <p>By entering this site or copying data blocks from our web directory, you legally agree to follow these official platform agreements:</p>
+            <span class="sub-heading">A. Intellectual Property & License Laws</span>
+            <ul>
+                <li>All layout code styles, neon UI elements, custom scripts, and graphics are owned by our network. You may not copy or reuse the title "BloxdWorldCode" without an official license from Shahadah Studios Elite.</li>
+                <li>The API method definitions listed on this site are extracted directly from official bloxd.io/docs parameters for the purpose of helping community developers learn scripting logic safely.</li>
+            </ul>
+            <span class="sub-heading">B. Limitation of Liability</span>
+            <ul>
+                <li>We are an independent community fan platform. We are not officially affiliated with the main Bloxd.io game development staff.</li>
+                <li>We ensure that all code scripts are valid and safe. However, we are not responsible if an incorrectly copied code string or loops block causes issues inside your private custom game lobbies.</li>
+            </ul>
+        </div>
+        <div class="policy-section">
+            <h2>3. COMMUNITY RULES & LOBBY CONDUCT</h2>
+            <p>Our platform is proud to be the 10th most used Bloxd fan community on the web. To keep our public discussion nodes clean, our 3 active moderators enforce these strict rules:</p>
+            <span class="sub-heading">A. Interactive Chat & Comments Rules</span>
+            <ul>
+                <li><strong>No Flooding or Exploiting:</strong> Do not spam large code sheets, broken loops, advertising links, or repetitive text inside our Minnit Chat frame or Giscus comment streams.</li>
+                <li><strong>Respect the Community:</strong> Harassment, mean comments, or malicious language will result in an immediate firewall ban. Keep discussions friendly, productive, and focused on building.</li>
+            </ul>
+            <span class="sub-heading">B. Moderator Authority</span>
+            <ul>
+                <li>Our verified chat moderators have full permission and tools to kick, mute, or ban any session node that is caught violating these guidelines.</li>
+                <li>Decisions made by the server administration team are final. If you witness a bug or need to report bad behavior, contact our desk instantly at BloxdWorldCode@proton.me.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        All Copyrights Reserved - DO NOT reuse the title "BloxdWorldCode" Without License from Shahadah Studios Elite
+    </div>
+</body>
+</html>
+

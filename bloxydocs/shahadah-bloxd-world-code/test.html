@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloxdWorldCode</title>
+    <meta name="google-site-verification" content="ON2-0a9uMld72pjnSeQmhBYf-Dv77KaRMOFGa6ACOQE" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=final">
+    <link rel="preconnect" href="https://googleapis.com"><link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js');}</script>
+</head>
+<body>
+    <div class="bg-animation"><div class="square"></div><div class="square"></div><div class="square"></div><div class="square"></div></div>
+
+    <div class="popup-overlay" id="whatsNewPopup">
+        <div class="popup-box">
+            <button class="close-x-btn" onclick="document.getElementById('whatsNewPopup').style.display='none'">X</button>
+            <h2>What's New ✨</h2>
+            <div class="popup-content">
+                <span class="tag">NEW SYSTEM LAUNCH</span>
+                <ul>
+                    <li><strong>Official PWA Support!</strong> BWC is an installable desktop launcher app with zero lag.</li>
+                    <li><strong>Better Chat Layout!</strong> Community messaging pipelines optimized for fluid conversations.</li>
+                    <li><strong>Terms & Privacy Released!</strong> Full conditions, privacy frameworks, and database protection rules.</li>
+                    <li><strong>Safety & Security Hub!</strong> Live moderator directories, scam prevention, and phishing guards.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Press Start 2P', monospace; image-rendering: pixelated; }
+        body { background: linear-gradient(135deg, #040c06, #0b1f10, #040c06); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: #fff; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; align-items: center; overflow: hidden; position: relative; padding: 40px 20px; }
+        @keyframes gradientBG { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .bg-animation { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .square { position: absolute; background: transparent; animation: fall linear infinite; bottom: 100%; }
+        .square:nth-child(1) { left: 8%; width: 40px; height: 40px; border: 4px solid #39ff14; box-shadow: 0 0 15px #39ff14; animation-duration: 8s; }
+        .square:nth-child(2) { left: 25%; width: 20px; height: 20px; border: 4px solid #00ffff; box-shadow: 0 0 10px #00ffff; animation-duration: 5s; animation-delay: 2s; }
+        .square:nth-child(3) { left: 75%; width: 50px; height: 50px; border: 5px solid #39ff14; box-shadow: 0 0 18px #39ff14; animation-duration: 10s; animation-delay: 3s; }
+        .square:nth-child(4) { left: 90%; width: 25px; height: 25px; border: 4px solid #00ffff; box-shadow: 0 0 10px #00ffff; animation-duration: 6s; animation-delay: 0.5s; }
+        @keyframes fall { 0% { transform: translateY(-10%) rotate(0deg); opacity: 0; } 10%, 90% { opacity: 0.3; } 100% { transform: translateY(115vh) rotate(360deg); opacity: 0; } }
+        .popup-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(4,6,6,0.85); display: flex; justify-content: center; align-items: center; z-index: 10000; }
+        .popup-box { background: rgba(4,12,6,0.98); width: 100%; max-width: 600px; border: 8px solid #10b981; outline: 8px solid #4ade80; box-shadow: 0 0 35px #10b981; padding: 30px; position: relative; text-align: center; animation: open 0.3s ease-out; }
+        @keyframes open { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+        .close-x-btn { position: absolute; top: -20px; right: -20px; background: #0b1f10; color: #ff007f; border: 4px solid #ff007f; padding: 10px 14px; font-size: 0.9rem; cursor: pointer; box-shadow: 4px 4px 0px #000; }
+        .close-x-btn:hover { background: #ff007f; color: #fff; transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000; }
+        .popup-box h2 { font-size: 1.2rem; color: #ffff00; text-shadow: 0 0 10px #ffff00; margin-bottom: 20px; }
+        .popup-content { text-align: left; max-height: 50vh; overflow-y: auto; }
+        .tag { display: inline-block; background: #ff007f; color: #fff; font-size: 0.6rem; padding: 6px 10px; border: 2px solid #ff007f; box-shadow: 3px 3px 0px #000; margin-bottom: 15px; }
+        .popup-content li { font-size: 0.7rem; line-height: 1.8; color: #fff; margin-bottom: 12px; position: relative; padding-left: 20px; list-style: none; }
+        .popup-content li::before { content: '■'; position: absolute; left: 0; color: #39ff14; text-shadow: 0 0 5px #39ff14; }
+        .nav-container { position: absolute; top: 30px; left: 30px; z-index: 10; }
+        .dropdown { position: relative; display: inline-block; padding-bottom: 20px; }
+        .dropbtn { background: #0b1f10; color: #39ff14; border: 4px solid #39ff14; padding: 14px 20px; font-size: 0.8rem; cursor: pointer; box-shadow: 4px 4px 0px #000; }
+        .dropdown:hover .dropbtn { background: #39ff14; color: #000; box-shadow: 2px 2px 0px #000; transform: translate(2px, 2px); }
+        .dropdown-content { display: none; position: absolute; top: 55px; left: 0; background: rgba(4,12,6,0.95); min-width: 320px; border: 6px solid #10b981; box-shadow: 0 0 25px #10b981, 6px 6px 0px #000; outline: 6px solid #4ade80; padding: 10px; }
+        .dropdown:hover .dropdown-content { display: block; animation: fade 0.2s ease-out; }
+        @keyframes fade { 0% { opacity: 0; transform: translateY(-5px); } 100% { opacity: 1; transform: translateY(0); } }
+        .dropdown-content a { color: #00ffff; padding: 14px; text-decoration: none; display: block; font-size: 0.75rem; border-bottom: 4px dashed #10b981; }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background: #00ffff; color: #000; }
+        
+        .center-wrap { display: flex; flex-direction: column; justify-content: center; align-items: center; flex-grow: 1; z-index: 2; margin-top: 30px; }
+        
+        /* LOGO AVEC BORDURE NÉON PULSANTE ANIMÉE */
+        .site-logo { width: 96px; height: 96px; border: 4px solid #10b981; padding: 6px; background-color: #030804; margin-bottom: 25px; box-shadow: 0 0 15px #10b981; animation: logoGlow 2s ease infinite alternate; }
+        @keyframes logoGlow { 0% { border-color: #10b981; box-shadow: 0 0 15px #10b981; } 50% { border-color: #00ffff; box-shadow: 0 0 25px #00ffff; } 100% { border-color: #a6ff00; box-shadow: 0 0 20px #a6ff00; } }
+        
+        h1 { font-size: 3rem; color: #a6ff00; text-shadow: 0 0 20px #39ff14; margin-bottom: 40px; letter-spacing: -2px; }
+        .enter-btn { display: inline-block; background: #0b1f10; color: #ffff00; border: 6px solid #ffff00; padding: 24px 44px; font-size: 1.4rem; text-decoration: none; box-shadow: 6px 6px 0px #000; animation: pulse 1.5s infinite alternate; }
+        .enter-btn:hover { background: #ffff00; color: #000; box-shadow: 3px 3px 0px #000; transform: translate(3px, 3px); animation-play-state: paused; }
+        @keyframes pulse { 0% { box-shadow: 4px 4px 0px #000; } 100% { box-shadow: 8px 8px 0px #000, 0 0 20px #ffff00; } }
+        .welcome-info { margin-top: 40px; font-size: 0.75rem; color: #39ff14; text-shadow: 0 0 8px #10b981; line-height: 2; text-align: center; max-width: 600px; }
+        .copyright-footer { font-family: monospace; font-size: 10px; color: rgba(21,255,0,0.6); text-align: center; z-index: 2; border-top: 2px dashed rgba(16,185,129,0.3); width: 100%; padding-top: 20px; }
+        @media (max-width: 900px) { h1 { font-size: 1.8rem; } .site-logo { width: 72px; height: 72px; } }
+    </style>
+
+    <nav class="nav-container"><div class="dropdown"><button class="dropbtn">MENU ▼</button><div class="dropdown-content"><a href="bloxd.html">Play Bloxd.io</a><a href="api.html">Bloxd.io API's</a><a href="comment.html">CHAT WITH AI</a><a href="code.html">World Code</a><a href="main.html">Commands</a><a href="404.html">Test 404 Page</a><a href="403.html">Test 403 Page</a><a href="chat.html">Community Chat</a><a href="post.html">Community Posts</a><a href="policy.html">Terms & Privacy</a><a href="safety.html">Safety Center</a></div></div></nav>
+    <main class="center-wrap">
+        <img src="/favicon.png" alt="BWC Logo" class="site-logo">
+        <h1>BloxdWorldCode</h1>
+        <a href="main.html" class="enter-btn">ENTER</a>
+        <p class="welcome-info">See lots of World code and Commands for bloxd.io by clicking ENTER.<br><br>By Clicking Chat with AI you can chat with an AI bot and ask about Bloxd.io</p>
+    </main>
+    <footer class="copyright-footer">Shahadah Studios Elite -DO NOT USE THE WEB TITLE WITHOUT LICENSE-</footer>
+
+    <script src="https://google.com"></script>
+    <script>grecaptcha.ready(function(){grecaptcha.execute('6Ld4W5gtAAAAAC7hi13LcbpbNgIncrdl6MB8K1ec',{action:'homepage'}).then(function(token){console.log("SHS Elite Security: Connection Node Verified.");});});</script>
+</body>
+</html>
+
+
+
