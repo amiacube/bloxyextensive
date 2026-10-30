@@ -1,0 +1,8 @@
+.HotBar .HotBarItem {
+	background-color: #701515 !important;
+	border: .25rem solid #260003 !important;
+}
+.HotBar .HotBarItem.SelectedItem {
+	background-color: #5c1111 !important;
+	border: .25rem solid #260003 !important;
+}
