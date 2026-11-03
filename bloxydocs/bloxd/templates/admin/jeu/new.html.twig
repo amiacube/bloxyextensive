@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau jeu{% endblock %}
+
+{% block body %}
+    <div class="colonne" style="margin-top: 32px">
+        <div class="caps"><span>Nouveau jeu</span></div>
+        <div class="panneau">
+            {{ include('admin/jeu/_form.html.twig') }}
+        </div>
+        <p style="margin-top: 12px"><a href="{{ path('admin_jeu_index') }}">Retour à la liste</a></p>
+    </div>
+{% endblock %}

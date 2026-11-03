@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Genres (admin){% endblock %}
+
+{% block body %}
+    <div class="admin-nav">
+        <a class="btn" href="{{ path('admin_index') }}">Tableau de bord</a>
+        <a class="btn btn-primary" href="{{ path('admin_genre_new') }}">Ajouter un genre</a>
+    </div>
+    <div class="caps"><span>{{ genres|length }} genres</span></div>
+
+    <table>
+        <thead>
+            <tr><th>Nom</th><th>Jeux</th><th></th></tr>
+        </thead>
+        <tbody>
+        {% for genre in genres %}
+            <tr>
+                <td><a href="{{ path('app_jeu_index', {genre: genre.id}) }}">{{ genre.nom }}</a></td>
+                <td>{{ genre.jeux|length }}</td>
+                <td style="white-space: nowrap">
+                    <a href="{{ path('admin_genre_edit', {'id': genre.id}) }}">modifier</a>
+                    · {{ include('admin/genre/_delete_form.html.twig') }}
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="3" class="muted">Aucun genre</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

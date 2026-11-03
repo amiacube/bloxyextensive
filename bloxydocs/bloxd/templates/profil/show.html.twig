@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ profil.pseudo }}{% endblock %}
+
+{% block body %}
+    <header class="profil-tete">
+        {% include '_avatar.html.twig' with {user: profil, taille: 'grand'} %}
+        <h1>{{ profil.pseudo }}</h1>
+        <div class="profil-stats">
+            <div><strong>{{ profil.avis|length }}</strong><span>avis</span></div>
+            <div><strong>{{ moyenne ? moyenne|number_format(1, ',') : '-' }}</strong><span>note moyenne</span></div>
+            {% if genrePrefere %}<div><strong style="font-size: 24px; line-height: 40px">{{ genrePrefere }}</strong><span>genre préféré</span></div>{% endif %}
+        </div>
+    </header>
+
+    <div class="caps"><span>Jeux notés</span></div>
+    {% if profil.avis is empty %}
+        <p class="muted">Aucun avis pour l'instant</p>
+    {% else %}
+        <div class="affiches">
+            {% for avis in profil.avis %}
+                <div>
+                    {% include '_affiche.html.twig' with {jeu: avis.jeu} %}
+                    <div class="sous-affiche">
+                        <span class="titre">{{ avis.jeu.titre }}</span>
+                        <span class="ligne">{% include '_etoiles.html.twig' with {note: avis.note} %}<span class="mono">{{ avis.creeLe|date('d/m/Y') }}</span></span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="caps"><span>Ses avis</span></div>
+        <div class="avis-liste">
+            {% for avis in profil.avis|filter(a => a.commentaire) %}
+                <article class="avis avec-affiche">
+                    {% include '_avatar.html.twig' with {user: profil} %}
+                    <div>
+                        <div class="avis-tete">
+                            <a class="quoi" href="{{ path('app_jeu_show', {id: avis.jeu.id}) }}">{{ avis.jeu.titre }}</a>
+                            {% include '_etoiles.html.twig' with {note: avis.note} %}
+                            <span class="mono">{{ avis.creeLe|date('d/m/Y') }}</span>
+                            {% if app.user == profil %}<a class="mono" href="{{ path('app_avis_edit', {id: avis.id}) }}">modifier</a>{% endif %}
+                        </div>
+                        <p class="avis-texte">{{ avis.commentaire }}</p>
+                    </div>
+                    {% include '_affiche.html.twig' with {jeu: avis.jeu} %}
+                </article>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

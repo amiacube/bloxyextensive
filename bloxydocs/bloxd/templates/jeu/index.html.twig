@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jeux{% endblock %}
+
+{% block body %}
+    <form method="get" class="filtres">
+        <div>
+            <label for="q">Titre ou studio</label>
+            <input type="search" id="q" name="q" value="{{ q }}">
+        </div>
+        <div>
+            <label for="genre">Genre</label>
+            <select id="genre" name="genre">
+                <option value="">Tous</option>
+                {% for genre in genres %}
+                    <option value="{{ genre.id }}" {{ genreActif and genreActif.id == genre.id ? 'selected' }}>{{ genre.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button class="btn" type="submit">Filtrer</button>
+        {% if q or genreActif %}<a class="btn" href="{{ path('app_jeu_index') }}">Effacer</a>{% endif %}
+    </form>
+
+    <div class="caps" style="margin-top: 32px">
+        <span>{{ jeux|length }} jeu{{ jeux|length > 1 ? 'x' }}{% if genreActif %} · {{ genreActif.nom }}{% endif %}{% if q %} · « {{ q }} »{% endif %}</span>
+        <a href="{{ path('app_jeu_roblox', {q: q}) }}">Pas trouvé ? Chercher sur Roblox</a>
+    </div>
+
+    {% if jeux is empty %}
+        <p class="muted">Aucun jeu dans le catalogue ne correspond. <a href="{{ path('app_jeu_roblox', {q: q}) }}">Cherche-le sur Roblox</a> pour l'ajouter.</p>
+    {% endif %}
+
+    <div class="affiches">
+        {% for jeu in jeux %}
+            <div>
+                {% include '_affiche.html.twig' with {jeu: jeu} %}
+                <div class="sous-affiche">
+                    <span class="titre">{{ jeu.titre }}</span>
+                    <span class="ligne">
+                        {% if jeu.noteMoyenne %}
+                            {% include '_etoiles.html.twig' with {note: jeu.noteMoyenne|round} %}<span class="mono">{{ jeu.noteMoyenne|number_format(1, ',') }} · {{ jeu.avis|length }} avis</span>
+                        {% else %}
+                            <span class="mono">{{ jeu.genre.nom }} · {{ jeu.anneeSortie }}</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

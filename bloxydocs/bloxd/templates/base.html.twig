@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}Bloxd{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text x=%2264%22 y=%22108%22 text-anchor=%22middle%22 font-size=%22116%22 fill=%22%23f5c518%22>★</text></svg>">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+        {% block stylesheets %}
+        {% endblock %}
+
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
+    <body class="{% block bodyclass %}{% endblock %}">
+        {% block backdrop %}{% endblock %}
+
+        <nav class="nav">
+            <a class="logo" href="{{ path('app_home') }}">Bloxd</a>
+            <div class="liens">
+                <a href="{{ path('app_jeu_index') }}">Jeux</a>
+                {% if app.user %}
+                    <a href="{{ path('app_profil', {pseudo: app.user.pseudo}) }}">Mes avis</a>
+                    {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('admin_index') }}">Admin</a>{% endif %}
+                {% endif %}
+            </div>
+            <div class="droite">
+                <form method="get" action="{{ path('app_jeu_index') }}">
+                    <input type="search" name="q" class="recherche" placeholder="Chercher" value="{{ app.request.query.get('q') }}">
+                </form>
+                {% if app.user %}
+                    <span class="lien">{{ app.user.pseudo }}</span>
+                    <a href="{{ path('app_logout') }}" class="lien">Déconnexion</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="lien">Connexion</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-primary">Créer un compte</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <main class="page">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="flash flash-{{ label }}">{{ message }}</div>
+                {% endfor %}
+            {% endfor %}
+
+            {% block body %}{% endblock %}
+        </main>
+
+        <footer class="footer"><span>Bloxd, projet R5.06</span><span>Images et stats des jeux fournies par Roblox</span></footer>
+    </body>
+</html>

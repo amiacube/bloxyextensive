@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jeux (admin){% endblock %}
+
+{% block body %}
+    <div class="admin-nav">
+        <a class="btn" href="{{ path('admin_index') }}">Tableau de bord</a>
+        <a class="btn btn-primary" href="{{ path('admin_jeu_new') }}">Ajouter un jeu</a>
+        <a class="btn" href="{{ path('admin_jeu_importer') }}">Importer depuis Roblox</a>
+        <button class="btn" id="btn-sync">Synchroniser avec Roblox</button>
+    </div>
+    <div class="caps"><span>{{ jeus|length }} jeux</span></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Titre</th>
+                <th>Studio</th>
+                <th>Genre</th>
+                <th>Année</th>
+                <th>Avis</th>
+                <th>En ligne</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for jeu in jeus %}
+            <tr data-id="{{ jeu.id }}">
+                <td>{% if jeu.vignetteUrl %}<img src="{{ jeu.vignetteUrl }}" class="mini" alt="">{% endif %}</td>
+                <td><a href="{{ path('app_jeu_show', {id: jeu.id}) }}">{{ jeu.titre }}</a></td>
+                <td>{{ jeu.studio }}</td>
+                <td>{{ jeu.genre.nom }}</td>
+                <td>{{ jeu.anneeSortie }}</td>
+                <td>{{ jeu.avis|length }}</td>
+                <td class="en-ligne-cell">{{ jeu.joueursEnLigne is not null ? jeu.joueursEnLigne|number_format(0, ',', ' ') : '-' }}</td>
+                <td style="white-space: nowrap">
+                    <a href="{{ path('admin_jeu_edit', {'id': jeu.id}) }}">modifier</a>
+                    {% if jeu.placeId %} · <button class="lien-bouton" data-sync="{{ jeu.id }}">sync</button>{% endif %}
+                    · {{ include('admin/jeu/_delete_form.html.twig') }}
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="8" class="muted">Aucun jeu</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        document.querySelectorAll('button[data-sync]').forEach(btn => btn.addEventListener('click', async () => {
+            const r = await fetch('/admin/api/jeux/' + btn.dataset.sync + '/sync', { method: 'POST' });
+            const d = await r.json();
+            if (!r.ok) { alert(d.error); return; }
+            btn.closest('tr').querySelector('.en-ligne-cell').textContent = d.joueursEnLigne.toLocaleString('fr-FR');
+        }));
+        document.getElementById('btn-sync').addEventListener('click', async e => {
+            e.target.disabled = true;
+            const r = await fetch('{{ path('admin_api_jeux_sync') }}', { method: 'POST' });
+            const d = await r.json();
+            alert(d.misAJour + ' jeu(x) mis à jour sur ' + d.total);
+            location.reload();
+        });
+    </script>
+{% endblock %}

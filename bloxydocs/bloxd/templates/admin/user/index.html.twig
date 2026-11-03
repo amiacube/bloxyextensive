@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block body %}
+    <div class="admin-nav">
+        <a class="btn" href="{{ path('admin_index') }}">Tableau de bord</a>
+    </div>
+    <div class="caps"><span>Utilisateurs</span><span><code>{{ path('admin_api_users') }}</code> · rôle en POST sur /admin/api/utilisateurs/{id}/admin</span></div>
+
+    <table id="table-users">
+        <thead><tr><th>Pseudo</th><th>Email</th><th>Avis</th><th>Rôle</th><th></th></tr></thead>
+        <tbody><tr><td colspan="5" class="muted">Chargement</td></tr></tbody>
+    </table>
+
+    <script>
+        const tbody = document.querySelector('#table-users tbody');
+        function charger() {
+            fetch('{{ path('admin_api_users') }}').then(r => r.json()).then(users => {
+                tbody.innerHTML = '';
+                for (const u of users) {
+                    tbody.innerHTML += `<tr>
+                        <td><a href="/profil/${u.pseudo}">${u.pseudo}</a></td>
+                        <td>${u.email}</td>
+                        <td>${u.nbAvis}</td>
+                        <td>${u.admin ? '<span style="color: var(--accent)">admin</span>' : '<span class="texte2">joueur</span>'}</td>
+                        <td><button class="btn btn-petit" data-id="${u.id}">${u.admin ? 'Retirer admin' : 'Rendre admin'}</button></td>
+                    </tr>`;
+                }
+            });
+        }
+        tbody.addEventListener('click', async e => {
+            const btn = e.target.closest('button[data-id]');
+            if (!btn) return;
+            const r = await fetch('/admin/api/utilisateurs/' + btn.dataset.id + '/admin', { method: 'POST' });
+            if (!r.ok) alert((await r.json()).error);
+            charger();
+        });
+        charger();
+    </script>
+{% endblock %}

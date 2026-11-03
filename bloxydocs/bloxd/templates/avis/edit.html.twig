@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon avis{% endblock %}
+
+{% block body %}
+    <div class="colonne" style="margin-top: 32px">
+        <div class="caps"><span>Modifier mon avis</span></div>
+        <div class="avis-tete" style="margin-bottom: 16px">
+            <a class="quoi" href="{{ path('app_jeu_show', {id: avis.jeu.id}) }}">{{ avis.jeu.titre }}</a>
+            <span class="mono">{{ avis.jeu.anneeSortie }}</span>
+        </div>
+        <div class="panneau">
+            {{ form_start(form) }}
+                {% include '_avis_note_form.html.twig' %}
+                {{ form_row(form.commentaire) }}
+                <button class="btn btn-primary" type="submit">Enregistrer</button>
+                <a class="btn" href="{{ path('app_jeu_show', {id: avis.jeu.id}) }}" style="margin-left: 8px">Annuler</a>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

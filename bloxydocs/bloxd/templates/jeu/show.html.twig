@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ jeu.titre }}{% endblock %}
+
+{% block bodyclass %}avec-backdrop{% endblock %}
+
+{% block backdrop %}
+    {% if jeu.vignetteUrl %}
+        <div class="backdrop jeu"><img src="{{ jeu.vignetteUrl }}" alt="" fetchpriority="high"></div>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    {% set repartition = jeu.repartition %}
+    {% set maxRep = max(repartition|map(v => v)|merge([1])) %}
+
+    <header class="jeu-entete">
+        <div>
+            {% include '_affiche.html.twig' with {jeu: jeu} %}
+        </div>
+        <div>
+            <h1>{{ jeu.titre }}</h1>
+            <div class="ligne-meta">{{ jeu.anneeSortie }} · {{ jeu.studio }} · <a href="{{ path('app_jeu_index', {genre: jeu.genre.id}) }}">{{ jeu.genre.nom }}</a></div>
+            <p class="description">{{ jeu.description }}</p>
+        </div>
+        <aside>
+            <div class="panneau">
+                <h3>Note des joueurs</h3>
+                {% if jeu.noteMoyenne %}
+                    <div class="bloc-note">
+                        <span class="chiffre">{{ jeu.noteMoyenne|number_format(1, ',') }}</span>
+                        <span class="mono">sur 5 · {{ jeu.avis|length }} avis</span>
+                    </div>
+                    {% include '_etoiles.html.twig' with {note: jeu.noteMoyenne|round, taille: 'grande'} %}
+                    <div class="histo" style="margin-top: 20px">
+                        {% for note, nb in repartition %}
+                            <div class="{{ nb == maxRep and nb > 0 ? 'max' }}" style="height: {{ (100 * nb / maxRep)|round }}%" title="{{ nb }} avis"></div>
+                        {% endfor %}
+                    </div>
+                    <div class="histo-legende"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+                {% else %}
+                    <p class="muted" style="margin:0">Pas encore de note</p>
+                {% endif %}
+            </div>
+            {% if jeu.placeId %}
+                <div class="panneau">
+                    <h3>En ce moment sur Roblox</h3>
+                    <div class="stats-roblox">
+                        {% if jeu.joueursEnLigne is not null %}
+                            <div><strong class="en-ligne">{{ jeu.joueursEnLigne|number_format(0, ',', ' ') }}</strong><span>en ligne</span></div>
+                        {% endif %}
+                        {% if jeu.visites %}
+                            <div><strong>{{ (jeu.visites / 1000000000)|number_format(1, ',') }} Md</strong><span>visites</span></div>
+                        {% endif %}
+                    </div>
+                    <a class="btn" href="{{ jeu.urlRoblox }}" target="_blank" rel="noopener">Ouvrir sur Roblox</a>
+                </div>
+            {% endif %}
+        </aside>
+    </header>
+
+    <section class="noter" id="noter">
+        {% if monAvis %}
+            <div class="noter-gauche">
+                <h2>Ta note</h2>
+                {% include '_etoiles.html.twig' with {note: monAvis.note, taille: 'geante'} %}
+                <p class="note-texte">{{ monAvis.note }} sur 5</p>
+            </div>
+            <div class="noter-droite">
+                {% if monAvis.commentaire %}<p class="avis-texte">{{ monAvis.commentaire }}</p>{% else %}<p class="muted">Pas de commentaire</p>{% endif %}
+                <p class="actions-avis">
+                    <a class="btn" href="{{ path('app_avis_edit', {id: monAvis.id}) }}">Modifier</a>
+                    <form method="post" action="{{ path('app_avis_delete', {id: monAvis.id}) }}" onsubmit="return confirm('Supprimer ton avis ?');" class="inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ monAvis.id) }}">
+                        <button class="btn btn-danger">Supprimer</button>
+                    </form>
+                </p>
+            </div>
+        {% elseif form %}
+            {{ form_start(form, {attr: {class: 'noter-form'}}) }}
+                <div class="noter-gauche">
+                    <h2>Note ce jeu</h2>
+                    {% include '_avis_note_form.html.twig' %}
+                </div>
+                <div class="noter-droite">
+                    {{ form_widget(form.commentaire, {attr: {placeholder: 'Un commentaire, si tu veux', rows: 3}}) }}
+                    {{ form_errors(form.commentaire) }}
+                    <button class="btn btn-primary btn-grand" type="submit">Publier</button>
+                </div>
+            {{ form_end(form) }}
+        {% else %}
+            <div class="noter-gauche">
+                <h2>Note ce jeu</h2>
+                <p class="texte2" style="margin:0"><a href="{{ path('app_login') }}">Connecte-toi</a> ou <a href="{{ path('app_register') }}">crée un compte</a> pour donner ta note.</p>
+            </div>
+        {% endif %}
+    </section>
+
+    <div class="jeu-corps">
+        <section>
+            <div class="caps"><span>Avis des joueurs</span><span class="mono">{{ jeu.avis|length }}</span></div>
+            <div class="avis-liste">
+                {% for avis in jeu.avis %}
+                    <article class="avis">
+                        {% include '_avatar.html.twig' with {user: avis.auteur} %}
+                        <div>
+                            <div class="avis-tete">
+                                <a class="qui" href="{{ path('app_profil', {pseudo: avis.auteur.pseudo}) }}">{{ avis.auteur.pseudo }}</a>
+                                {% include '_etoiles.html.twig' with {note: avis.note} %}
+                                <span class="mono">{{ avis.creeLe|date('d/m/Y') }}</span>
+                            </div>
+                            {% if avis.commentaire %}<p class="avis-texte">{{ avis.commentaire }}</p>{% endif %}
+                        </div>
+                    </article>
+                {% else %}
+                    <p class="muted">Personne n'a encore donné son avis</p>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+{% endblock %}

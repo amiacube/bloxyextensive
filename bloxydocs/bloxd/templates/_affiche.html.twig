@@ -1,0 +1,11 @@
+<a class="affiche" href="{{ path('app_jeu_show', {id: jeu.id}) }}" title="{{ jeu.titre }}">
+    {% if jeu.vignetteUrl %}
+        <img src="{{ jeu.vignetteUrl }}" alt="{{ jeu.titre }}" loading="lazy">
+    {% else %}
+        <div class="vide" style="background: {{ jeu.couleur }}">{{ jeu.initiales }}</div>
+    {% endif %}
+    <div class="voile">
+        <strong>{{ jeu.titre }}</strong>
+        <span>{{ jeu.anneeSortie }} · {{ jeu.studio }}</span>
+    </div>
+</a>

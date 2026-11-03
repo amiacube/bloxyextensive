@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chercher sur Roblox{% endblock %}
+
+{% block body %}
+    <form method="get" class="filtres">
+        <div style="width: 360px">
+            <label for="q">Chercher un jeu sur Roblox</label>
+            <input type="search" id="q" name="q" value="{{ q }}" required autofocus>
+        </div>
+        <button class="btn" type="submit">Chercher</button>
+        <a class="btn" href="{{ path('app_jeu_index') }}">Retour au catalogue</a>
+    </form>
+    <p class="texte2" style="margin-top: 16px">Les résultats viennent de l'API de Roblox. Ajouter un jeu l'importe dans le catalogue avec son image, sa description et ses stats.</p>
+
+    {% if q and resultats is empty %}
+        <p class="muted">Rien trouvé pour « {{ q }} », ou l'API Roblox ne répond pas</p>
+    {% endif %}
+
+    <div class="affiches">
+        {% for r in resultats %}
+            <div>
+                <div class="affiche" style="cursor: default">
+                    {% if r.vignette or r.icone %}
+                        <img src="{{ r.vignette ?: r.icone }}" alt="" loading="lazy">
+                    {% else %}
+                        <div class="vide" style="background: var(--panneau)">?</div>
+                    {% endif %}
+                </div>
+                <div class="sous-affiche">
+                    <span class="titre">{{ r.nom }}</span>
+                    <span class="mono muted" style="margin-bottom: 8px"><span class="en-ligne"></span>{{ r.joueurs|number_format(0, ',', ' ') }} en ligne</span>
+                    {% if dejaLa[r.placeId] is defined %}
+                        <a class="btn btn-petit" href="{{ path('app_jeu_show', {id: dejaLa[r.placeId].id}) }}">Déjà là, voir la fiche</a>
+                    {% elseif app.user %}
+                        <form method="post" action="{{ path('app_jeu_roblox_ajouter') }}">
+                            <input type="hidden" name="placeId" value="{{ r.placeId }}">
+                            <input type="hidden" name="q" value="{{ q }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('ajouter-roblox') }}">
+                            <button class="btn btn-primary btn-petit" type="submit" style="margin:0">Ajouter au catalogue</button>
+                        </form>
+                    {% else %}
+                        <a class="btn btn-petit" href="{{ path('app_login') }}">Connecte-toi pour l'ajouter</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

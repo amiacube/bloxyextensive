@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier{% endblock %}
+
+{% block body %}
+    <div class="colonne" style="margin-top: 32px">
+        <div class="caps"><span>Modifier</span>{{ include('admin/jeu/_delete_form.html.twig') }}</div>
+        <div class="panneau">
+            {{ include('admin/jeu/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+        </div>
+        <p style="margin-top: 12px"><a href="{{ path('admin_jeu_index') }}">Retour à la liste</a></p>
+    </div>
+{% endblock %}

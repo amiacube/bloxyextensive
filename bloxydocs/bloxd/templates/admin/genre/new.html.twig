@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau genre{% endblock %}
+
+{% block body %}
+    <div class="colonne" style="margin-top: 32px">
+        <div class="caps"><span>Nouveau genre</span></div>
+        <div class="panneau">
+            {{ include('admin/genre/_form.html.twig') }}
+        </div>
+        <p style="margin-top: 12px"><a href="{{ path('admin_genre_index') }}">Retour à la liste</a></p>
+    </div>
+{% endblock %}

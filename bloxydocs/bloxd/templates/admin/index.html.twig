@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin{% endblock %}
+
+{% block body %}
+    <div class="admin-nav">
+        <a class="btn" href="{{ path('admin_jeu_index') }}">Jeux</a>
+        <a class="btn" href="{{ path('admin_genre_index') }}">Genres</a>
+        <a class="btn" href="{{ path('admin_user_index') }}">Utilisateurs</a>
+    </div>
+
+    <div class="compteurs gauche">
+        <div><strong>{{ nbUsers }}</strong><span>utilisateurs</span></div>
+        <div><strong>{{ nbJeux }}</strong><span>jeux</span></div>
+        <div><strong>{{ nbGenres }}</strong><span>genres</span></div>
+        <div><strong>{{ nbAvis }}</strong><span>avis</span></div>
+    </div>
+
+    <div class="deux-colonnes">
+        <div class="panneau">
+            <h3>Répartition des notes · <code>{{ path('admin_api_stats') }}</code></h3>
+            <div class="repartition" id="repartition"></div>
+        </div>
+        <div class="panneau">
+            <h3>Top 10 · <code>{{ path('admin_api_top_jeux') }}</code></h3>
+            <table id="table-top">
+                <thead><tr><th>Jeu</th><th>Genre</th><th>Moyenne</th><th>Avis</th></tr></thead>
+                <tbody><tr><td colspan="4" class="muted">Chargement</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="caps"><span>Derniers avis</span><span><code>{{ path('admin_api_avis') }}</code> · suppression en DELETE</span></div>
+    <table id="table-avis">
+        <thead><tr><th>Date</th><th>Jeu</th><th>Auteur</th><th>Note</th><th>Commentaire</th><th></th></tr></thead>
+        <tbody><tr><td colspan="6" class="muted">Chargement</td></tr></tbody>
+    </table>
+
+    <script>
+        const etoiles = n => '<span class="note">' + Array.from({length: 5}, (_, i) => `<i class="${i < n ? 'plein' : ''}">★</i>`).join('') + '</span>';
+
+        fetch('{{ path('admin_api_stats') }}').then(r => r.json()).then(d => {
+            const max = Math.max(1, ...Object.values(d.repartitionNotes));
+            const div = document.getElementById('repartition');
+            for (let note = 5; note >= 1; note--) {
+                const nb = d.repartitionNotes[note];
+                div.innerHTML += `<div class="ligne ${nb === max ? 'max' : ''}">${etoiles(note)}<div class="barre"><div style="width:${100 * nb / max}%"></div></div><span class="nb">${nb}</span></div>`;
+            }
+        });
+
+        fetch('{{ path('admin_api_top_jeux') }}').then(r => r.json()).then(rows => {
+            const tbody = document.querySelector('#table-top tbody');
+            tbody.innerHTML = '';
+            for (const r of rows) {
+                tbody.innerHTML += `<tr><td><a href="/jeux/${r.id}">${r.titre}</a></td><td>${r.genre}</td><td>${r.moyenne.toLocaleString('fr-FR', {minimumFractionDigits: 1, maximumFractionDigits: 1})}</td><td>${r.nbAvis}</td></tr>`;
+            }
+        });
+
+        const tbodyAvis = document.querySelector('#table-avis tbody');
+        function chargerAvis() {
+            fetch('{{ path('admin_api_avis') }}').then(r => r.json()).then(rows => {
+                tbodyAvis.innerHTML = '';
+                for (const r of rows) {
+                    tbodyAvis.innerHTML += `<tr>
+                        <td class="mono muted">${r.creeLe}</td>
+                        <td><a href="/jeux/${r.jeuId}">${r.jeu}</a></td>
+                        <td>${r.auteur}</td>
+                        <td>${etoiles(r.note)}</td>
+                        <td>${r.commentaire ? r.commentaire.replace(/</g, '&lt;') : ''}</td>
+                        <td><button class="btn btn-petit btn-danger" data-id="${r.id}">Supprimer</button></td>
+                    </tr>`;
+                }
+            });
+        }
+        tbodyAvis.addEventListener('click', e => {
+            const btn = e.target.closest('button[data-id]');
+            if (!btn || !confirm('Supprimer cet avis ?')) return;
+            fetch('/admin/api/avis/' + btn.dataset.id, { method: 'DELETE' }).then(chargerAvis);
+        });
+        chargerAvis();
+    </script>
+{% endblock %}

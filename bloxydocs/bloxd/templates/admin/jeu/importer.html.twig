@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Importer depuis Roblox{% endblock %}
+
+{% block body %}
+    <div class="colonne" style="margin-top: 32px">
+        <div class="caps"><span>Importer un jeu depuis Roblox</span></div>
+        <p class="texte2">Colle l'URL du jeu (roblox.com/games/123456/Nom) ou juste son numéro. Le titre, le studio, la description, l'image et les stats sont récupérés via l'API Roblox.</p>
+        <form method="post" class="panneau">
+            <label for="roblox">URL ou numéro du jeu</label>
+            <input type="text" id="roblox" name="roblox" placeholder="https://www.roblox.com/games/920587237/Adopt-Me" required autofocus>
+            <label for="genre">Genre</label>
+            <select id="genre" name="genre">
+                {% for genre in genres %}
+                    <option value="{{ genre.id }}">{{ genre.nom }}</option>
+                {% endfor %}
+            </select>
+            <input type="hidden" name="_token" value="{{ csrf_token('importer') }}">
+            <button class="btn btn-primary">Importer</button>
+            <a class="btn" href="{{ path('admin_jeu_index') }}" style="margin-left: 8px">Retour</a>
+        </form>
+    </div>
+{% endblock %}

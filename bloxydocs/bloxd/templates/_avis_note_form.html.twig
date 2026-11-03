@@ -1,0 +1,39 @@
+{# cinq étoiles cliquables ; les radios sont inversées en CSS pour que le survol colore celles de gauche #}
+{% set libelles = {5: 'Incroyable', 4: 'Très bien', 3: 'Correct', 2: 'Bof', 1: 'Nul'} %}
+<div class="saisie-note" role="radiogroup" aria-label="Note sur 5">
+    {% for choix in form.note %}
+        <input type="radio" id="{{ choix.vars.id }}" name="{{ choix.vars.full_name }}" value="{{ choix.vars.value }}" {{ choix.vars.checked ? 'checked' }} data-libelle="{{ libelles[choix.vars.value] }}" required>
+        <label for="{{ choix.vars.id }}" title="{{ choix.vars.value }} sur 5">★</label>
+    {% endfor %}
+</div>
+<p class="note-texte" aria-live="polite">{{ form.note.vars.data ? form.note.vars.data ~ ' sur 5 · ' ~ libelles[form.note.vars.data] : 'Choisis une note' }}</p>
+<p class="note-aide">Au clavier : <kbd>1</kbd> à <kbd>5</kbd> pour noter, <kbd>Entrée</kbd> pour publier, <kbd>Tab</kbd> pour écrire un commentaire</p>
+{{ form_errors(form.note) }}
+{% do form.note.setRendered %}
+<script>
+    (() => {
+        const form = document.currentScript.closest('form');
+        const radios = form.querySelectorAll('.saisie-note input');
+        const texte = form.querySelector('.note-texte');
+        const majTexte = () => {
+            const coche = form.querySelector('.saisie-note input:checked');
+            texte.textContent = coche ? coche.value + ' sur 5 · ' + coche.dataset.libelle : 'Choisis une note';
+        };
+        radios.forEach(r => r.addEventListener('change', majTexte));
+        // touches 1 à 5 : on note sans la souris, sauf si on est en train d'écrire
+        document.addEventListener('keydown', e => {
+            if (e.target.matches('textarea, input[type=text], input[type=search], select')) return;
+            if (e.key >= '1' && e.key <= '5') {
+                const r = form.querySelector('.saisie-note input[value="' + e.key + '"]');
+                r.checked = true; r.focus(); majTexte(); e.preventDefault();
+            }
+        });
+        // Entrée publie (Ctrl+Entrée depuis le commentaire)
+        form.addEventListener('keydown', e => {
+            if (e.key !== 'Enter') return;
+            if (e.target.matches('textarea') && !e.ctrlKey) return;
+            e.preventDefault();
+            form.requestSubmit();
+        });
+    })();
+</script>
